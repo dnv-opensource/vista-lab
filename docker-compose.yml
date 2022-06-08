@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  questdb:
+    image: questdb/questdb
+    container_name: questdb
+    restart: always
+    ports:
+      - "8812:8812"
+      - "9000:9000"
+    environment:
+      QDB_TELEMETRY_ENABLED: "false"
+      QDB_PG_PASSWORD: "Password1"
+      QDB_PG_USER: "sa"

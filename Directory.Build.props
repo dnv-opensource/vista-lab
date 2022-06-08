@@ -1,0 +1,17 @@
+<Project>
+  <PropertyGroup>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <EnablePreviewFeatures>true</EnablePreviewFeatures>
+    <LangVersion>preview</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DotNetVersion>6.0.*</DotNetVersion>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(CI_BUILD)' != 'True'">
+    <PackageReference Include="CSharpier.MsBuild" Version="0.15.1" PrivateAssets="all" /> 
+  </ItemGroup>
+</Project>
