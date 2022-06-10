@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-using VistaLab.Api.Models;
-using VistaLab.Api.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace VistaLab.Api.Controllers;
 
@@ -9,24 +6,17 @@ namespace VistaLab.Api.Controllers;
 [Route("[controller]")]
 public sealed class QueryController : ApiControllerBase<QueryController>
 {
-    private readonly VesselService _vesselService;
-
-    public QueryController(VesselService vesselService)
-    {
-        _vesselService = vesselService;
-    }
+    public QueryController() { }
 
     /// <summary>
     /// Creates a vessel for the current user.
     /// </summary>
     /// <param name="vessel"></param>
     /// <param name="cancellationToken"></param>
-    [HttpGet(Name = "GetVessel")]
-    public async ValueTask<ActionResult<Vessel>> Get(
-        Guid vessel,
-        CancellationToken cancellationToken
-    )
+    [HttpGet(Name = "Query")]
+    public async ValueTask<ActionResult> Query(Guid vessel, CancellationToken cancellationToken)
     {
-        return await _vesselService.GetVessel(vessel, cancellationToken);
+        await Task.Yield();
+        return Ok();
     }
 }

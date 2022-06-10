@@ -1,30 +1,11 @@
-using System.Data.Common;
-
-using Npgsql;
-
+using Common;
 using Vista.SDK;
-using VistaLab.Api;
-using VistaLab.Api.Repositories;
-using VistaLab.Api.Repositories.Interfaces;
-using VistaLab.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
-// Add database infrastructure
-builder.Services.AddScoped<DbConnection>(
-    _ => new NpgsqlConnection(configuration["VISTA_LAB_QUEST_DB"])
-);
-
-builder.Services.AddScoped<IDbSession, DbSession>();
-builder.Services.AddScoped<IVesselRepository, VesselRepository>();
-builder.Services.AddScoped<VesselService>();
-
 builder.Services.AddSingleton<Now>(_ => () => DateTimeOffset.UtcNow);
-
-if (!builder.Environment.IsEnvironment("OpenApi"))
-    builder.Services.AddHostedService<DbInitService>();
-
+builder.Services.AddHttpClient<IDbClient, DbClient>();
 builder.Services.AddVIS();
 
 builder.Services.AddCors(
