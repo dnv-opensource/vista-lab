@@ -160,30 +160,93 @@ public class Simulator : BackgroundService
         if (localId is null)
             return null;
 
-        if (localId.Quantity == "temperature")
-        {
-            var (low, high) = GetRange();
+        if (!TryGetDataChannelNoiseData(localId, dataChannel.Channel, out var noiseData))
+            return null;
 
-            var value = data.Count == 0 ? high / low : Noise(high, low, data);
+        return data.Count == 0
+          ? (noiseData.High - noiseData.Low) / 2
+          : Noise(noiseData.High, noiseData.Low, noiseData.NoiseDeviation, data);
 
-            return value;
-        }
-
-        return null;
-
-        (double Low, double High) GetRange()
-        {
-            var range = dataChannel.Channel.Property.Range;
-            if (range is null)
-                return (0, 100);
-
-            return (double.Parse(range.Low), double.Parse(range.High));
-        }
-
-        double Noise(double low, double high, IReadOnlyList<(double Value, string? Quality)> data)
+        double Noise(
+            double low,
+            double high,
+            double noiseDeviation,
+            IReadOnlyList<(double Value, string? Quality)> data
+        )
         {
             var prevValue = data[^1].Value;
-            return prevValue + (Random.Shared.NextDouble() - 0.5);
+            var nextValue = prevValue + noiseDeviation * (Random.Shared.NextDouble() - 0.5);
+            while (!InRange(low, high, nextValue))
+            {
+                nextValue = prevValue + noiseDeviation * (Random.Shared.NextDouble() - 0.5);
+            }
+
+            return nextValue;
+        }
+
+        bool InRange(double low, double high, double value)
+        {
+            return value >= low && value <= high;
+        }
+
+        bool TryGetDataChannelNoiseData(
+            LocalId localId,
+            Vista.SDK.Transport.DataChannel.DataChannel dataChannel,
+            out (double Low, double High, double NoiseDeviation) data
+        )
+        {
+            data = (0, 0, 0);
+            if (!TryGetRange(dataChannel, out var range))
+                return false;
+
+            (bool Condition, double NoiseFactor)[] generationCases = new[]
+            {
+                (localId.Quantity == "temperature", 1.0),
+                (localId.Command == "shut.down", 1.0),
+                (localId.Quantity == "frequency", 1.0),
+                (
+                    localId.Quantity == "level"
+                        && localId.Content == "diesel.oil"
+                        && localId.State == "high",
+                    1.0
+                ),
+                (
+                    localId.Quantity == "pressure"
+                        && localId.Content == "lubricating.oil"
+                        && localId.State == "low"
+                        && localId.Position == "inlet",
+                    1.0
+                ),
+                (
+                    localId.Quantity == "temperature"
+                        && localId.Content == "exhaust.gas"
+                        && localId.Calculation == "deviation",
+                    1.0
+                )
+            };
+
+            var hit = generationCases.Where(c => c.Condition);
+
+            if (!hit.Any())
+                return false;
+
+            data = (range.Low, range.High, hit.First().NoiseFactor);
+
+            return true;
+        }
+
+        bool TryGetRange(
+            Vista.SDK.Transport.DataChannel.DataChannel dataChannel,
+            out (double Low, double High) range
+        )
+        {
+            range = (0, 100);
+            var r = dataChannel.Property.Range;
+            if (r is null)
+                return false;
+
+            range = (double.Parse(r.Low), double.Parse(r.High));
+            return true;
         }
     }
 
