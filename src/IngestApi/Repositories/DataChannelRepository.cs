@@ -4,17 +4,7 @@ using Vista.SDK.Transport.TimeSeries;
 
 namespace IngestApi.Repositories;
 
-public interface IDataChannelRepository
-{
-    ValueTask Initialize(CancellationToken cancellationToken);
-    ValueTask InsertDataChannel(DataChannel dataChannel, CancellationToken cancellationToken);
-    ValueTask InsertTimeSeriesData(
-        TimeSeriesData timeSeriesData,
-        CancellationToken cancellationToken
-    );
-}
-
-public sealed class DataChannelRepository : IDataChannelRepository
+public sealed class DataChannelRepository
 {
     private readonly ILogger<DataChannel> _logger;
     private readonly IDbClient _client;
@@ -37,7 +27,11 @@ public sealed class DataChannelRepository : IDataChannelRepository
 
         try
         {
-            foreach (var q in query.Split(";"))
+            var queries = query.Split(
+                ";",
+                StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries
+            );
+            foreach (var q in queries)
             {
                 await _client.Execute(q, cancellationToken);
             }

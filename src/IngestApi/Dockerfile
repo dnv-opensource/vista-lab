@@ -11,11 +11,11 @@ COPY ["global.json", "global.json"]
 COPY ["Directory.Build.props", "Directory.Build.props"]
 
 COPY ["src/Common/Common.csproj", "src/Common/"]
-COPY ["src/QueryApi/QueryApi.csproj", "src/QueryApi/"]
+COPY ["src/IngestApi/IngestApi.csproj", "src/IngestApi/"]
 
-RUN dotnet restore "src/QueryApi/"
+RUN dotnet restore "src/IngestApi/"
 COPY . .
-WORKDIR "src/QueryApi/"
+WORKDIR "src/IngestApi/"
 RUN dotnet build -c Release
 RUN dotnet publish -c Release -o /app/publish --no-restore --no-build
 
@@ -23,4 +23,4 @@ FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /app
 EXPOSE 80
 COPY --from=build /app/publish ./
-ENTRYPOINT ["dotnet", "QueryApi.dll"]
+ENTRYPOINT ["dotnet", "IngestApi.dll"]

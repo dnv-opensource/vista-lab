@@ -1,7 +1,5 @@
 using Vista.SDK;
 
-namespace Common;
-
 public sealed class DbInitTables
 {
     public static readonly string Vessel =

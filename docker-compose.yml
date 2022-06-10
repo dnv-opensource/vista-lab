@@ -1,10 +1,36 @@
 version: "3"
 
 services:
+    simulator:
+        container_name: vista-lab-simulator
+        restart: unless-stopped
+        build:
+            context: .
+            dockerfile: src/Simulator/Dockerfile
+    ingest-api:
+        container_name: vista-lab-ingestapi
+        restart: unless-stopped
+        ports:
+            - "5050:80"
+        build:
+            context: .
+            dockerfile: src/IngestApi/Dockerfile
+        environment:
+            DB_HOST: "vista-lab-db:9000"
+    query-api:
+        container_name: vista-lab-queryapi
+        restart: unless-stopped
+        ports:
+            - "5051:80"
+        build:
+            context: .
+            dockerfile: src/QueryApi/Dockerfile
+        environment:
+            DB_HOST: "vista-lab-db:9000"
     questdb:
         image: questdb/questdb
-        container_name: questdb
-        restart: always
+        container_name: vista-lab-db
+        restart: unless-stopped
         ports:
             - "8812:8812"
             - "9000:9000"

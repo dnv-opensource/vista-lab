@@ -5,8 +5,7 @@ using Vista.SDK;
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
-builder.Services.AddSingleton<Now>(_ => () => DateTimeOffset.UtcNow);
-builder.Services.AddSingleton<IDataChannelRepository, DataChannelRepository>();
+builder.Services.AddSingleton<DataChannelRepository>();
 builder.Services.AddHttpClient<IDbClient, DbClient>();
 builder.Services.AddVIS();
 
@@ -43,16 +42,10 @@ builder.Services.AddSwaggerGen(
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseCors();
-
-app.UseAuthorization();
 
 app.MapControllers();
 

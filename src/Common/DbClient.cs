@@ -4,8 +4,6 @@ using System.Web;
 
 namespace Common;
 
-public delegate DateTimeOffset Now();
-
 public interface IDbClient
 {
     ValueTask Execute(string query, CancellationToken cancellationToken);
@@ -19,7 +17,8 @@ public sealed class DbClient : IDbClient
     public DbClient(HttpClient httpClient)
     {
         _httpClient = httpClient;
-        _httpClient.BaseAddress = new Uri("http://localhost:9000/exec");
+        var dbHost = Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost:9000";
+        _httpClient.BaseAddress = new Uri($"http://{dbHost}/exec");
     }
 
     public async ValueTask Execute(string query, CancellationToken cancellationToken)

@@ -3,12 +3,7 @@ using Vista.SDK.Transport.DataChannel;
 
 namespace QueryApi.Repositories;
 
-public interface IDataChannelRepository
-{
-    ValueTask<T> Query<T>(CancellationToken cancellationToken);
-}
-
-public sealed class DataChannelRepository : IDataChannelRepository
+public sealed class DataChannelRepository
 {
     private readonly ILogger<DataChannel> _logger;
     private readonly IDbClient _client;

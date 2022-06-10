@@ -4,8 +4,7 @@ using Vista.SDK;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton<Now>(_ => () => DateTimeOffset.UtcNow);
-builder.Services.AddSingleton<IDataChannelRepository, DataChannelRepository>();
+builder.Services.AddSingleton<DataChannelRepository>();
 builder.Services.AddVIS();
 builder.Services.AddHttpClient<IDbClient, DbClient>();
 
