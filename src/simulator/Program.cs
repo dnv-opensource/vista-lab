@@ -1,4 +1,3 @@
-using Accord.Math;
 using System.Reflection;
 using Vista.SDK;
 using Vista.SDK.Transport.Json;
