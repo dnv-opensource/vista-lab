@@ -6,6 +6,8 @@
 
   <ItemGroup>
     <PackageReference Include="MQTTnet.AspNetCore" Version="4.0.0.167" />
+    <PackageReference Include="DNV.Vista.SDK" Version="0.0.1-preview-*" />
+    <PackageReference Include="DNV.Vista.SDK.System.Text.Json" Version="0.0.1-preview-*" />
   </ItemGroup>
 
   <ItemGroup>

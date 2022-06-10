@@ -5,6 +5,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Accord.Math" Version="3.8.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="$(DotNetVersion)" />
+    <PackageReference Include="DNV.Vista.SDK" Version="0.0.1-preview-*" />
+    <PackageReference Include="DNV.Vista.SDK.System.Text.Json" Version="0.0.1-preview-*" />
   </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\resources\*">
+      <Link>resources\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
 </Project>
