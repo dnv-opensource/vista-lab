@@ -1,10 +1,12 @@
 using Common;
 using QueryApi.Repositories;
 using Vista.SDK;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
+builder.Host.UseSerilog((context, logging) => logging.WriteTo.Console());
 builder.Services.AddSingleton<DataChannelRepository>();
 builder.Services.AddHttpClient<IDbClient, DbClient>();
 builder.Services.AddVIS();

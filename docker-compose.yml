@@ -39,3 +39,4 @@ services:
             QDB_TELEMETRY_ENABLED: "false"
             QDB_PG_PASSWORD: "Password1"
             QDB_PG_USER: "sa"
+            QDB_LOG_W_STDOUT_LEVEL: ERROR

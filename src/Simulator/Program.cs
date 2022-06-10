@@ -3,8 +3,10 @@ using Vista.SDK;
 using Vista.SDK.Transport.Json;
 using Vista.SDK.Transport.Json.DataChannel;
 using Vista.SDK.Transport.TimeSeries;
+using Serilog;
 
 IHost host = Host.CreateDefaultBuilder(args)
+    .UseSerilog((context, logging) => logging.WriteTo.Console())
     .ConfigureServices(
         services =>
         {
