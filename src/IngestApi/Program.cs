@@ -1,5 +1,5 @@
 using Common;
-using Vista.IngestApi.Repositories;
+using IngestApi.Repositories;
 using Vista.SDK;
 
 var builder = WebApplication.CreateBuilder(args);

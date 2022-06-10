@@ -5,27 +5,27 @@ VisualStudioVersion = 17.2.32526.322
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0A3D72B8-906E-47B5-A037-0E85A2E2FD39}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ingest-api", "src\ingest-api\ingest-api.csproj", "{2D96FE07-1E88-412C-88CD-F521BB9F619D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IngestApi", "src\IngestApi\IngestApi.csproj", "{2D96FE07-1E88-412C-88CD-F521BB9F619D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "query-api", "src\query-api\query-api.csproj", "{6B74F8E5-5858-47A9-A1DC-32374ADD891C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QueryApi", "src\QueryApi\QueryApi.csproj", "{6B74F8E5-5858-47A9-A1DC-32374ADD891C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "simulator", "src\simulator\simulator.csproj", "{6F8B5ABA-B8C5-4542-9667-50F4233E64AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Simulator", "src\Simulator\Simulator.csproj", "{6F8B5ABA-B8C5-4542-9667-50F4233E64AA}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "frontend", "frontend", "{E75712CD-F13E-4951-AECB-36A34CF0BFF3}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Frontend", "Frontend", "{E75712CD-F13E-4951-AECB-36A34CF0BFF3}"
 	ProjectSection(SolutionItems) = preProject
-		src\frontend\.env = src\frontend\.env
-		src\frontend\.eslintrc.json = src\frontend\.eslintrc.json
-		src\frontend\.gitignore = src\frontend\.gitignore
-		src\frontend\.prettierrc = src\frontend\.prettierrc
-		src\frontend\api-openapi-schema.json = src\frontend\api-openapi-schema.json
-		src\frontend\apiConfig.ts = src\frontend\apiConfig.ts
-		src\frontend\next-env.d.ts = src\frontend\next-env.d.ts
-		src\frontend\next.config.js = src\frontend\next.config.js
-		src\frontend\openapitools.json = src\frontend\openapitools.json
-		src\frontend\package-lock.json = src\frontend\package-lock.json
-		src\frontend\package.json = src\frontend\package.json
-		src\frontend\README.md = src\frontend\README.md
-		src\frontend\tsconfig.json = src\frontend\tsconfig.json
+		src\Frontend\.env = src\Frontend\.env
+		src\Frontend\.eslintrc.json = src\Frontend\.eslintrc.json
+		src\Frontend\.gitignore = src\Frontend\.gitignore
+		src\Frontend\.prettierrc = src\Frontend\.prettierrc
+		src\Frontend\api-openapi-schema.json = src\Frontend\api-openapi-schema.json
+		src\Frontend\apiConfig.ts = src\Frontend\apiConfig.ts
+		src\Frontend\next-env.d.ts = src\Frontend\next-env.d.ts
+		src\Frontend\next.config.js = src\Frontend\next.config.js
+		src\Frontend\openapitools.json = src\Frontend\openapitools.json
+		src\Frontend\package-lock.json = src\Frontend\package-lock.json
+		src\Frontend\package.json = src\Frontend\package.json
+		src\Frontend\README.md = src\Frontend\README.md
+		src\Frontend\tsconfig.json = src\Frontend\tsconfig.json
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "src\Common\Common.csproj", "{796DC7FC-4FE9-4FC9-A9CC-DE3FA507A11F}"

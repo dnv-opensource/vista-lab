@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace VistaLab.Api.Controllers;
+namespace QueryApi.Controllers;
 
 [ApiController]
 [Route("[controller]")]

@@ -2,7 +2,7 @@ using Common;
 using Vista.SDK.Transport.DataChannel;
 using Vista.SDK.Transport.TimeSeries;
 
-namespace Vista.IngestApi.Repositories;
+namespace IngestApi.Repositories;
 
 public interface IDataChannelRepository
 {

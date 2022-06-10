@@ -1,4 +1,4 @@
-using Vista.IngestApi.Repositories;
+using IngestApi.Repositories;
 
 public delegate DateTimeOffset Now();
 

@@ -1,7 +1,7 @@
 using Common;
 using Vista.SDK.Transport.DataChannel;
 
-namespace Vista.QueryApi.Repositories;
+namespace QueryApi.Repositories;
 
 public interface IDataChannelRepository
 {

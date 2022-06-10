@@ -1,4 +1,4 @@
-﻿namespace VistaLab.Api.Models;
+﻿namespace QueryApi.Models;
 
 public sealed record Sensor(Guid Id, Guid VesselId);
 

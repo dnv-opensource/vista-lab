@@ -1,4 +1,4 @@
-﻿namespace VistaLab.Api.Models;
+﻿namespace QueryApi.Models;
 
 public sealed record Vessel(Guid Id, string Name, int ImoNumber);
 
