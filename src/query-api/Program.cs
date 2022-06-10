@@ -1,10 +1,12 @@
 using Common;
+using Vista.QueryApi.Repositories;
 using Vista.SDK;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
 builder.Services.AddSingleton<Now>(_ => () => DateTimeOffset.UtcNow);
+builder.Services.AddSingleton<IDataChannelRepository, DataChannelRepository>();
 builder.Services.AddHttpClient<IDbClient, DbClient>();
 builder.Services.AddVIS();
 

@@ -1,20 +1,25 @@
-using Common.Repositories.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using Common;
 using Vista.SDK.Transport.DataChannel;
+using Vista.SDK.Transport.TimeSeries;
 
-namespace Common.Repositories;
+namespace Vista.IngestApi.Repositories;
+
+public interface IDataChannelRepository
+{
+    ValueTask Initialize(CancellationToken cancellationToken);
+    ValueTask InsertDataChannel(DataChannel dataChannel, CancellationToken cancellationToken);
+    ValueTask InsertTimeSeriesData(
+        TimeSeriesData timeSeriesData,
+        CancellationToken cancellationToken
+    );
+}
 
 public sealed class DataChannelRepository : IDataChannelRepository
 {
     private readonly ILogger<DataChannel> _logger;
     private readonly IDbClient _client;
 
-    public DataChannelRepository(
-        IServiceProvider serviceProvider,
-        IDbClient client,
-        ILogger<DataChannel> logger
-    )
+    public DataChannelRepository(IDbClient client, ILogger<DataChannel> logger)
     {
         _client = client;
         _logger = logger;
@@ -42,5 +47,18 @@ public sealed class DataChannelRepository : IDataChannelRepository
             _logger.LogError(ex, "Failed to initialize database");
             throw;
         }
+    }
+
+    public ValueTask InsertDataChannel(DataChannel dataChannel, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    public ValueTask InsertTimeSeriesData(
+        TimeSeriesData timeSeriesData,
+        CancellationToken cancellationToken
+    )
+    {
+        throw new NotImplementedException();
     }
 }

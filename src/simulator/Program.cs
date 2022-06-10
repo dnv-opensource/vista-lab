@@ -50,11 +50,24 @@ public class Simulator : BackgroundService
         var parsedDataChannels = dataChannelList.Package.DataChannelList.DataChannel
             .Select(
                 d =>
-                    (
-                        LocalIdParsed: LocalId.TryParse(d.DataChannelId.LocalId, out var localId),
-                        LocalId: localId,
-                        Channel: d
-                    )
+                {
+                    try
+                    {
+                        return (
+                            LocalIdParsed: LocalId.TryParse(
+                                d.DataChannelId.LocalId,
+                                out var localId
+                            ),
+                            LocalId: localId,
+                            Channel: d
+                        );
+                    }
+                    catch
+                    {
+                        _logger.LogError("Failed to parse {id}", d.DataChannelId.LocalId);
+                        return (LocalIdParsed: false, LocalId: null, Channel: d);
+                    }
+                }
             )
             .ToArray();
         var dataChannels = parsedDataChannels
@@ -77,6 +90,7 @@ public class Simulator : BackgroundService
         while (await timer.WaitForNextTickAsync(stoppingToken))
         {
             var currentTick = DateTimeOffset.UtcNow;
+            _logger.LogInformation("Seed {currentTick}", currentTick.ToString());
 
             var values = new List<string>();
             var shortIds = new List<string>();

@@ -1,6 +1,4 @@
-using Common;
-using Common.Repositories.Interfaces;
-using Vista.SDK;
+using Vista.IngestApi.Repositories;
 
 public delegate DateTimeOffset Now();
 
