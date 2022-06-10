@@ -11,7 +11,7 @@
           "Query"
         ],
         "summary": "Creates a vessel for the current user.",
-        "operationId": "QueryGet",
+        "operationId": "QueryQuery",
         "parameters": [
           {
             "name": "vessel",
@@ -25,70 +25,11 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Vessel"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/Vessel": {
-      "get": {
-        "tags": [
-          "Vessel"
-        ],
-        "summary": "Creates a vessel for the current user.",
-        "operationId": "VesselGet",
-        "parameters": [
-          {
-            "name": "vesselId",
-            "in": "query",
-            "description": "",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Vessel"
-                }
-              }
-            }
+            "description": "Success"
           }
         }
       }
     }
   },
-  "components": {
-    "schemas": {
-      "Vessel": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "name": {
-            "type": "string"
-          },
-          "imoNumber": {
-            "type": "integer",
-            "format": "int32"
-          }
-        },
-        "additionalProperties": false
-      }
-    }
-  }
+  "components": { }
 }
