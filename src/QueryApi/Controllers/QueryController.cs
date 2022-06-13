@@ -1,22 +1,28 @@
 using Microsoft.AspNetCore.Mvc;
+using VistaLab.QueryApi.Models;
+using VistaLab.QueryApi.Repository;
 
-namespace QueryApi.Controllers;
+namespace VistaLab.QueryApi.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public sealed class QueryController : ApiControllerBase<QueryController>
+public sealed class DataChannelController : ApiControllerBase<DataChannelController>
 {
-    public QueryController() { }
+    private readonly IDataChannelRepository dataChannelRepository;
+
+    public DataChannelController(IDataChannelRepository dataChannelRepository)
+    {
+        this.dataChannelRepository = dataChannelRepository;
+    }
 
     /// <summary>
-    /// Creates a vessel for the current user.
+    /// Search for data channels based in the given filters
     /// </summary>
-    /// <param name="vessel"></param>
-    /// <param name="cancellationToken"></param>
-    [HttpGet(Name = "Query")]
-    public async ValueTask<ActionResult> Query(Guid vessel, CancellationToken cancellationToken)
+    /// <param name="filter"></param>
+    [HttpPost]
+    public async Task<ActionResult> Post(DataChannelFilter filter)
     {
-        await Task.Yield();
-        return Ok();
+        var result = await dataChannelRepository.Get(filter);
+        return Ok(result);
     }
 }

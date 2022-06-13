@@ -1,21 +1,22 @@
-using Common;
+using Questdb.Net;
 using Vista.SDK.Transport.DataChannel;
+using VistaLab.QueryApi.Models;
 
-namespace QueryApi.Repositories;
+namespace VistaLab.QueryApi.Repository;
 
-public sealed class DataChannelRepository
+public sealed class DataChannelRepository : IDataChannelRepository
 {
     private readonly ILogger<DataChannel> _logger;
-    private readonly IDbClient _client;
+    private readonly IQuestDBClient _client;
 
-    public DataChannelRepository(IDbClient client, ILogger<DataChannel> logger)
+    public DataChannelRepository(IQuestDBClient client, ILogger<DataChannel> logger)
     {
         _client = client;
         _logger = logger;
     }
 
-    public ValueTask<T> Query<T>(CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<IEnumerable<DataChannelResult>> Get(DataChannelFilter filter) =>
+        await _client
+            .GetQueryApi()
+            .QueryEnumerableAsync<DataChannelResult>(SQLHelper.MountSQL(filter));
 }
