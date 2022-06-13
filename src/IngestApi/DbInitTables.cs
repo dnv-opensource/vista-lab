@@ -12,9 +12,13 @@ public sealed class DbInitTables
         );
     ";
 
-    public static readonly string DataChannel =
-        @"
-       CREATE TABLE IF NOT EXISTS DataChannel
+    public static string DataChannel => CreateDataChannel();
+
+    private static string CreateDataChannel()
+    {
+        var codeBookNames = (IEnumerable<CodebookName>)Enum.GetValues(typeof(CodebookName));
+        return $@"
+        CREATE TABLE IF NOT EXISTS DataChannel
         (
             DataChannelId STRING NOT NULL,
             VesselId SYMBOL capacity 1024 cache index capacity 1048576 NOT NULL,
@@ -29,46 +33,30 @@ public sealed class DbInitTables
             QuantityName STRING,
             QualityCoding STRING,
             Remarks STRING,
-            Timestamp TIMESTAMP
+            Timestamp TIMESTAMP,
+            FormatRestriction_DataChannelId STRING NOT NULL,
+            FormatRestriction_Type STRING NOT NULL,
+            FormatRestriction_Enumeration STRING,
+            FormatRestriction_FractionDigits STRING,
+            FormatRestriction_Length INT,
+            FormatRestriction_MaxExclusive FLOAT,
+            FormatRestriction_MaxInclusive FLOAT,
+            FormatRestriction_MaxLength INT,
+            FormatRestriction_MinExclusive FLOAT,
+            FormatRestriction_MinInclusive FLOAT,
+            FormatRestriction_MinLength INT,
+            FormatRestriction_Pattern INT,
+            FormatRestriction_TotalDigits INT,
+            FormatRestriction_WhiteSpace STRING,
+            DataChannelLabel_DataChannelId STRING NOT NULL,
+            DataChannelLabel_VisVersion STRING NOT NULL ,
+            DataChannelLabel_PrimaryItem STRING NOT NULL,
+            DataChannelLabel_SecondaryItem STRING,
+            {string.Join(", ", codeBookNames.Select(name => "DataChannelLabel_" + name + " SYMBOL capacity 1024 cache index capacity 1024"))}
         ) timestamp(Timestamp)
         PARTITION BY YEAR;
-    ";
-
-    public static string DataChannelLabel => CreateDataChannelLabelTable();
-
-    private static string CreateDataChannelLabelTable()
-    {
-        var codeBookNames = (IEnumerable<CodebookName>)Enum.GetValues(typeof(CodebookName));
-        return $@"CREATE TABLE IF NOT EXISTS DataChannelLabel
-        (
-            DataChannelId STRING NOT NULL,
-            VisVersion STRING NOT NULL ,
-            PrimaryItem STRING NOT NULL,
-            SecondaryItem STRING,
-            {string.Join(", ", codeBookNames.Select(name => name + " SYMBOL capacity 1024 cache index capacity 1024"))}
-        );";
+        ";
     }
-
-    public static readonly string FormatRestriction =
-        @"
-        CREATE TABLE IF NOT EXISTS FormatRestriction
-        (
-            DataChannelId STRING NOT NULL,
-            Type STRING NOT NULL,
-            Enumeration STRING,
-            FractionDigits STRING,
-            Length INT,
-            MaxExclusive FLOAT,
-            MaxInclusive FLOAT,
-            MaxLength INT,
-            MinExclusive FLOAT,
-            MinInclusive FLOAT,
-            MinLength INT,
-            Pattern INT,
-            TotalDigits INT,
-            WhiteSpace STRING
-        );
-    ";
 
     public static readonly string TimeSeries =
         @"
