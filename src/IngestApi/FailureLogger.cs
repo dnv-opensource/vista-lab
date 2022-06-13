@@ -22,6 +22,6 @@ public sealed class FailureLogger
 
     public void Handle(MqttApplicationMessage message)
     {
-        _logger.LogError("Updated data for stat-sensor.failure datachannel: {topic}", message.Topic);
+        _logger.LogError("Updated data for 'state-sensor.failure' datachannel: {topic}", message.Topic);
     }
 }

@@ -7,11 +7,13 @@ services:
         build:
             context: .
             dockerfile: src/Simulator/Dockerfile
+        environment:
+            INGEST_API_HOST: "ingest-api:5050"
     ingest-api:
         container_name: vista-lab-ingestapi
         restart: unless-stopped
         ports:
-            - "5050:5051"
+            - "5050:5050"
             - "5051:5051"
         build:
             context: .

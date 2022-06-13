@@ -23,6 +23,6 @@ FROM mcr.microsoft.com/dotnet/aspnet:6.0
 ENV ASPNETCORE_URLS=http://+:5052
 
 WORKDIR /app
-EXPOSE 80
+EXPOSE 5052
 COPY --from=build /app/publish ./
 ENTRYPOINT ["dotnet", "QueryApi.dll"]

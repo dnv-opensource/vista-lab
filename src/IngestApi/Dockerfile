@@ -23,6 +23,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:6.0
 ENV ASPNETCORE_URLS=http://+:5050
 
 WORKDIR /app
-EXPOSE 80
+EXPOSE 5050
+EXPOSE 5051
 COPY --from=build /app/publish ./
 ENTRYPOINT ["dotnet", "IngestApi.dll"]
