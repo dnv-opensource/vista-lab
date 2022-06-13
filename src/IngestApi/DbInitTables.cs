@@ -33,8 +33,6 @@ public sealed class DbInitTables
             QuantityName STRING,
             QualityCoding STRING,
             Remarks STRING,
-            Timestamp TIMESTAMP,
-            FormatRestriction_DataChannelId STRING NOT NULL,
             FormatRestriction_Type STRING NOT NULL,
             FormatRestriction_Enumeration STRING,
             FormatRestriction_FractionDigits STRING,
@@ -48,11 +46,11 @@ public sealed class DbInitTables
             FormatRestriction_Pattern INT,
             FormatRestriction_TotalDigits INT,
             FormatRestriction_WhiteSpace STRING,
-            DataChannelLabel_DataChannelId STRING NOT NULL,
-            DataChannelLabel_VisVersion STRING NOT NULL ,
-            DataChannelLabel_PrimaryItem STRING NOT NULL,
-            DataChannelLabel_SecondaryItem STRING,
-            {string.Join(", ", codeBookNames.Select(name => "DataChannelLabel_" + name + " SYMBOL capacity 1024 cache index capacity 1024"))}
+            LocalId_VisVersion STRING NOT NULL ,
+            LocalId_PrimaryItem STRING NOT NULL,
+            LocalId_SecondaryItem STRING,
+            {string.Join(", ", codeBookNames.Select(name => "LocalId_" + name + " SYMBOL capacity 1024 cache index capacity 1024"))}
+            Timestamp TIMESTAMP NOT NULL,
         ) timestamp(Timestamp)
         PARTITION BY YEAR;
         ";
@@ -62,12 +60,12 @@ public sealed class DbInitTables
         @"
         CREATE TABLE IF NOT EXISTS TimeSeries
         (
-            TimeSeriesId INT,
+            TimeSeriesId INT NOT NULL,
             DataChannelId SYMBOL capacity 8388608 nocache index capacity 8388608 NOT NULL,
             Value STRING,
             Quality STRING,
             EventType STRING,
-            Timestamp TIMESTAMP
+            Timestamp TIMESTAMP NOT NULL
         ) timestamp(Timestamp)
         PARTITION BY DAY;
     ";
