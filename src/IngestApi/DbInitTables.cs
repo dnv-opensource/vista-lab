@@ -49,8 +49,8 @@ public sealed class DbInitTables
             LocalId_VisVersion STRING NOT NULL ,
             LocalId_PrimaryItem STRING NOT NULL,
             LocalId_SecondaryItem STRING,
-            {string.Join(", ", codeBookNames.Select(name => "LocalId_" + name + " SYMBOL capacity 1024 cache index capacity 1024"))}
-            Timestamp TIMESTAMP NOT NULL,
+            {string.Join(", ", codeBookNames.Select(name => "LocalId_" + name + " SYMBOL capacity 1024 cache index capacity 1024"))},
+            Timestamp TIMESTAMP NOT NULL
         ) timestamp(Timestamp)
         PARTITION BY YEAR;
         ";
