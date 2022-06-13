@@ -6,8 +6,8 @@ namespace Common;
 
 public interface IDbClient
 {
-    ValueTask Execute(string query, CancellationToken cancellationToken);
-    ValueTask<T?> Execute<T>(string query, CancellationToken cancellationToken);
+    ValueTask ExecuteAsync(string query, CancellationToken cancellationToken);
+    ValueTask<T?> ExecuteAsync<T>(string query, CancellationToken cancellationToken);
 }
 
 public sealed class DbClient : IDbClient
@@ -21,12 +21,12 @@ public sealed class DbClient : IDbClient
         _httpClient.BaseAddress = new Uri($"http://{dbHost}/exec");
     }
 
-    public async ValueTask Execute(string query, CancellationToken cancellationToken)
+    public async ValueTask ExecuteAsync(string query, CancellationToken cancellationToken)
     {
-        await Execute<object>(query, cancellationToken);
+        await ExecuteAsync<object>(query, cancellationToken);
     }
 
-    public async ValueTask<T?> Execute<T>(string query, CancellationToken cancellationToken)
+    public async ValueTask<T?> ExecuteAsync<T>(string query, CancellationToken cancellationToken)
     {
         if (cancellationToken.IsCancellationRequested)
             cancellationToken.ThrowIfCancellationRequested();
