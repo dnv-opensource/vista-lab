@@ -1,5 +1,4 @@
 using MQTTnet;
-using MQTTnet.Packets;
 using MQTTnet.Server;
 using System.Text;
 using Vista.SDK;
@@ -9,33 +8,6 @@ using Vista.SDK.Transport.Json.DataChannel;
 using Vista.SDK.Transport.Json.TimeSeriesData;
 
 namespace IngestApi;
-
-public sealed class FailureLogger
-{
-    private readonly ILogger<FailureLogger> _logger;
-    private readonly MqttServer _server;
-
-    public FailureLogger(ILogger<FailureLogger> logger, MqttServer server)
-    {
-        _logger = logger;
-        _server = server;
-    }
-
-    public readonly MqttTopicFilter Filter = new MqttTopicFilterBuilder()
-        .WithTopic("dnv-v2/vis-3-4a/+/+/+/+/+/state-sensor.failure/+/+/+/+")
-        .Build();
-
-    public async Task Start()
-    {
-        await _server.SubscribeAsync("failure-logger", Filter);
-        // dnv-v2/vis-3-4a/1028.4_I101/1021.31-3S_H203/qty-temperature/cnt-cargo/_/state-sensor.failure/_/_/_/detail-95
-    }
-
-    public void Handle(MqttApplicationMessage message)
-    {
-        _logger.LogError("Got error message: {topic}", message.Topic);
-    }
-}
 
 public sealed class Streamer
 {
@@ -85,6 +57,10 @@ public sealed class Streamer
                         Payload = Encoding.UTF8.GetBytes(Serializer.Serialize(package)),
                         Topic = localId.ToString(),
                     };
+
+                    if (!message.Topic.Contains("state-sensor.failure"))
+                        continue;
+
                     _logger.LogInformation(
                         "Publishing message for channel - {localId}",
                         message.Topic

@@ -61,6 +61,19 @@ app.UseMqttServer(
             mqttLogger.LogInformation("Client connected: {client}", args.ClientId);
             return Task.CompletedTask;
         };
+
+        server.ApplicationMessageNotConsumedAsync += args =>
+        {
+            var message = args.ApplicationMessage;
+            if (
+                MqttTopicFilterComparer.Compare(message.Topic, failureLogger.Filter.Topic)
+                == MqttTopicFilterCompareResult.IsMatch
+            )
+                failureLogger.Handle(message);
+
+            return Task.CompletedTask;
+        };
+
         server.InterceptingPublishAsync += async args =>
         {
             var message = args.ApplicationMessage;
