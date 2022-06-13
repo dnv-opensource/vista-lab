@@ -72,7 +72,6 @@ public class Simulator : BackgroundService
             var value = TryAddData(dataChannel, data);
             if (value is null)
                 continue;
-
             var valueStr = value.Value.ToString("0.00", CultureInfo.InvariantCulture);
             data.Add((value.Value, null));
 
@@ -129,19 +128,38 @@ public class Simulator : BackgroundService
             return null;
 
         return data.Count == 0
-          ? (noiseData.High - noiseData.Low) / 2
-          : Noise(noiseData.Low, noiseData.High, noiseData.NoiseDeviation, data);
+          ? noiseData.Boolean
+              ? 0
+              : (noiseData.High - noiseData.Low) / 2
+          : Noise(noiseData.Low, noiseData.High, noiseData.NoiseFactor, noiseData.Boolean, data);
 
         double Noise(
             double low,
             double high,
-            double noiseDeviation,
+            double noiseFactor,
+            bool isBoolean,
             IReadOnlyList<(double Value, string? Quality)> data
         )
         {
             var prevValue = data[^1].Value;
+            if (isBoolean)
+            {
+                _logger.LogInformation("Boolean case {prevValue}", prevValue);
+                var rand = Random.Shared.NextDouble();
+                // To reduce variation
+                if (rand < 0.1)
+                {
+                    return prevValue == 1 ? 0 : 1;
+                }
+                return prevValue;
+            }
+
+            // factor * (high - low) * random number between -1 and 1
             var nextValue = Math.Max(
-                Math.Min(prevValue + noiseDeviation * (Random.Shared.NextDouble() - 0.5), high),
+                Math.Min(
+                    prevValue + noiseFactor * (high - low) * (Random.Shared.NextDouble() * 2 - 1),
+                    high
+                ),
                 low
             );
 
@@ -151,47 +169,66 @@ public class Simulator : BackgroundService
         bool TryGetDataChannelNoiseData(
             LocalId localId,
             Vista.SDK.Transport.DataChannel.DataChannel dataChannel,
-            out (double Low, double High, double NoiseDeviation) data
+            out (double Low, double High, double NoiseFactor, bool Boolean) data
         )
         {
-            data = (0, 0, 0);
+            data = (0, 0, 0, false);
             if (!TryGetRange(dataChannel, out var range))
                 return false;
 
+            // Boolean cases
+            if (range.Low == 0 && range.High == 1)
+            {
+                data = (range.Low, range.High, 1, true);
+                return true;
+            }
+
+            // Important that spesific cases are checked first
             (bool Condition, double NoiseFactor)[] generationCases = new[]
             {
-                (localId.Quantity == "temperature", 1.0),
-                (localId.Command == "shut.down", 1.0),
-                (localId.Quantity == "frequency", 1.0),
-                (
-                    localId.Quantity == "level"
-                        && localId.Content == "diesel.oil"
-                        && localId.State == "high",
-                    1.0
-                ),
                 (
                     localId.Quantity == "pressure"
                         && localId.Content == "lubricating.oil"
                         && localId.State == "low"
                         && localId.Position == "inlet",
-                    1.0
+                    0.05
+                ),
+                (
+                    localId.Quantity == "level"
+                        && localId.Content == "diesel.oil"
+                        && localId.State == "high",
+                    0.05
                 ),
                 (
                     localId.Quantity == "temperature"
                         && localId.Content == "exhaust.gas"
                         && localId.Calculation == "deviation",
-                    1.0
-                )
+                    0.05
+                ),
+                (
+                    localId.Quantity == "pressure"
+                        && localId.Content == "lubricating.oil"
+                        && localId.Position == "inlet",
+                    0.05
+                ),
+                (localId.Quantity == "angle" && localId.Type == "request", 0.05),
+                (localId.Quantity == "temperature", 0.05),
+                (localId.Command == "shut.down", 0.05),
+                (localId.Quantity == "frequency", 0.05),
+                (localId.Quantity == "rotational.frequency", 0.05),
+                (localId.Quantity == "wind.speed.vs.vessel", 0.05),
             };
 
-            var hit = generationCases.Where(c => c.Condition).ToArray();
+            foreach (var generationCase in generationCases)
+            {
+                if (generationCase.Condition)
+                {
+                    data = (range.Low, range.High, generationCase.NoiseFactor, false);
+                    return true;
+                }
+            }
 
-            if (hit.Length == 0)
-                return false;
-
-            data = (range.Low, range.High, hit[0].NoiseFactor);
-
-            return true;
+            return false;
         }
 
         bool TryGetRange(
