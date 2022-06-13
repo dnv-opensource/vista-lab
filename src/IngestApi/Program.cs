@@ -33,6 +33,7 @@ builder.Services.AddSingleton<DataChannelRepository>();
 builder.Services.AddVIS();
 builder.Services.AddHttpClient<IDbClient, DbClient>();
 builder.Services.AddSingleton<Streamer>();
+builder.Services.AddSingleton<FailureLogger>();
 
 if (!builder.Environment.IsEnvironment("OpenApi"))
     builder.Services.AddHostedService<DbInitService>();
@@ -49,6 +50,9 @@ app.UseEndpoints(
 );
 
 var mqttLogger = app.Services.GetRequiredService<ILogger<MqttServer>>();
+var streamer = app.Services.GetRequiredService<Streamer>();
+var failureLogger = app.Services.GetRequiredService<FailureLogger>();
+
 app.UseMqttServer(
     server =>
     {
@@ -66,7 +70,6 @@ app.UseMqttServer(
                 {
                     mqttLogger.LogInformation("DataChannelLists from: {client}", args.ClientId);
 
-                    var streamer = app.Services.GetRequiredService<Streamer>();
                     using var stream = new MemoryStream(message.Payload);
                     var data = Serializer.DeserializeDataChannelList(stream);
                     streamer.HandleDataChannels(data!);
@@ -76,14 +79,19 @@ app.UseMqttServer(
                 {
                     mqttLogger.LogInformation("TimeSeriesData from: {client}", args.ClientId);
 
-                    var streamer = app.Services.GetRequiredService<Streamer>();
                     using var stream = new MemoryStream(message.Payload);
                     var data = Serializer.DeserializeTimeSeriesData(stream);
                     await streamer.HandleTimeseries(data!);
                     return;
                 }
                 default:
-                    mqttLogger.LogInformation("Unhandled topic: {topic}", message.Topic);
+                    if (
+                        MqttTopicFilterComparer.Compare(message.Topic, failureLogger.Filter.Topic)
+                        == MqttTopicFilterCompareResult.IsMatch
+                    )
+                        failureLogger.Handle(message);
+                    else
+                        mqttLogger.LogInformation("Unhandled topic: {topic}", message.Topic);
                     return;
             }
             ;
