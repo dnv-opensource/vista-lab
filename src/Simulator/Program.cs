@@ -144,7 +144,6 @@ public class Simulator : BackgroundService
             var prevValue = data[^1].Value;
             if (isBoolean)
             {
-                _logger.LogInformation("Boolean case {prevValue}", prevValue);
                 var rand = Random.Shared.NextDouble();
                 // To reduce variation
                 if (rand < 0.1)
