@@ -8,7 +8,7 @@
                 "ASPNETCORE_ENVIRONMENT": "Development",
                 "DB_HOST": "localhost:9000"
             },
-            "applicationUrl": "http://localhost:5051",
+            "applicationUrl": "http://localhost:5052",
             "dotnetRunMessages": true
         }
     }

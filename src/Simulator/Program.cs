@@ -1,10 +1,12 @@
+using MQTTnet;
+using MQTTnet.Client;
+using Serilog;
+using System.Globalization;
 using System.Reflection;
 using Vista.SDK;
 using Vista.SDK.Transport.Json;
 using Vista.SDK.Transport.Json.DataChannel;
 using Vista.SDK.Transport.TimeSeries;
-using Serilog;
-using System.Globalization;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .UseSerilog((context, logging) => logging.WriteTo.Console())
@@ -16,16 +18,30 @@ await host.RunAsync();
 public class Simulator : BackgroundService
 {
     private readonly ILogger<Simulator> _logger;
+    private readonly MqttClientOptions _mqttOptions;
+    private readonly MqttFactory _mqttFactory;
+    private readonly IMqttClient _mqttClient;
 
     public Simulator(ILogger<Simulator> logger)
     {
         _logger = logger;
+
+        var ingestHost = Environment.GetEnvironmentVariable("INGEST_API_HOST") ?? "localhost:5050";
+
+        _mqttOptions = new MqttClientOptionsBuilder()
+            .WithWebSocketServer($"{ingestHost}/mqtt")
+            .WithClientId("simulator")
+            .Build();
+        _mqttFactory = new MqttFactory();
+        _mqttClient = _mqttFactory.CreateMqttClient();
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         var dataChannelListDto = await GetDataChannelList(stoppingToken);
         var dataChannelList = dataChannelListDto.ToDomainModel();
+
+        await _mqttClient.ConnectAsync(new MqttClientOptions { });
 
         await Send(dataChannelListDto);
 
@@ -166,7 +182,7 @@ public class Simulator : BackgroundService
         }
 
         bool TryGetDataChannelNoiseData(
-            LocalId localId,
+            LocalIdBuilder localId,
             Vista.SDK.Transport.DataChannel.DataChannel dataChannel,
             out (double Low, double High, double NoiseFactor, bool Boolean) data
         )
@@ -254,7 +270,8 @@ public class Simulator : BackgroundService
     async Task Send(DataChannelListPackage dataChannelList)
     {
         _logger.LogInformation("Sending DataChannelList");
-        await Task.Delay(1);
+        var json = Serializer.Serialize(dataChannelList);
+        await _mqttClient.PublishStringAsync("data-channels", json);
     }
 
     async Task<DataChannelListPackage> GetDataChannelList(CancellationToken stoppingToken)
@@ -290,7 +307,7 @@ public class Simulator : BackgroundService
             .Select(
                 d =>
                     new DataChannelInfo(
-                        LocalId.TryParse(d.DataChannelId.LocalId, out var localId),
+                        LocalIdBuilder.TryParse(d.DataChannelId.LocalId, out var localId),
                         localId,
                         d
                     )
@@ -306,7 +323,7 @@ public class Simulator : BackgroundService
 
     private readonly record struct DataChannelInfo(
         bool LocalIdParsed,
-        LocalId? LocalId,
+        LocalIdBuilder? LocalId,
         Vista.SDK.Transport.DataChannel.DataChannel Channel
     );
 }

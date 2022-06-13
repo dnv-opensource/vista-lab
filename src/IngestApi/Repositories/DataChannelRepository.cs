@@ -43,13 +43,16 @@ public sealed class DataChannelRepository
         }
     }
 
-    public ValueTask InsertDataChannel(DataChannel dataChannel, CancellationToken cancellationToken)
+    public ValueTask InsertDataChannel(
+        DataChannelListPackage dataChannel,
+        CancellationToken cancellationToken
+    )
     {
         throw new NotImplementedException();
     }
 
     public ValueTask InsertTimeSeriesData(
-        TimeSeriesData timeSeriesData,
+        TimeSeriesDataPackage timeSeriesData,
         CancellationToken cancellationToken
     )
     {
