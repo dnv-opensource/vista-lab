@@ -52,6 +52,7 @@ app.UseEndpoints(
 var mqttLogger = app.Services.GetRequiredService<ILogger<MqttServer>>();
 var streamer = app.Services.GetRequiredService<Streamer>();
 var failureLogger = app.Services.GetRequiredService<FailureLogger>();
+var dataChannelRepo = app.Services.GetRequiredService<DataChannelRepository>();
 
 app.UseMqttServer(
     server =>
@@ -77,6 +78,7 @@ app.UseMqttServer(
         server.InterceptingPublishAsync += async args =>
         {
             var message = args.ApplicationMessage;
+            var cancellationToken = new CancellationTokenSource();
             switch (message.Topic)
             {
                 case "DataChannelLists":
@@ -85,7 +87,9 @@ app.UseMqttServer(
 
                     using var stream = new MemoryStream(message.Payload);
                     var data = Serializer.DeserializeDataChannelList(stream);
-                    streamer.HandleDataChannels(data!);
+                    await streamer.HandleDataChannels(data!);
+                    await dataChannelRepo.InsertDataChannel(data!, cancellationToken.Token);
+
                     return;
                 }
                 case "TimeSeriesData":
@@ -95,6 +99,7 @@ app.UseMqttServer(
                     using var stream = new MemoryStream(message.Payload);
                     var data = Serializer.DeserializeTimeSeriesData(stream);
                     await streamer.HandleTimeseries(data!);
+                    //await dataChannelRepo.InsertTimeSeriesData(data!, cancellationToken.Token);
                     return;
                 }
                 default:

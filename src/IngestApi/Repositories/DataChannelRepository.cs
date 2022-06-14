@@ -3,8 +3,7 @@ using Vista.SDK;
 //using Vista.SDK.Transport.DataChannel;
 using Vista.SDK.Transport.Json;
 using Vista.SDK.Transport.Json.DataChannel;
-
-using Vista.SDK.Transport.TimeSeries;
+using Vista.SDK.Transport.Json.TimeSeriesData;
 
 namespace IngestApi.Repositories;
 
@@ -84,11 +83,9 @@ public sealed class DataChannelRepository : IDataChannelRepository
                         vesselId = dataChannelList.Package.Header.ShipID,
                         name = d.DataChannel.Property.Name,
                         dataChannelType = d.DataChannel.Property.DataChannelType.Type,
-                        formatRestrictionDataChannelId = d.DataChannel.DataChannelID.ShortID,
                         formatRestrictionType = d.DataChannel.Property.Format.Type,
-                        dataChannelLabelDataChannelId = d.DataChannel.DataChannelID.ShortID,
-                        dataChannelLabelVisVersion = d.LocalId?.VisVersion.ToString(),
-                        dataChannelLabelPrimaryItem = d.LocalId?.PrimaryItem?.ToString()
+                        localIdVisVersion = d.LocalId?.VisVersion.ToString(),
+                        localIdPrimaryItem = d.LocalId?.PrimaryItem?.ToString()
                     }
             )
             .ToArray();
@@ -100,10 +97,10 @@ public sealed class DataChannelRepository : IDataChannelRepository
             {
                 var query =
                     $@"
-            INSERT INTO DataChannel (Timestamp, DataChannelId, VesselId, Name, DataChannelType, FormatRestriction_DataChannelId,
-                                       FormatRestriction_Type, DataChannelLabel_DataChannelId, DataChannelLabel_VisVersion, DataChannelLabel_PrimaryItem)
-            VALUES (now(), '{param.dataChannelId}', '{param.vesselId}', '{param.name}', '{param.dataChannelType}', '{param.formatRestrictionDataChannelId}',
-                            '{param.formatRestrictionType}', '{param.dataChannelLabelDataChannelId}', '{param.dataChannelLabelVisVersion}', '{param.dataChannelLabelPrimaryItem}')
+            INSERT INTO DataChannel (Timestamp, DataChannelId, VesselId, Name, DataChannelType,
+                                       FormatRestriction_Type, LocalId_VisVersion, LocalId_PrimaryItem)
+            VALUES (now(), '{param.dataChannelId}', '{param.vesselId}', '{param.name}', '{param.dataChannelType}', 
+                            '{param.formatRestrictionType}', '{param.localIdVisVersion}', '{param.localIdPrimaryItem}')
         ";
 
                 await _client.ExecuteAsync(query, cancellationToken);

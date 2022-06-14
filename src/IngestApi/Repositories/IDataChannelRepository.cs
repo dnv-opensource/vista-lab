@@ -1,5 +1,5 @@
 using Vista.SDK.Transport.Json.DataChannel;
-using Vista.SDK.Transport.TimeSeries;
+using Vista.SDK.Transport.Json.TimeSeriesData;
 
 namespace IngestApi.Repositories
 {

@@ -23,13 +23,15 @@ public sealed class Streamer
         _localIdMapping = new Dictionary<string, string>();
     }
 
-    public void HandleDataChannels(DataChannelListPackage package)
+    public async Task HandleDataChannels(DataChannelListPackage package)
     {
         var newMapping = package.Package.DataChannelList.DataChannel
             .Select(dc => dc.DataChannelID)
             .Where(dc => !string.IsNullOrEmpty(dc.ShortID))
             .ToDictionary(dc => dc.ShortID!, dc => dc.LocalID);
         _localIdMapping = newMapping;
+
+        await Task.Yield();
     }
 
     public async Task HandleTimeseries(TimeSeriesDataPackage package)
