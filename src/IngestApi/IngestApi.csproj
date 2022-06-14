@@ -18,4 +18,11 @@
     <ProjectReference Include="..\Common\Common.csproj" />
   </ItemGroup>
 
+    <ItemGroup>
+        <EmbeddedResource Include="..\..\resources\*">
+            <Link>resources\%(RecursiveDir)%(Filename)%(Extension)</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </EmbeddedResource>
+    </ItemGroup>
+
 </Project>
