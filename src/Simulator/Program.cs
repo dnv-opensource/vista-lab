@@ -16,7 +16,7 @@ IHost host = Host.CreateDefaultBuilder(args)
 
 await host.RunAsync();
 
-public class Simulator : BackgroundService
+public class Simulator : IHostedService
 {
     private readonly ILogger<Simulator> _logger;
     private readonly MqttClientOptions _mqttOptions;
@@ -27,17 +27,17 @@ public class Simulator : BackgroundService
     {
         _logger = logger;
 
-        var ingestHost = Environment.GetEnvironmentVariable("INGEST_API_HOST") ?? "localhost:5050";
+        var ingestHost = Environment.GetEnvironmentVariable("BROKER_SERVER") ?? "localhost";
 
         _mqttOptions = new MqttClientOptionsBuilder()
-            .WithWebSocketServer($"{ingestHost}/mqtt")
+            .WithTcpServer($"{ingestHost}", 5050)
             .WithClientId("simulator")
             .Build();
         _mqttFactory = new MqttFactory();
         _mqttClient = _mqttFactory.CreateMqttClient();
     }
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    public async Task StartAsync(CancellationToken stoppingToken)
     {
         var dataChannelListDto = await GetDataChannelList(stoppingToken);
         var dataChannelList = dataChannelListDto.ToDomainModel();
@@ -328,6 +328,17 @@ public class Simulator : BackgroundService
                     && !d.Channel.DataChannelId.LocalId.Contains("~", StringComparison.Ordinal)
             )
             .ToArray();
+    }
+
+    public async Task StopAsync(CancellationToken cancellationToken)
+    {
+        _mqttClient.DisconnectedAsync += args =>
+        {
+            _logger.LogInformation("Simulator - disconnected");
+            return Task.CompletedTask;
+        };
+
+        await _mqttClient.DisconnectAsync();
     }
 
     private readonly record struct DataChannelInfo(

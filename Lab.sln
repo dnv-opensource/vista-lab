@@ -30,6 +30,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Frontend", "Frontend", "{E7
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "src\Common\Common.csproj", "{796DC7FC-4FE9-4FC9-A9CC-DE3FA507A11F}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MqttBroker", "src\MqttBroker\MqttBroker.csproj", "{81CEFE93-0E20-4D96-97FE-018CAAE7E785}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,6 +54,10 @@ Global
 		{796DC7FC-4FE9-4FC9-A9CC-DE3FA507A11F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{796DC7FC-4FE9-4FC9-A9CC-DE3FA507A11F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{796DC7FC-4FE9-4FC9-A9CC-DE3FA507A11F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81CEFE93-0E20-4D96-97FE-018CAAE7E785}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81CEFE93-0E20-4D96-97FE-018CAAE7E785}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81CEFE93-0E20-4D96-97FE-018CAAE7E785}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81CEFE93-0E20-4D96-97FE-018CAAE7E785}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,6 +68,7 @@ Global
 		{6F8B5ABA-B8C5-4542-9667-50F4233E64AA} = {0A3D72B8-906E-47B5-A037-0E85A2E2FD39}
 		{E75712CD-F13E-4951-AECB-36A34CF0BFF3} = {0A3D72B8-906E-47B5-A037-0E85A2E2FD39}
 		{796DC7FC-4FE9-4FC9-A9CC-DE3FA507A11F} = {0A3D72B8-906E-47B5-A037-0E85A2E2FD39}
+		{81CEFE93-0E20-4D96-97FE-018CAAE7E785} = {0A3D72B8-906E-47B5-A037-0E85A2E2FD39}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A0945772-7394-4A0D-BFC1-2B98CB6F215E}
