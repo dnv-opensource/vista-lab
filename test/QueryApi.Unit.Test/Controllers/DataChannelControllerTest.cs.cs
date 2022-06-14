@@ -1,5 +1,6 @@
+using Common;
 using Moq;
-using Questdb.Net;
+using Vista.SDK.Transport.DataChannel;
 using VistaLab.QueryApi.Controllers;
 using VistaLab.QueryApi.Models;
 using VistaLab.QueryApi.Repository;
@@ -12,7 +13,8 @@ namespace VistaLab.QueryApi.Unit.Test.Controllers
         [Fact(Skip = "Must be migrated to integration test")]
         public void Get_Filter_ReturnData()
         {
-            var client = new QuestDBClient("http://127.0.0.1");
+            //var client = new QuestDBClient("http://127.0.0.1");
+            var client = new DbClient(new HttpClient());
 
             /*
             1036.11/S90.3/S61       1036.13i-3/C662.1/C661
@@ -51,8 +53,8 @@ namespace VistaLab.QueryApi.Unit.Test.Controllers
 
             sql = sql + string.Join(" OR ", primaryItemWhere, secondaryItemWhere);
 
-            var queryApi = client.GetQueryApi();
-            var dataModel = queryApi.QueryEnumerable<DataChannelResult>(sql);
+            //var queryApi = client.GetQueryApi();
+            //var dataModel = queryApi.QueryEnumerable<DataChannelResult>(sql);
         }
 
         [Fact]
@@ -62,7 +64,7 @@ namespace VistaLab.QueryApi.Unit.Test.Controllers
             var mockRepository = new Mock<IDataChannelRepository>();
             var controller = new DataChannelController(mockRepository.Object);
             var filter = new DataChannelFilter();
-            var result = new List<DataChannelResult>();
+            var result = new List<DataChannel>();
 
             mockRepository.Setup(x => x.Get(It.IsAny<DataChannelFilter>())).ReturnsAsync(result);
 

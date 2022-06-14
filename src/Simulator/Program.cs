@@ -286,22 +286,23 @@ public class Simulator : BackgroundService
         Vista.SDK.Transport.DataChannel.DataChannelListPackage dataChannelList
     )
     {
-        return dataChannelList.Package.DataChannelList.DataChannel
-            .Select(
-                d =>
-                    new DataChannelInfo(
-                        LocalId.TryParse(d.DataChannelId.LocalId, out var localId),
-                        localId,
-                        d
-                    )
-            )
-            .Where(
-                d =>
-                    d.LocalIdParsed
-                    && (d.LocalId?.IsValid ?? false)
-                    && !d.Channel.DataChannelId.LocalId.Contains("~", StringComparison.Ordinal)
-            )
-            .ToArray();
+        return Array.Empty<DataChannelInfo>();
+        //return dataChannelList.Package.DataChannelList.DataChannel
+        //    .Select(
+        //        d =>
+        //            new DataChannelInfo(
+        //                LocalId.TryParse(d.DataChannelId.LocalId, out var localId),
+        //                localId,
+        //                d
+        //            )
+        //    )
+        //    .Where(
+        //        d =>
+        //            d.LocalIdParsed
+        //            && (d.LocalId?.IsValid ?? false)
+        //            && !d.Channel.DataChannelId.LocalId.Contains("~", StringComparison.Ordinal)
+        //    )
+        //    .ToArray();
     }
 
     private readonly record struct DataChannelInfo(
