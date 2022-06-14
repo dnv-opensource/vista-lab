@@ -1,6 +1,6 @@
 using Common;
 using Moq;
-using Vista.SDK.Transport.DataChannel;
+using Newtonsoft.Json;
 using VistaLab.QueryApi.Controllers;
 using VistaLab.QueryApi.Models;
 using VistaLab.QueryApi.Repository;
@@ -64,15 +64,15 @@ namespace VistaLab.QueryApi.Unit.Test.Controllers
             var mockRepository = new Mock<IDataChannelRepository>();
             var controller = new DataChannelController(mockRepository.Object);
             var filter = new DataChannelFilter();
-            var result = new List<DataChannel>();
 
-            mockRepository.Setup(x => x.Get(It.IsAny<DataChannelFilter>())).ReturnsAsync(result);
+            mockRepository
+                .Setup(x => x.Get(It.IsAny<DataChannelFilter>()))
+                .ReturnsAsync(new List<DataChannelDto>());
 
             //Act
             await controller.Post(filter);
 
             //Assert
-
             mockRepository.Verify(x => x.Get(It.IsAny<DataChannelFilter>()), Times.Once);
         }
     }

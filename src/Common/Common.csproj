@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="DNV.Vista.SDK" Version="0.0.1-preview-15" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
 </Project>

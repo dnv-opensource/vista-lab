@@ -20,6 +20,5 @@ RUN dotnet publish -c Release -o /app/publish --no-restore --no-build
 
 FROM mcr.microsoft.com/dotnet/runtime:6.0
 WORKDIR /app
-EXPOSE 80
 COPY --from=build /app/publish ./
 ENTRYPOINT ["dotnet", "Simulator.dll"]

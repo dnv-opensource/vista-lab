@@ -4,8 +4,7 @@ namespace VistaLab.QueryApi.Repository
 {
     public static class SQLHelper
     {
-        private const string SQL_START =
-            "SELECT LocalId, PrimaryItem, SecondaryItem, Meta FROM DataChannel ";
+        private const string SQL_START = "SELECT * FROM DataChannel ";
 
         internal static string MountSQL(DataChannelFilter filter)
         {
@@ -40,7 +39,7 @@ namespace VistaLab.QueryApi.Repository
                     " OR ",
                     filter.PrimaryItem.Select(
                         x =>
-                            $" PrimaryItem LIKE \'%{x.Replace("/", string.Empty).Replace('*', '%')}%\' "
+                            $" LocalId_PrimaryItem LIKE \'%{x.Replace("/", string.Empty).Replace('*', '%')}%\' "
                     )
                 );
             return sql;
@@ -54,7 +53,7 @@ namespace VistaLab.QueryApi.Repository
                     " OR ",
                     filter.SecondaryItem.Select(
                         x =>
-                            $" SecondaryItem LIKE \'%{x.Replace("/", string.Empty).Replace('*', '%')}%\' "
+                            $" LocalId_SecondaryItem LIKE \'%{x.Replace("/", string.Empty).Replace('*', '%')}%\' "
                     )
                 );
             return sql;

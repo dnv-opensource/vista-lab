@@ -7,11 +7,14 @@ services:
         build:
             context: .
             dockerfile: src/Simulator/Dockerfile
+        environment:
+            INGEST_API_HOST: "ingest-api:5050"
     ingest-api:
         container_name: vista-lab-ingestapi
         restart: unless-stopped
         ports:
-            - "5050:80"
+            - "5050:5050"
+            - "5051:5051"
         build:
             context: .
             dockerfile: src/IngestApi/Dockerfile
@@ -21,7 +24,7 @@ services:
         container_name: vista-lab-queryapi
         restart: unless-stopped
         ports:
-            - "5051:80"
+            - "5052:5052"
         build:
             context: .
             dockerfile: src/QueryApi/Dockerfile

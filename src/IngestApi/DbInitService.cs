@@ -1,4 +1,7 @@
 using IngestApi.Repositories;
+using System.Reflection;
+using Vista.SDK.Transport.Json;
+using Vista.SDK.Transport.Json.DataChannel;
 
 public sealed class DbInitService : IHostedService
 {
@@ -12,6 +15,7 @@ public sealed class DbInitService : IHostedService
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         await TryInit(cancellationToken);
+        await TryInsert(cancellationToken);
     }
 
     private async Task TryInit(CancellationToken cancellationToken)
@@ -19,8 +23,38 @@ public sealed class DbInitService : IHostedService
         await _repository.Initialize(cancellationToken);
     }
 
-    public Task StopAsync(CancellationToken cancellationToken)
+    private async Task TryInsert(CancellationToken cancellationToken)
     {
-        return Task.CompletedTask;
+        var dataChannelListDto = await GetDataChannelList(cancellationToken);
+
+        await _repository.InsertDataChannel(dataChannelListDto, cancellationToken);
+    }
+
+    public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
+
+    // This is just for testing json data
+    async Task<DataChannelListPackage> GetDataChannelList(CancellationToken stoppingToken)
+    {
+        Stream GetResource(string name)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var names = assembly.GetManifestResourceNames();
+            var resourceName = names.FirstOrDefault(n => n.EndsWith(name.Replace("/", ".")));
+            if (resourceName is null)
+                throw new Exception("Couldnt find file");
+            return Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName)
+                ?? throw new Exception("Couldnt find file");
+        }
+
+        await using var dataChannelsFile = GetResource("resources/DataChannelList.json");
+
+        var dataChannelListDto = await Serializer.DeserializeDataChannelListAsync(
+            dataChannelsFile,
+            stoppingToken
+        );
+        if (dataChannelListDto is null)
+            throw new Exception("Couldnt load datachannels");
+
+        return dataChannelListDto;
     }
 }

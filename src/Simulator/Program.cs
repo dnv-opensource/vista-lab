@@ -1,10 +1,13 @@
+using MQTTnet;
+using MQTTnet.Client;
+using Serilog;
+using System.Globalization;
 using System.Reflection;
 using Vista.SDK;
 using Vista.SDK.Transport.Json;
 using Vista.SDK.Transport.Json.DataChannel;
+using Vista.SDK.Transport.Json.TimeSeriesData;
 using Vista.SDK.Transport.TimeSeries;
-using Serilog;
-using System.Globalization;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .UseSerilog((context, logging) => logging.WriteTo.Console())
@@ -16,10 +19,22 @@ await host.RunAsync();
 public class Simulator : BackgroundService
 {
     private readonly ILogger<Simulator> _logger;
+    private readonly MqttClientOptions _mqttOptions;
+    private readonly MqttFactory _mqttFactory;
+    private readonly IMqttClient _mqttClient;
 
     public Simulator(ILogger<Simulator> logger)
     {
         _logger = logger;
+
+        var ingestHost = Environment.GetEnvironmentVariable("INGEST_API_HOST") ?? "localhost:5050";
+
+        _mqttOptions = new MqttClientOptionsBuilder()
+            .WithWebSocketServer($"{ingestHost}/mqtt")
+            .WithClientId("simulator")
+            .Build();
+        _mqttFactory = new MqttFactory();
+        _mqttClient = _mqttFactory.CreateMqttClient();
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -27,12 +42,17 @@ public class Simulator : BackgroundService
         var dataChannelListDto = await GetDataChannelList(stoppingToken);
         var dataChannelList = dataChannelListDto.ToDomainModel();
 
+        await _mqttClient.ConnectAsync(_mqttOptions, stoppingToken);
+        _logger.LogInformation("Connected to ingest API");
+        await _mqttClient.PingAsync(stoppingToken);
+        _logger.LogInformation("Pinged ingest API successfully");
+
         await Send(dataChannelListDto);
 
         var header = dataChannelList.Package.Header;
         var dataChannels = GetDataChannelsForSimulation(dataChannelList);
 
-        var tickInterval = System.TimeSpan.FromSeconds(10);
+        var tickInterval = System.TimeSpan.FromSeconds(60);
         var timer = new PeriodicTimer(tickInterval);
 
         var sentData = new Dictionary<string, List<(double Value, string? Quality)>>();
@@ -43,13 +63,13 @@ public class Simulator : BackgroundService
             var currentTick = DateTimeOffset.UtcNow;
 
             var timeSeries = Simulate(currentTick, lastTick, header, dataChannels, sentData);
-            await Send(timeSeries);
+            await Send(timeSeries.ToJsonDto());
 
             lastTick = currentTick;
         } while (await timer.WaitForNextTickAsync(stoppingToken));
     }
 
-    TimeSeriesDataPackage Simulate(
+    Vista.SDK.Transport.TimeSeries.TimeSeriesDataPackage Simulate(
         DateTimeOffset currentTick,
         DateTimeOffset lastTick,
         Vista.SDK.Transport.DataChannel.Header header,
@@ -81,8 +101,12 @@ public class Simulator : BackgroundService
 
         _logger.LogInformation("Simulation tick for {channelCount} datachannels", channelIds.Count);
 
-        var tableData = new TabularDataSet(currentTick, values, null);
-        var table = new TabularData(
+        var tableData = new Vista.SDK.Transport.TimeSeries.TabularDataSet(
+            currentTick,
+            values,
+            new List<string>()
+        );
+        var table = new Vista.SDK.Transport.TimeSeries.TabularData(
             channelIds.Count.ToString(),
             channelIds.Count.ToString(),
             channelIds,
@@ -98,12 +122,12 @@ public class Simulator : BackgroundService
             null,
             new Dictionary<string, object>()
         );
-        return new TimeSeriesDataPackage(
+        return new Vista.SDK.Transport.TimeSeries.TimeSeriesDataPackage(
             new Vista.SDK.Transport.TimeSeries.Package(
                 h,
                 new[]
                 {
-                    new TimeSeriesData(
+                    new Vista.SDK.Transport.TimeSeries.TimeSeriesData(
                         null,
                         new[] { table },
                         null,
@@ -166,7 +190,7 @@ public class Simulator : BackgroundService
         }
 
         bool TryGetDataChannelNoiseData(
-            LocalId localId,
+            LocalIdBuilder localId,
             Vista.SDK.Transport.DataChannel.DataChannel dataChannel,
             out (double Low, double High, double NoiseFactor, bool Boolean) data
         )
@@ -245,16 +269,18 @@ public class Simulator : BackgroundService
         }
     }
 
-    async Task Send(TimeSeriesDataPackage timeSeriesData)
+    async Task Send(Vista.SDK.Transport.Json.TimeSeriesData.TimeSeriesDataPackage timeSeriesData)
     {
         _logger.LogInformation("Sending TimeSeriesData");
-        await Task.Delay(1);
+        var json = Serializer.Serialize(timeSeriesData);
+        await _mqttClient.PublishStringAsync("TimeSeriesData", json);
     }
 
     async Task Send(DataChannelListPackage dataChannelList)
     {
         _logger.LogInformation("Sending DataChannelList");
-        await Task.Delay(1);
+        var json = Serializer.Serialize(dataChannelList);
+        await _mqttClient.PublishStringAsync("DataChannelLists", json);
     }
 
     async Task<DataChannelListPackage> GetDataChannelList(CancellationToken stoppingToken)
@@ -286,28 +312,27 @@ public class Simulator : BackgroundService
         Vista.SDK.Transport.DataChannel.DataChannelListPackage dataChannelList
     )
     {
-        return Array.Empty<DataChannelInfo>();
-        //return dataChannelList.Package.DataChannelList.DataChannel
-        //    .Select(
-        //        d =>
-        //            new DataChannelInfo(
-        //                LocalId.TryParse(d.DataChannelId.LocalId, out var localId),
-        //                localId,
-        //                d
-        //            )
-        //    )
-        //    .Where(
-        //        d =>
-        //            d.LocalIdParsed
-        //            && (d.LocalId?.IsValid ?? false)
-        //            && !d.Channel.DataChannelId.LocalId.Contains("~", StringComparison.Ordinal)
-        //    )
-        //    .ToArray();
+        return dataChannelList.Package.DataChannelList.DataChannel
+            .Select(
+                d =>
+                    new DataChannelInfo(
+                        LocalIdBuilder.TryParse(d.DataChannelId.LocalId, out var localId),
+                        localId,
+                        d
+                    )
+            )
+            .Where(
+                d =>
+                    d.LocalIdParsed
+                    && (d.LocalId?.IsValid ?? false)
+                    && !d.Channel.DataChannelId.LocalId.Contains("~", StringComparison.Ordinal)
+            )
+            .ToArray();
     }
 
     private readonly record struct DataChannelInfo(
         bool LocalIdParsed,
-        LocalId? LocalId,
+        LocalIdBuilder? LocalId,
         Vista.SDK.Transport.DataChannel.DataChannel Channel
     );
 }

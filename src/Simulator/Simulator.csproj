@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Worker">
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -7,7 +7,9 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="$(DotNetVersion)" />
     <PackageReference Include="DNV.Vista.SDK" Version="0.0.1-preview-*" />
+    <PackageReference Include="DNV.Vista.SDK.Mqtt" Version="0.0.1-preview-*" />
     <PackageReference Include="DNV.Vista.SDK.System.Text.Json" Version="0.0.1-preview-*" />
+    <PackageReference Include="MQTTnet" Version="4.0.0.167" />
     <PackageReference Include="Serilog.Extensions.Hosting" Version="4.2.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
   </ItemGroup>
