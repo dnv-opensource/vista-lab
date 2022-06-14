@@ -81,8 +81,13 @@ public sealed class DataChannelRepository : IDataChannelRepository
                     {
                         dataChannelId = d.DataChannel.DataChannelID.ShortID,
                         vesselId = dataChannelList.Package.Header.ShipID,
-                        name = d.DataChannel.Property.Name,
-                        dataChannelType = d.DataChannel.Property.DataChannelType.Type,
+                        name = d.DataChannel.Property.Name!.Contains("\'")
+                          ? d.DataChannel.Property.Name.Replace("\'", "")
+                          : d.DataChannel.Property.Name,
+                        dataChannelType = d.DataChannel.Property.DataChannelType.Type.Contains("\'")
+                          ? d.DataChannel.Property.DataChannelType.Type.Replace("\'", "")
+                          : d.DataChannel.Property.DataChannelType.Type,
+                        formatRestrictionDataChannelId = d.DataChannel.DataChannelID.ShortID,
                         formatRestrictionType = d.DataChannel.Property.Format.Type,
                         localIdVisVersion = d.LocalId?.VisVersion.ToString(),
                         localIdPrimaryItem = d.LocalId?.PrimaryItem?.ToString()
