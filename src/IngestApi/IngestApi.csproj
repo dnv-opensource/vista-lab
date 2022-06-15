@@ -10,6 +10,7 @@
     <PackageReference Include="DNV.Vista.SDK" Version="0.0.1-preview-*" />
     <PackageReference Include="DNV.Vista.SDK.Mqtt" Version="0.0.1-preview-*" />
     <PackageReference Include="DNV.Vista.SDK.System.Text.Json" Version="0.0.1-preview-*" />
+    <PackageReference Include="NewId" Version="3.0.3" />
     <PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
   </ItemGroup>
