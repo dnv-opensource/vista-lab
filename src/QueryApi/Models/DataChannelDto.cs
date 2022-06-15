@@ -1,11 +1,11 @@
 namespace VistaLab.QueryApi.Models;
 
-public class DataChannelDto
+public record class DataChannelDto
 {
-    public string? DataChannelId { get; set; }
-    public string? VesselId { get; set; }
-    public string? Name { get; set; }
-    public string? DataChannelType { get; set; }
+    public string DataChannelId { get; set; } = string.Empty;
+    public string VesselId { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public string DataChannelType { get; set; } = string.Empty;
     public double? UpdateCycle { get; set; }
     public double? CalculationPeriod { get; set; }
     public string? FormatType { get; set; }
@@ -28,8 +28,8 @@ public class DataChannelDto
     public int? FormatRestriction_Pattern { get; set; }
     public int? FormatRestriction_TotalDigits { get; set; }
     public string? FormatRestriction_WhiteSpace { get; set; }
-    public string? LocalId_VisVersion { get; set; }
-    public string? LocalId_PrimaryItem { get; set; }
+    public string LocalId_VisVersion { get; set; } = string.Empty;
+    public string LocalId_PrimaryItem { get; set; } = string.Empty;
     public string? LocalId_SecondaryItem { get; set; }
     public string? LocalId_Position { get; set; }
     public string? LocalId_Quantity { get; set; }
