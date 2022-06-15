@@ -1,9 +1,8 @@
 namespace QueryApi.Models;
 
 public sealed record TimeSeriesDto(
-    string TimeSeriesId,
-    string DataChannelId,
-    double? Value,
+    Guid InternalId,
+    string? Value,
     string? Quality,
     string? EventType,
     DateTime Timestamp

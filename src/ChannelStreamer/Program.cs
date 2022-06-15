@@ -77,7 +77,11 @@ public sealed class ChannelStreamer : IHostedService
                     var dataChannelPackage = Serializer.DeserializeDataChannelList(stream)!;
                     _localIdMapping = dataChannelPackage.Package.DataChannelList.DataChannel
                         .Select(dc => dc.DataChannelID)
-                        .Where(dc => !string.IsNullOrEmpty(dc.ShortID) && !_localIdMapping.ContainsKey(dc.ShortID))
+                        .Where(
+                            dc =>
+                                !string.IsNullOrEmpty(dc.ShortID)
+                                && !_localIdMapping.ContainsKey(dc.ShortID)
+                        )
                         .ToDictionary(d => d.ShortID!, d => d.LocalID);
                     break;
                 default:

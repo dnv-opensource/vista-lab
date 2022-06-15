@@ -1,7 +1,9 @@
 namespace VistaLab.QueryApi.Models;
 
 public record DataChannelDto(
-    string DataChannelId,
+    Guid InternalId,
+    string? ShortId,
+    string LocalId,
     string VesselId,
     string Name,
     string DataChannelType,
