@@ -11,7 +11,7 @@ namespace VistaLab.QueryApi.Models
                 Dataset?.Select(
                     ds =>
                         new DataChannelDto(
-                            (Guid)ds[0],
+                            (string)ds[0],
                             (string)ds[1],
                             (string)ds[2],
                             (string)ds[3],
