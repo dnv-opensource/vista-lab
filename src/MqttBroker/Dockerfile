@@ -10,19 +10,15 @@ COPY [".editorconfig", ".editorconfig"]
 COPY ["global.json", "global.json"]
 COPY ["Directory.Build.props", "Directory.Build.props"]
 
-COPY ["src/Common/Common.csproj", "src/Common/"]
-COPY ["src/IngestApi/IngestApi.csproj", "src/IngestApi/"]
+COPY ["src/MqttBroker/MqttBroker.csproj", "src/MqttBroker/"]
 
-RUN dotnet restore "src/IngestApi/"
+RUN dotnet restore "src/MqttBroker/"
 COPY . .
-WORKDIR "src/IngestApi/"
+WORKDIR "src/MqttBroker/"
 RUN dotnet build -c Release
 RUN dotnet publish -c Release -o /app/publish --no-restore --no-build
 
-FROM mcr.microsoft.com/dotnet/aspnet:6.0
-ENV ASPNETCORE_URLS=http://+:5051
-
+FROM mcr.microsoft.com/dotnet/runtime:6.0
 WORKDIR /app
-EXPOSE 5051
 COPY --from=build /app/publish ./
-ENTRYPOINT ["dotnet", "IngestApi.dll"]
+ENTRYPOINT ["dotnet", "MqttBroker.dll"]

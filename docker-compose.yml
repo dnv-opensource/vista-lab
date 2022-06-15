@@ -2,23 +2,28 @@ version: "3"
 
 services:
     simulator:
+        depends_on:
+            - ingest-api
+            - broker
         container_name: vista-lab-simulator
         restart: unless-stopped
         build:
             context: .
             dockerfile: src/Simulator/Dockerfile
         environment:
-            INGEST_API_HOST: "ingest-api:5050"
+            BROKER_SERVER: "vista-lab-broker"
     ingest-api:
+        depends_on:
+            - broker
         container_name: vista-lab-ingestapi
         restart: unless-stopped
         ports:
-            - "5050:5050"
             - "5051:5051"
         build:
             context: .
             dockerfile: src/IngestApi/Dockerfile
         environment:
+            BROKER_SERVER: "vista-lab-broker"
             DB_HOST: "vista-lab-db:9000"
     query-api:
         container_name: vista-lab-queryapi
@@ -30,6 +35,16 @@ services:
             dockerfile: src/QueryApi/Dockerfile
         environment:
             DB_HOST: "vista-lab-db:9000"
+    broker:
+        depends_on:
+            - questdb
+        container_name: vista-lab-broker
+        restart: unless-stopped
+        ports:
+            - "5050:5050"
+        build:
+            context: .
+            dockerfile: src/MqttBroker/Dockerfile
     questdb:
         image: questdb/questdb
         container_name: vista-lab-db
