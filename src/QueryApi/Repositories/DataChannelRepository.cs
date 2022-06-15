@@ -1,9 +1,11 @@
 using Common;
+using QueryApi.Models;
 using Vista.SDK.Transport.DataChannel;
+using VistaLab.QueryApi.Models;
 
-namespace QueryApi.Repositories;
+namespace VistaLab.QueryApi.Repository;
 
-public sealed class DataChannelRepository
+public sealed class DataChannelRepository : IDataChannelRepository
 {
     private readonly ILogger<DataChannel> _logger;
     private readonly IDbClient _client;
@@ -14,8 +16,12 @@ public sealed class DataChannelRepository
         _logger = logger;
     }
 
-    public ValueTask<T> Query<T>(CancellationToken cancellationToken)
+    public async Task<IEnumerable<DataChannelDto>?> Get(DataChannelFilter filter)
     {
-        throw new NotImplementedException();
+        var response = await _client.ExecuteAsync<DataChannelResponse>(
+            SQLHelper.MountSQL(filter),
+            new CancellationToken()
+        );
+        return response?.DataChannels;
     }
 }

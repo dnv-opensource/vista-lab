@@ -5,24 +5,23 @@
     "version": "1.0"
   },
   "paths": {
-    "/Query": {
-      "get": {
+    "/DataChannel": {
+      "post": {
         "tags": [
-          "Query"
+          "DataChannel"
         ],
-        "summary": "Creates a vessel for the current user.",
-        "operationId": "QueryQuery",
-        "parameters": [
-          {
-            "name": "vessel",
-            "in": "query",
-            "description": "",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
+        "summary": "Search for data channels based in the given filters",
+        "operationId": "DataChannelPost",
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DataChannelFilter"
+              }
             }
           }
-        ],
+        },
         "responses": {
           "200": {
             "description": "Success"
@@ -31,5 +30,35 @@
       }
     }
   },
-  "components": { }
+  "components": {
+    "schemas": {
+      "DataChannelFilter": {
+        "type": "object",
+        "properties": {
+          "primaryItem": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "secondaryItem": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "meta": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
 }

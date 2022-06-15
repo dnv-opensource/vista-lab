@@ -1,6 +1,6 @@
-namespace QueryApi.Models;
+namespace VistaLab.QueryApi.Models;
 
-public sealed record DataChannelDto(
+public record DataChannelDto(
     string DataChannelId,
     string VesselId,
     string Name,
@@ -14,18 +14,7 @@ public sealed record DataChannelDto(
     string? QuantityName,
     string? QualityCoding,
     string? Remarks,
-    string LocalId_VisVersion,
-    string LocalId_PrimaryItem,
-    string? LocalId_SecondaryItem,
-    string? LocalId_Position,
-    string? LocalId_Quantity,
-    string? LocalId_Calculation,
-    string? LocalId_State,
-    string? LocalId_Content,
-    string? LocalId_Command,
-    string? LocalId_Type,
-    string? LocalId_Detail,
-    string FormatRestriction_Type,
+    string? FormatRestriction_Type,
     string? FormatRestriction_Enumeration,
     string? FormatRestriction_FractionDigits,
     int? FormatRestriction_Length,
@@ -38,5 +27,16 @@ public sealed record DataChannelDto(
     int? FormatRestriction_Pattern,
     int? FormatRestriction_TotalDigits,
     string? FormatRestriction_WhiteSpace,
+    string LocalId_VisVersion,
+    string LocalId_PrimaryItem,
+    string? LocalId_SecondaryItem,
+    string? LocalId_Position,
+    string? LocalId_Quantity,
+    string? LocalId_Calculation,
+    string? LocalId_State,
+    string? LocalId_Content,
+    string? LocalId_Command,
+    string? LocalId_Type,
+    string? LocalId_Detail,
     DateTime Timestamp
 );

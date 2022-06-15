@@ -1,5 +1,6 @@
+using Newtonsoft.Json;
 using System.Net;
-using System.Text.Json;
+
 using System.Web;
 
 namespace Common;
@@ -42,7 +43,9 @@ public sealed class DbClient : IDbClient
             );
         }
 
-        var json = await JsonSerializer.DeserializeAsync<T>(result.Content.ReadAsStream());
+        var json = JsonConvert.DeserializeObject<T>(
+            await result.Content.ReadAsStringAsync(cancellationToken)
+        );
 
         return json;
     }
