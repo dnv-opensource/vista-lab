@@ -1,7 +1,6 @@
 using Common;
 using IngestApi;
 using IngestApi.Repositories;
-using MQTTnet.Server;
 using Serilog;
 using Vista.SDK;
 
@@ -11,9 +10,6 @@ builder.Host.UseSerilog((context, logging) => logging.WriteTo.Console());
 builder.Services.AddSingleton<DataChannelRepository>();
 builder.Services.AddVIS();
 builder.Services.AddHttpClient<IDbClient, DbClient>();
-
-//builder.Services.AddSingleton<Streamer>();
-//builder.Services.AddSingleton<FailureLogger>();
 
 if (!builder.Environment.IsEnvironment("OpenApi"))
 {

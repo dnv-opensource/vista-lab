@@ -18,6 +18,8 @@ await host.RunAsync();
 
 public class Simulator : IHostedService
 {
+    const string clientId = "simulator-client";
+
     private readonly ILogger<Simulator> _logger;
     private readonly MqttClientOptions _mqttOptions;
     private readonly MqttFactory _mqttFactory;
@@ -31,7 +33,7 @@ public class Simulator : IHostedService
 
         _mqttOptions = new MqttClientOptionsBuilder()
             .WithTcpServer($"{ingestHost}", 5050)
-            .WithClientId("simulator")
+            .WithClientId(clientId)
             .Build();
         _mqttFactory = new MqttFactory();
         _mqttClient = _mqttFactory.CreateMqttClient();
@@ -334,7 +336,7 @@ public class Simulator : IHostedService
     {
         _mqttClient.DisconnectedAsync += args =>
         {
-            _logger.LogInformation("Simulator - disconnected");
+            _logger.LogInformation("{clientId} - disconnected", clientId);
             return Task.CompletedTask;
         };
 

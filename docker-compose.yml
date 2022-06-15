@@ -1,17 +1,7 @@
 version: "3"
 
 services:
-    simulator:
-        depends_on:
-            - ingest-api
-            - broker
-        container_name: vista-lab-simulator
-        restart: unless-stopped
-        build:
-            context: .
-            dockerfile: src/Simulator/Dockerfile
-        environment:
-            BROKER_SERVER: "vista-lab-broker"
+    # APIs
     ingest-api:
         depends_on:
             - broker
@@ -35,6 +25,38 @@ services:
             dockerfile: src/QueryApi/Dockerfile
         environment:
             DB_HOST: "vista-lab-db:9000"
+    # MQTT Services
+    alert-manager:
+        depends_on:
+            - broker
+        container_name: vista-lab-alert-manager
+        restart: unless-stopped
+        build:
+            context: .
+            dockerfile: src/AlertManager/Dockerfile
+        environment:
+            BROKER_SERVER: "vista-lab-broker"
+    channel-streamer:
+        depends_on:
+            - broker
+        container_name: vista-lab-channel-streamer
+        restart: unless-stopped
+        build:
+            context: .
+            dockerfile: src/ChannelStreamer/Dockerfile
+        environment:
+            BROKER_SERVER: "vista-lab-broker"
+    simulator:
+        depends_on:
+            - ingest-api
+            - broker
+        container_name: vista-lab-simulator
+        restart: unless-stopped
+        build:
+            context: .
+            dockerfile: src/Simulator/Dockerfile
+        environment:
+            BROKER_SERVER: "vista-lab-broker"
     broker:
         depends_on:
             - questdb
@@ -45,6 +67,7 @@ services:
         build:
             context: .
             dockerfile: src/MqttBroker/Dockerfile
+    # Database
     questdb:
         image: questdb/questdb
         container_name: vista-lab-db
