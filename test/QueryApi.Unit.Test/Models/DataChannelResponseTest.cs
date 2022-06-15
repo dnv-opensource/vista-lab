@@ -21,7 +21,7 @@ namespace VistaLab.QueryApi.Unit.Test.Models
 
             //Assert
             Assert.NotNull(dataChannels);
-            Assert.Equal(TOTAL_OF_DATA_CHANNELS, dataChannels?.Count);
+            Assert.Equal(TOTAL_OF_DATA_CHANNELS, dataChannels?.Count());
         }
     }
 }
