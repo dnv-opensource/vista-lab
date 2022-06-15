@@ -1,34 +1,35 @@
-using IngestApi.Repositories;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Packets;
-using Vista.SDK.Transport.Json;
+using Serilog;
 
-namespace IngestApi;
+IHost host = Host.CreateDefaultBuilder(args)
+    .UseSerilog((context, logging) => logging.WriteTo.Console())
+    .ConfigureServices(services => services.AddHostedService<AlertManager>())
+    .Build();
 
-public class MqttSubscriberClient : IHostedService
+await host.RunAsync();
+
+public class AlertManager : IHostedService
 {
-    const string clientId = "subscriber-client";
+    const string clientId = "alert-manager-client";
 
-    private readonly ILogger<MqttSubscriberClient> _logger;
+    private readonly ILogger<AlertManager> _logger;
     private readonly MqttClientOptions _mqttOptions;
     private readonly MqttFactory _mqttFactory;
     private readonly IMqttClient _mqttClient;
-    private readonly DataChannelRepository _dataChannelRepository;
 
     private readonly string[] _subscriptionTopics = new string[]
     {
-        "DataChannelLists",
-        "TimeSeriesData"
+        "dnv-v2/vis-3-4a/+/+/+/+/+/state-sensor.failure/#"
     };
 
-    public MqttSubscriberClient(
-        ILogger<MqttSubscriberClient> logger,
-        DataChannelRepository dataChannelRepository
-    )
+    public AlertManager(ILogger<AlertManager> logger)
     {
         _logger = logger;
-        _dataChannelRepository = dataChannelRepository;
 
         var ingestHost = Environment.GetEnvironmentVariable("BROKER_SERVER") ?? "localhost";
 
@@ -40,18 +41,18 @@ public class MqttSubscriberClient : IHostedService
         _mqttClient = _mqttFactory.CreateMqttClient();
     }
 
-    public async Task StartAsync(CancellationToken stoppingToken)
+    public async Task StartAsync(CancellationToken cancellationToken)
     {
-        await _mqttClient.ConnectAsync(_mqttOptions, stoppingToken);
+        await _mqttClient.ConnectAsync(_mqttOptions, cancellationToken);
         _logger.LogInformation("{clientId} - Connected to broker", clientId);
-        await _mqttClient.PingAsync(stoppingToken);
+        await _mqttClient.PingAsync(cancellationToken);
         _logger.LogInformation("{clientId} - Pinged broker successfully", clientId);
 
         foreach (var subscriptionTopic in _subscriptionTopics)
         {
             await _mqttClient.SubscribeAsync(
                 new MqttTopicFilter() { Topic = subscriptionTopic },
-                stoppingToken
+                cancellationToken
             );
         }
 
@@ -64,20 +65,7 @@ public class MqttSubscriberClient : IHostedService
                 args.ApplicationMessage.Topic
             );
 
-            var message = args.ApplicationMessage;
-            using var stream = new MemoryStream(message.Payload);
-
-            switch (message.Topic)
-            {
-                case "DataChannelLists":
-                    var dataChannelList = Serializer.DeserializeDataChannelList(stream);
-                    await _dataChannelRepository.InsertDataChannel(dataChannelList!, stoppingToken);
-                    break;
-                case "TimeSeriesData":
-                    var timeSeriesData = Serializer.DeserializeTimeSeriesData(stream);
-                    //await _dataChannelRepository.InsertTimeSeriesData(timeSeriesData!, stoppingToken);
-                    break;
-            }
+            await Task.Yield();
         };
     }
 
