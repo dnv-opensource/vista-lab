@@ -26,18 +26,14 @@ public sealed class ChannelStreamer : IHostedService
     private readonly MqttFactory _mqttFactory;
     private readonly IMqttClient _mqttClient;
 
-    private readonly string[] _subscriptionTopics = new string[]
-    {
-        "DataChannelLists",
-        "TimeSeriesData"
-    };
-
     private Dictionary<string, string> _localIdMapping;
+
+    private readonly string[] _subscriptionTopics = new string[] { "DataChannelLists", "IMO/#" };
 
     public ChannelStreamer(ILogger<ChannelStreamer> logger)
     {
         _logger = logger;
-        _localIdMapping = new Dictionary<string, string>();
+        _localIdMapping = new();
 
         var ingestHost = Environment.GetEnvironmentVariable("BROKER_SERVER") ?? "localhost";
 
@@ -75,36 +71,60 @@ public sealed class ChannelStreamer : IHostedService
 
             var message = args.ApplicationMessage;
             using var stream = new MemoryStream(message.Payload);
-            var package = Serializer.DeserializeTimeSeriesData(stream)!;
-
-            foreach (var timeSeries in package.Package.TimeSeriesData)
+            switch (message.Topic)
             {
-                foreach (var table in timeSeries.TabularData!)
-                {
-                    var size = int.Parse(table.NumberOfDataChannel!);
-                    var data = table.DataSet![0];
-                    for (int i = 0; i < size; i++)
+                case "DataChannelLists":
+                    var dataChannelPackage = Serializer.DeserializeDataChannelList(stream)!;
+                    _localIdMapping = dataChannelPackage.Package.DataChannelList.DataChannel
+                        .Select(dc => dc.DataChannelID)
+                        .Where(dc => !string.IsNullOrEmpty(dc.ShortID) && !_localIdMapping.ContainsKey(dc.ShortID))
+                        .ToDictionary(d => d.ShortID!, d => d.LocalID);
+                    break;
+                default:
+
+                    var package = Serializer.DeserializeTimeSeriesData(stream)!;
+
+                    foreach (var timeSeries in package.Package.TimeSeriesData)
                     {
-                        var dataChannel = table.DataChannelID![i];
-
-                        if (!_localIdMapping.TryGetValue(dataChannel, out var localIdStr))
-                            continue;
-
-                        var localId = LocalIdBuilder.Parse(localIdStr).BuildMqtt();
-                        var publishMessage = new MqttApplicationMessage()
+                        foreach (var table in timeSeries.TabularData!)
                         {
-                            Payload = Encoding.UTF8.GetBytes(Serializer.Serialize(package)),
-                            Topic = localId.ToString(),
-                        };
+                            var size = int.Parse(table.NumberOfDataChannel!);
+                            var data = table.DataSet![0];
+                            for (int i = 0; i < size; i++)
+                            {
+                                var dataChannel = table.DataChannelID![i];
 
-                        _logger.LogInformation(
-                            "{clientId} - ready to publish on {topic}",
-                            clientId,
-                            publishMessage.Topic
-                        );
-                        await _mqttClient.PublishAsync(publishMessage);
+                                var localIdStr = IsLocalIdPreamble(dataChannel)
+                                  ? dataChannel
+                                  : _localIdMapping.TryGetValue(dataChannel, out var localIdValue)
+                                      ? localIdValue
+                                      : "";
+
+                                if (string.IsNullOrWhiteSpace(localIdStr))
+                                    continue;
+
+                                var localId = LocalIdBuilder.Parse(localIdStr).BuildMqtt();
+                                var publishMessage = new MqttApplicationMessage()
+                                {
+                                    Payload = Encoding.UTF8.GetBytes(Serializer.Serialize(package)),
+                                    Topic = localId.ToString(),
+                                };
+
+                                _logger.LogInformation(
+                                    "{clientId} - ready to publish on {topic}",
+                                    clientId,
+                                    publishMessage.Topic
+                                );
+                                await _mqttClient.PublishAsync(publishMessage);
+                            }
+                        }
                     }
-                }
+                    break;
+            }
+
+            bool IsLocalIdPreamble(string dataChannel)
+            {
+                return dataChannel.StartsWith("/dnv-v2/");
             }
         };
     }

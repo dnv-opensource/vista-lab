@@ -275,7 +275,11 @@ public class Simulator : IHostedService
     {
         _logger.LogInformation("Sending TimeSeriesData");
         var json = Serializer.Serialize(timeSeriesData);
-        await _mqttClient.PublishStringAsync("TimeSeriesData", json);
+        var imoNumber = timeSeriesData.Package.Header?.ShipID.Split("IMO")[1];
+        if (string.IsNullOrWhiteSpace(imoNumber))
+            return;
+
+        await _mqttClient.PublishStringAsync("IMO/" + imoNumber!, json);
     }
 
     async Task Send(DataChannelListPackage dataChannelList)

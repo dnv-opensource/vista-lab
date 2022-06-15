@@ -16,11 +16,7 @@ public class MqttSubscriberClient : IHostedService
     private readonly IMqttClient _mqttClient;
     private readonly DataChannelRepository _dataChannelRepository;
 
-    private readonly string[] _subscriptionTopics = new string[]
-    {
-        "DataChannelLists",
-        "TimeSeriesData"
-    };
+    private readonly string[] _subscriptionTopics = new string[] { "DataChannelLists", "IMO/#" };
 
     public MqttSubscriberClient(
         ILogger<MqttSubscriberClient> logger,
@@ -70,10 +66,12 @@ public class MqttSubscriberClient : IHostedService
             switch (message.Topic)
             {
                 case "DataChannelLists":
-                    var dataChannelList = Serializer.DeserializeDataChannelList(stream);
-                    await _dataChannelRepository.InsertDataChannel(dataChannelList!, stoppingToken);
+                    var dataChannelList = Serializer.DeserializeDataChannelList(stream)!;
+                    await _dataChannelRepository.InsertDataChannel(dataChannelList, stoppingToken);
                     break;
-                case "TimeSeriesData":
+                default:
+                    if (!message.Topic.StartsWith("IMO/"))
+                        break;
                     var timeSeriesData = Serializer.DeserializeTimeSeriesData(stream);
                     //await _dataChannelRepository.InsertTimeSeriesData(timeSeriesData!, stoppingToken);
                     break;
