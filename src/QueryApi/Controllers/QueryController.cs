@@ -19,7 +19,7 @@ public sealed class DataChannelController : ApiControllerBase<DataChannelControl
     /// Search for data channels based in the given filters
     /// </summary>
     /// <param name="filter"></param>
-    [HttpPost]
+    [HttpPost(Name = "SearchDataChannelByFilter")]
     public async Task<ActionResult> Post(DataChannelFilter filter)
     {
         var result = await dataChannelRepository.Get(filter);
