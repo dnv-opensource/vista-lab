@@ -73,7 +73,10 @@ public class MqttSubscriberClient : IHostedService
                     if (!message.Topic.StartsWith("IMO/"))
                         break;
                     var timeSeriesData = Serializer.DeserializeTimeSeriesData(stream);
-                    await _dataChannelRepository.InsertTimeSeriesData(timeSeriesData!, stoppingToken);
+                    await _dataChannelRepository.InsertTimeSeriesData(
+                        timeSeriesData!,
+                        stoppingToken
+                    );
                     break;
             }
         };

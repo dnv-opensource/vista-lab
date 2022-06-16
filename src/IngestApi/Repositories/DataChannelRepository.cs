@@ -12,6 +12,7 @@ public sealed class DataChannelRepository : IDataChannelRepository
 {
     private readonly ILogger<DataChannel> _logger;
     private readonly IDbClient _dbClient;
+    private readonly Dictionary<Guid, string> _internalIdMapping = new();
 
     public DataChannelRepository(IDbClient client, ILogger<DataChannel> logger)
     {
@@ -58,7 +59,8 @@ public sealed class DataChannelRepository : IDataChannelRepository
                     new DataChannelInfo(
                         LocalIdBuilder.TryParse(d.DataChannelID.LocalID, out var localId),
                         localId,
-                        d
+                        d,
+                        NewId.NextGuid()
                     )
             )
             .Where(
@@ -74,7 +76,7 @@ public sealed class DataChannelRepository : IDataChannelRepository
                 d =>
                     new
                     {
-                        internalId = NewId.NextGuid(),
+                        internalId = d.InternalId,
                         shortId = d.DataChannel.DataChannelID.ShortID?.ToString(),
                         localId = d.LocalId?.ToString(),
                         vesselId = dataChannelList.Package.Header.ShipID,
@@ -86,7 +88,8 @@ public sealed class DataChannelRepository : IDataChannelRepository
                           : d.DataChannel.Property.DataChannelType.Type,
                         formatRestrictionType = d.DataChannel.Property.Format.Type,
                         localIdVisVersion = d.LocalId?.VisVersion.ToString(),
-                        localIdPrimaryItem = d.LocalId?.PrimaryItem?.ToString()
+                        localIdPrimaryItem = d.LocalId?.PrimaryItem?.ToString(),
+                        timestamp = dataChannelList.Package.Header.DataChannelListID.TimeStamp
                     }
             )
             .ToArray();
@@ -103,6 +106,7 @@ public sealed class DataChannelRepository : IDataChannelRepository
 
             foreach (var param in dataChannelParam)
             {
+                _internalIdMapping.Add(param.internalId, param.localId!);
                 sender
                     .Table("DataChannel")
                     .Symbol("VesselId", param.vesselId)
@@ -114,7 +118,7 @@ public sealed class DataChannelRepository : IDataChannelRepository
                     .Column("FormatRestriction_Type", param.formatRestrictionType)
                     .Column("LocalId_VisVersion", param.localIdVisVersion)
                     .Column("LocalId_PrimaryItem", param.localIdVisVersion)
-                    .AtNow();
+                    .At(param.timestamp.DateTime);
             }
             await sender.SendAsync(cancellationToken);
 
@@ -130,7 +134,8 @@ public sealed class DataChannelRepository : IDataChannelRepository
     private readonly record struct DataChannelInfo(
         bool LocalIdParsed,
         LocalIdBuilder? LocalId,
-        DataChannel DataChannel
+        DataChannel DataChannel,
+        Guid InternalId
     );
 
     public async ValueTask InsertTimeSeriesData(
@@ -138,62 +143,49 @@ public sealed class DataChannelRepository : IDataChannelRepository
         CancellationToken cancellationToken
     )
     {
-        await Task.Yield();
-        //    foreach (var timeSeries in timeSeriesData.Package.TimeSeriesData)
-        //    {
-        //        foreach (var table in timeSeries.TabularData!)
-        //        {
-        //            var size = int.Parse(table.NumberOfDataSet!);
-        //            var dataChannelId = table.DataChannelID;
+        try
+        {
+            _logger.LogInformation("Inserting data into TimeSeries");
+            using var sender = await LineTcpSender.ConnectAsync(
+                "localhost",
+                9009,
+                tlsMode: TlsMode.Disable,
+                cancellationToken: cancellationToken
+            );
 
-        //            foreach (var dataset in table.DataSet!)
-        //            {
-        //                var timestamp = dataset.TimeStamp;
-        //                var value = dataset.Value;
-        //                var quality = dataset.Quality;
-        //            }
-        //        }
-        //    }
+            foreach (var timeSeries in timeSeriesData.Package.TimeSeriesData)
+            {
+                foreach (var table in timeSeries.TabularData!)
+                {
+                    var dataChannelSize = table.DataChannelID?.Count;
+                    var dataSetSize = table.DataSet!.Count;
 
-        //    var timeSeriesParam = timeSeriesData.Package.TimeSeriesData
-        //        .Select(
-        //            t =>
-        //                new
-        //                {
-        //                    timeSeriesId = t.DataConfiguration?.ID,
-        //                    dataChannelId = t.TabularData?.Select(tt => tt.DataChannelID).ToString(),
-        //                    value = t.TabularData
-        //                        ?.Select(tt => tt.DataSet?.Select(ttd => ttd.Value))
-        //                        .ToString(),
-        //                    quality = t.TabularData
-        //                        ?.Select(tt => tt.DataSet?.Select(ttd => ttd.Quality))
-        //                        .ToString(),
-        //                    timestamp = t.TabularData?.Select(
-        //                        tt => tt.DataSet?.Select(ttd => ttd.TimeStamp)
-        //                    ),
-        //                }
-        //        )
-        //        .ToArray();
-
-        //    try
-        //    {
-        //        _logger.LogInformation("Inserting data into TimeSeries");
-        //        foreach (var param in timeSeriesParam)
-        //        {
-        //            var query =
-        //                $@"
-        //                    INSERT INTO TimeSeries (TimeSeriesId, DataChannelId, Value, Quality, Timestamp)
-        //                    VALUES ('{param.timeSeriesId}', '{param.dataChannelId}', '{param.value}', '{param.quality}', '{param.timestamp}')
-        //                    ";
-
-        //            await _dbClient.ExecuteAsync(query, cancellationToken);
-        //        }
-        //        _logger.LogInformation("Finished inserting data into TimeSeries");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, "Failed to insert data into TimeSeries");
-        //        throw;
-        //    }
+                    for (int i = 0; i < dataSetSize; i++)
+                    {
+                        var data = table.DataSet![0]; // change index to i later, simulator has wrong number
+                        for (int j = 0; j < data.Value.Count; j++)
+                        {
+                            var dataChannel = table.DataChannelID![j];
+                            sender
+                                .Table("TimeSeries")
+                                .Column("DataChannelId", dataChannel)
+                                .Column("Value", j < data.Value.Count ? data.Value[j] : null)
+                                .Column(
+                                    "Quality",
+                                    j < data.Quality?.Count ? data.Quality?[j] : null
+                                )
+                                .At(data.TimeStamp.DateTime);
+                        }
+                    }
+                }
+            }
+            await sender.SendAsync(cancellationToken);
+            _logger.LogInformation("Finished inserting data into TimeSeries");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to insert data into TimeSeries");
+            throw;
+        }
     }
 }

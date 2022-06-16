@@ -58,11 +58,12 @@ public sealed class DbInitTables
         ";
     }
 
+    // InternalId SYMBOL capacity 8388608 nocache index capacity 8388608 NOT NULL
     public static readonly string TimeSeries =
         @"
         CREATE TABLE IF NOT EXISTS TimeSeries
         (
-            InternalId SYMBOL capacity 8388608 nocache index capacity 8388608 NOT NULL,
+            DataChannelId STRING NOT NULL,
             Value STRING,
             Quality STRING,
             Timestamp TIMESTAMP NOT NULL
