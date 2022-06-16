@@ -15,6 +15,7 @@ services:
         environment:
             BROKER_SERVER: "vista-lab-broker"
             DB_HOST: "vista-lab-db:9000"
+            ILP_HOST: "vista-lab-db"
     query-api:
         container_name: vista-lab-queryapi
         restart: unless-stopped

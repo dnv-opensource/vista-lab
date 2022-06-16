@@ -12,10 +12,12 @@ public sealed class DataChannelRepository : IDataChannelRepository
 {
     private readonly ILogger<DataChannel> _logger;
     private readonly IDbClient _dbClient;
+    private readonly QuestDbInsertClient _qdbClient;
     private readonly Dictionary<Guid, string> _internalIdMapping = new();
 
-    public DataChannelRepository(IDbClient client, ILogger<DataChannel> logger)
+    public DataChannelRepository(IDbClient client, QuestDbInsertClient qdbClient, ILogger<DataChannel> logger)
     {
+        _qdbClient = qdbClient;
         _dbClient = client;
         _logger = logger;
     }
@@ -97,17 +99,13 @@ public sealed class DataChannelRepository : IDataChannelRepository
         try
         {
             _logger.LogInformation("Inserting data into DataChannel");
-            using var sender = await LineTcpSender.ConnectAsync(
-                "localhost",
-                9009,
-                tlsMode: TlsMode.Disable,
-                cancellationToken: cancellationToken
-            );
+            await _qdbClient.ConnectAsync(cancellationToken);
+            var client = _qdbClient.Client!;
 
             foreach (var param in dataChannelParam)
             {
                 _internalIdMapping.Add(param.internalId, param.localId!);
-                sender
+                client
                     .Table("DataChannel")
                     .Symbol("VesselId", param.vesselId)
                     .Column("InternalId", param.internalId.ToString())
@@ -120,7 +118,7 @@ public sealed class DataChannelRepository : IDataChannelRepository
                     .Column("LocalId_PrimaryItem", param.localIdVisVersion)
                     .At(param.timestamp.DateTime);
             }
-            await sender.SendAsync(cancellationToken);
+            await client.SendAsync(cancellationToken);
 
             _logger.LogInformation("Finished inserting data into DataChannel");
         }
@@ -146,12 +144,8 @@ public sealed class DataChannelRepository : IDataChannelRepository
         try
         {
             _logger.LogInformation("Inserting data into TimeSeries");
-            using var sender = await LineTcpSender.ConnectAsync(
-                "localhost",
-                9009,
-                tlsMode: TlsMode.Disable,
-                cancellationToken: cancellationToken
-            );
+            await _qdbClient.ConnectAsync(cancellationToken);
+            var client = _qdbClient.Client!;
 
             foreach (var timeSeries in timeSeriesData.Package.TimeSeriesData)
             {
@@ -166,7 +160,7 @@ public sealed class DataChannelRepository : IDataChannelRepository
                         for (int j = 0; j < data.Value.Count; j++)
                         {
                             var dataChannel = table.DataChannelID![j];
-                            sender
+                            client
                                 .Table("TimeSeries")
                                 .Column("DataChannelId", dataChannel)
                                 .Column("Value", j < data.Value.Count ? data.Value[j] : null)
@@ -179,7 +173,7 @@ public sealed class DataChannelRepository : IDataChannelRepository
                     }
                 }
             }
-            await sender.SendAsync(cancellationToken);
+            await client.SendAsync(cancellationToken);
             _logger.LogInformation("Finished inserting data into TimeSeries");
         }
         catch (Exception ex)

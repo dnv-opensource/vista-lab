@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((context, logging) => logging.WriteTo.Console());
 builder.Services.AddSingleton<DataChannelRepository>();
+builder.Services.AddSingleton<QuestDbInsertClient>();
 builder.Services.AddVIS();
 builder.Services.AddHttpClient<IDbClient, DbClient>();
 
