@@ -15,7 +15,11 @@ public sealed class DataChannelRepository : IDataChannelRepository
     private readonly QuestDbInsertClient _qdbClient;
     private readonly Dictionary<Guid, string> _internalIdMapping = new();
 
-    public DataChannelRepository(IDbClient client, QuestDbInsertClient qdbClient, ILogger<DataChannel> logger)
+    public DataChannelRepository(
+        IDbClient client,
+        QuestDbInsertClient qdbClient,
+        ILogger<DataChannel> logger
+    )
     {
         _qdbClient = qdbClient;
         _dbClient = client;
@@ -99,7 +103,7 @@ public sealed class DataChannelRepository : IDataChannelRepository
         try
         {
             _logger.LogInformation("Inserting data into DataChannel");
-            await _qdbClient.ConnectAsync(cancellationToken);
+            await _qdbClient.EnsureConnectedAsync(cancellationToken);
             var client = _qdbClient.Client!;
 
             foreach (var param in dataChannelParam)
@@ -144,7 +148,7 @@ public sealed class DataChannelRepository : IDataChannelRepository
         try
         {
             _logger.LogInformation("Inserting data into TimeSeries");
-            await _qdbClient.ConnectAsync(cancellationToken);
+            await _qdbClient.EnsureConnectedAsync(cancellationToken);
             var client = _qdbClient.Client!;
 
             foreach (var timeSeries in timeSeriesData.Package.TimeSeriesData)

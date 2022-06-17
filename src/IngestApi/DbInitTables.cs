@@ -63,7 +63,7 @@ public sealed class DbInitTables
         @"
         CREATE TABLE IF NOT EXISTS TimeSeries
         (
-            DataChannelId SYMBOL capacity 8388608 nocache index capacity 8388608 NOT NULL,
+            DataChannelId STRING NOT NULL,
             Value STRING,
             Quality STRING,
             Timestamp TIMESTAMP NOT NULL

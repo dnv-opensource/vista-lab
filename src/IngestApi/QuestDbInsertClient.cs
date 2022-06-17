@@ -16,14 +16,22 @@ public class QuestDbInsertClient
         _clientAddress = Environment.GetEnvironmentVariable("ILP_HOST") ?? "localhost";
     }
 
-    public async Task ConnectAsync(CancellationToken stoppingToken)
+    public async Task EnsureConnectedAsync(CancellationToken stoppingToken)
     {
-        _client = await LineTcpSender.ConnectAsync(
-            _clientAddress,
-            9009,
-            tlsMode: TlsMode.Disable,
-            cancellationToken: stoppingToken
-        );
-        _logger.LogInformation("Connected ILP Database");
+        if (Client is null || (Client is not null && !Client.IsConnected))
+        {
+            _client = await LineTcpSender.ConnectAsync(
+                _clientAddress,
+                9009,
+                tlsMode: TlsMode.Disable,
+                cancellationToken: stoppingToken
+            );
+            _logger.LogInformation("Connected ILP Database");
+        }
+        else
+        {
+            
+            await Task.CompletedTask;
+        }
     }
 }
