@@ -70,4 +70,15 @@ public sealed class DbInitTables
         ) timestamp(Timestamp)
         PARTITION BY DAY;
     ";
+
+    public static readonly string DataChannel_InternalId =
+        @"
+        CREATE TABLE IF NOT EXISTS DataChannel_InternalId
+        (
+            DataChannelId STRING NOT NULL,
+            InternalId STRING NOT NULL
+            Timestamp TIMESTAMP NOT NULL
+        ) timestamp(Timestamp)
+        PARTITION BY YEAR;
+    ";
 }

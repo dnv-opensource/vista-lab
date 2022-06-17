@@ -30,7 +30,6 @@ public class QuestDbInsertClient
         }
         else
         {
-            
             await Task.CompletedTask;
         }
     }

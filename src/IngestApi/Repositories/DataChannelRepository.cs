@@ -32,6 +32,7 @@ public sealed class DataChannelRepository : IDataChannelRepository
             $@"
             {DbInitTables.DataChannel}
             {DbInitTables.TimeSeries}
+            {DbInitTables.DataChannel_InternalId}
         ";
 
         try
