@@ -66,14 +66,17 @@ namespace VistaLab.QueryApi.Unit.Test.Controllers
             var filter = new DataChannelFilter();
 
             mockRepository
-                .Setup(x => x.Get(It.IsAny<DataChannelFilter>()))
+                .Setup(x => x.GetDataChannel(It.IsAny<DataChannelFilter>(), CancellationToken.None))
                 .ReturnsAsync(new List<DataChannelDto>());
 
             //Act
-            await controller.Post(filter);
+            await controller.Post(filter, CancellationToken.None);
 
             //Assert
-            mockRepository.Verify(x => x.Get(It.IsAny<DataChannelFilter>()), Times.Once);
+            mockRepository.Verify(
+                x => x.GetDataChannel(It.IsAny<DataChannelFilter>(), CancellationToken.None),
+                Times.Once
+            );
         }
     }
 }

@@ -5,7 +5,7 @@
     "version": "1.0"
   },
   "paths": {
-    "/DataChannel": {
+    "/api/data-channel": {
       "post": {
         "tags": [
           "DataChannel"
@@ -22,6 +22,32 @@
             }
           }
         },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/data-channel/{id}/time-series": {
+      "get": {
+        "tags": [
+          "DataChannel"
+        ],
+        "summary": "Search for time series given a data channel internalId",
+        "operationId": "DataChannelGet",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Success"

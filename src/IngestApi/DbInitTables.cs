@@ -76,7 +76,7 @@ public sealed class DbInitTables
         CREATE TABLE IF NOT EXISTS DataChannel_InternalId
         (
             DataChannelId STRING NOT NULL,
-            InternalId STRING NOT NULL
+            InternalId STRING NOT NULL,
             Timestamp TIMESTAMP NOT NULL
         ) timestamp(Timestamp)
         PARTITION BY YEAR;

@@ -13,7 +13,8 @@ public sealed class DataChannelRepository : IDataChannelRepository
     private readonly ILogger<DataChannel> _logger;
     private readonly IDbClient _dbClient;
     private readonly QuestDbInsertClient _qdbClient;
-    private readonly Dictionary<Guid, string> _internalIdMapping = new();
+
+    //private readonly Dictionary<Guid, string> _internalIdMapping = new();
 
     public DataChannelRepository(
         IDbClient client,
@@ -60,6 +61,20 @@ public sealed class DataChannelRepository : IDataChannelRepository
         CancellationToken cancellationToken
     )
     {
+        //TARGET DataChannel - Always updated with the latest version keeping
+        //TARGET DataChannel_InternalId - Have all possible DataChannel versions for an invariant InternalId
+
+        //------Algorithm------
+        //TODO Check if the incoming DataChannel exists in any possible version in DataChannel
+        //TODO
+        //TODO      DataChannel already EXISTS
+        //TODO          Update DataChannel to the latest version based on InternalID if needed
+        //TODO          Add all possible versions to DataChannel_InternalId that are missing
+        //TODO
+        //TODO      DataChannel does not EXIST
+        //TODO          Upgrade it to the latest version and insert on DataChannel
+        //TODO          Add all possible versions to DataChannel_InternalId
+
         var dataChannelInfo = dataChannelList.Package.DataChannelList.DataChannel
             .Select(
                 d =>
@@ -109,7 +124,7 @@ public sealed class DataChannelRepository : IDataChannelRepository
 
             foreach (var param in dataChannelParam)
             {
-                _internalIdMapping.Add(param.internalId, param.localId!);
+                //_internalIdMapping.Add(param.internalId, param.localId!);
                 client
                     .Table("DataChannel")
                     .Symbol("VesselId", param.vesselId)
@@ -121,6 +136,12 @@ public sealed class DataChannelRepository : IDataChannelRepository
                     .Column("FormatRestriction_Type", param.formatRestrictionType)
                     .Column("LocalId_VisVersion", param.localIdVisVersion)
                     .Column("LocalId_PrimaryItem", param.localIdVisVersion)
+                    .At(param.timestamp.DateTime);
+
+                client
+                    .Table("DataChannel_InternalId")
+                    .Column("InternalId", param.shortId?.ToString())
+                    .Column("DataChannelId", param.localId)
                     .At(param.timestamp.DateTime);
             }
             await client.SendAsync(cancellationToken);

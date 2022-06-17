@@ -6,7 +6,7 @@ namespace VistaLab.QueryApi.Repository
     {
         private const string SQL_START = "SELECT * FROM DataChannel ";
 
-        internal static string MountSQL(DataChannelFilter filter)
+        internal static string MountDataChannelSQL(DataChannelFilter filter)
         {
             var whereSQL = string.Empty;
             var primaryItemsSQL = MountPrimaryItemFilter(filter);
@@ -30,6 +30,12 @@ namespace VistaLab.QueryApi.Repository
 
             return SQL_START + whereSQL;
         }
+
+        internal static string MountTimeSeriesSQL(Guid internalId) =>
+            @$"SELECT TS.DataChannelId, TS.Value, TS.Quality, TS.Timestamp
+FROM TimeSeries AS TS
+  JOIN DataChannel_InternalId AS DC_ID ON TS.DataChannelId = DC_ID.DataChannelId
+WHERE DC_ID.InternalId = '{internalId}'";
 
         private static string MountPrimaryItemFilter(DataChannelFilter filter)
         {

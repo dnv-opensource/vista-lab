@@ -6,6 +6,13 @@ namespace VistaLab.QueryApi.Repository
 {
     public interface IDataChannelRepository
     {
-        Task<IEnumerable<DataChannelDto>?> Get(DataChannelFilter filter);
+        Task<IEnumerable<DataChannelDto>?> GetDataChannel(
+            DataChannelFilter filter,
+            CancellationToken cancellationToken
+        );
+        Task<IEnumerable<TimeSeriesDto>?> GetTimeSeries(
+            Guid internalId,
+            CancellationToken cancellationToken
+        );
     }
 }

@@ -1,10 +1,7 @@
 namespace VistaLab.QueryApi.Models
 {
-    public sealed record DataChannelResponse
+    public sealed record DataChannelResponse : BaseResponse
     {
-        public string? Query { get; set; }
-        public Column[]? Columns { get; set; }
-        public List<object[]>? Dataset { get; set; }
         public IEnumerable<DataChannelDto>? DataChannels
         {
             get =>
@@ -54,8 +51,5 @@ namespace VistaLab.QueryApi.Models
                         )
                 ) ?? Array.Empty<DataChannelDto>();
         }
-        public int? Count { get; set; }
     }
 }
-
-public sealed record Column(string Name, string Type);
