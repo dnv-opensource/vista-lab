@@ -1,8 +1,7 @@
 using Common;
+using Common.Models;
 using MassTransit;
-using QuestDB;
 using Vista.SDK;
-using Vista.SDK.Transport.Json;
 using Vista.SDK.Transport.Json.DataChannel;
 using Vista.SDK.Transport.Json.TimeSeriesData;
 
@@ -80,23 +79,11 @@ public sealed class DataChannelRepository : IDataChannelRepository
         var dataChannelParam = dataChannelInfo
             .Select(
                 d =>
-                    new
-                    {
-                        internalId = d.InternalId,
-                        shortId = d.DataChannel.DataChannelID.ShortID?.ToString(),
-                        localId = d.LocalId?.ToString(),
-                        vesselId = dataChannelList.Package.Header.ShipID,
-                        name = d.DataChannel.Property.Name!.Contains("\'")
-                          ? d.DataChannel.Property.Name.Replace("\'", "")
-                          : d.DataChannel.Property.Name,
-                        dataChannelType = d.DataChannel.Property.DataChannelType.Type.Contains("\'")
-                          ? d.DataChannel.Property.DataChannelType.Type.Replace("\'", "")
-                          : d.DataChannel.Property.DataChannelType.Type,
-                        formatRestrictionType = d.DataChannel.Property.Format.Type,
-                        localIdVisVersion = d.LocalId?.VisVersion.ToString(),
-                        localIdPrimaryItem = d.LocalId?.PrimaryItem?.ToString(),
-                        timestamp = dataChannelList.Package.Header.DataChannelListID.TimeStamp
-                    }
+                    DataChannelDto.CreateFromDataChannel(
+                        dataChannelList.Package.Header.ShipID,
+                        d,
+                        dataChannelList.Package.Header.DataChannelListID.TimeStamp.DateTime
+                    )
             )
             .ToArray();
 
@@ -108,20 +95,59 @@ public sealed class DataChannelRepository : IDataChannelRepository
 
             foreach (var param in dataChannelParam)
             {
-                _internalIdMapping.Add(param.internalId, param.localId!);
-                client
-                    .Table("DataChannel")
-                    .Symbol("VesselId", param.vesselId)
-                    .Column("InternalId", param.internalId.ToString())
-                    .Column("ShortId", param.shortId)
-                    .Column("LocalId", param.localId)
-                    .Column("Name", param.name)
-                    .Column("DataChannelType", param.dataChannelType)
-                    .Column("FormatRestriction_Type", param.formatRestrictionType)
-                    .Column("LocalId_VisVersion", param.localIdVisVersion)
-                    .Column("LocalId_PrimaryItem", param.localIdVisVersion)
-                    .At(param.timestamp.DateTime);
+                _internalIdMapping.Add(Guid.Parse(param.InternalId), param.LocalId!);
+                var codeBookNames = Enum.GetValues(typeof(CodebookName))
+                    .Cast<CodebookName>()
+                    .Select(c => c.ToString());
+
+                client.Table("DataChannel").Symbol("VesselId", param.VesselId);
+
+                var paramType = param.GetType();
+
+                foreach (var codebook in codeBookNames)
+                {
+                    var val = paramType.GetProperty("LocalId_" + codebook)?.GetValue(param, null);
+                    if (val is null)
+                        continue;
+
+                    client.Symbol("LocalId_" + codebook, val.ToString());
+                }
+
+                foreach (
+                    var field in paramType
+                        .GetProperties()
+                        .Where(
+                            n =>
+                                !codeBookNames.Contains(n.Name.Split("LocalId_").Last())
+                                && n.Name != "Timestamp"
+                        )
+                )
+                {
+                    var fieldValue = field.GetValue(param, null)?.ToString();
+
+                    if (fieldValue is null)
+                        continue;
+
+                    if (double.TryParse(fieldValue, out double value))
+                    {
+                        client.Column(field.Name, value);
+                        continue;
+                    }
+
+                    client.Column(field.Name, fieldValue);
+                }
+                client.At(param.Timestamp);
+                
+                if (
+                    !param.Timestamp.Equals(
+                        DateTime.TryParse("04.04.2022 20:44:31", out var newDate)
+                    )
+                )
+                {
+                    _logger.LogInformation("not equal");
+                }
             }
+
             await client.SendAsync(cancellationToken);
 
             _logger.LogInformation("Finished inserting data into DataChannel");
@@ -132,13 +158,6 @@ public sealed class DataChannelRepository : IDataChannelRepository
             throw;
         }
     }
-
-    private readonly record struct DataChannelInfo(
-        bool LocalIdParsed,
-        LocalIdBuilder? LocalId,
-        DataChannel DataChannel,
-        Guid InternalId
-    );
 
     public async ValueTask InsertTimeSeriesData(
         TimeSeriesDataPackage timeSeriesData,
@@ -166,7 +185,7 @@ public sealed class DataChannelRepository : IDataChannelRepository
                             var dataChannel = table.DataChannelID![j];
                             client
                                 .Table("TimeSeries")
-                                .Column("DataChannelId", dataChannel)
+                                .Symbol("DataChannelId", dataChannel)
                                 .Column("Value", j < data.Value.Count ? data.Value[j] : null)
                                 .Column(
                                     "Quality",

@@ -1,3 +1,5 @@
+using Common.Models;
+
 namespace VistaLab.QueryApi.Models
 {
     public sealed record DataChannelResponse
