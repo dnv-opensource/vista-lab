@@ -1,6 +1,6 @@
 using Common;
+using Common.Models;
 using Moq;
-using Newtonsoft.Json;
 using VistaLab.QueryApi.Controllers;
 using VistaLab.QueryApi.Models;
 using VistaLab.QueryApi.Repository;

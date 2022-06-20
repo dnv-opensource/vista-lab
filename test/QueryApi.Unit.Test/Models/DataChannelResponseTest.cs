@@ -5,7 +5,7 @@ namespace VistaLab.QueryApi.Unit.Test.Models
 {
     public class DataChannelResponseTest
     {
-        private const int TOTAL_OF_DATA_CHANNELS = 90;
+        private const int TOTAL_OF_DATA_CHANNELS = 10;
         private const string DATA_CHANNEL_SAMPLE_PATH = @"Models/data-channel-response.json";
 
         [Fact]

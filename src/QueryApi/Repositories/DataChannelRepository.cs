@@ -1,5 +1,5 @@
 using Common;
-using QueryApi.Models;
+using Common.Models;
 using Vista.SDK.Transport.DataChannel;
 using VistaLab.QueryApi.Models;
 

@@ -1,4 +1,4 @@
-using QueryApi.Models;
+using Common.Models;
 
 namespace VistaLab.QueryApi.Models
 {

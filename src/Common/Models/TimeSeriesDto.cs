@@ -1,4 +1,4 @@
-namespace QueryApi.Models;
+namespace Common.Models;
 
 public sealed record TimeSeriesDto(
     string DataChannelId,

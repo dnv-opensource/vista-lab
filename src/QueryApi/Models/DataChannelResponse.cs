@@ -1,3 +1,6 @@
+using Common.Models;
+using System.Dynamic;
+
 namespace VistaLab.QueryApi.Models
 {
     public sealed record DataChannelResponse : BaseResponse
@@ -9,10 +12,10 @@ namespace VistaLab.QueryApi.Models
                     ds =>
                         new DataChannelDto(
                             (string)ds[0],
-                            (string)ds[1],
+                            (string?)ds[1],
                             (string)ds[2],
                             (string)ds[3],
-                            (string)ds[4],
+                            (string?)ds[4],
                             (string)ds[5],
                             (double?)ds[6],
                             (double?)ds[7],

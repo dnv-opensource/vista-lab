@@ -51,6 +51,7 @@ services:
         depends_on:
             - ingest-api
             - broker
+            - channel-streamer
         container_name: vista-lab-simulator
         restart: unless-stopped
         build:

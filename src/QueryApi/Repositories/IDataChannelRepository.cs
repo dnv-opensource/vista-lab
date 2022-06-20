@@ -1,5 +1,4 @@
-using QueryApi.Models;
-using Vista.SDK.Transport.DataChannel;
+using Common.Models;
 using VistaLab.QueryApi.Models;
 
 namespace VistaLab.QueryApi.Repository
