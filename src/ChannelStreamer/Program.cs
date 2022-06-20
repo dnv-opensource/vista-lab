@@ -6,6 +6,7 @@ using System.Text;
 using Vista.SDK;
 using Vista.SDK.Mqtt;
 using Vista.SDK.Transport.Json;
+using Vista.SDK.Transport.Json.TimeSeriesData;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .UseSerilog((context, logging) => logging.WriteTo.Console())
@@ -119,16 +120,51 @@ public sealed class ChannelStreamer : IHostedService
                                         localId.SecondaryItem.WithoutLocations()
                                     );
                                 }
-
                                 var localdIdMqtt = localId.BuildMqtt();
+
+
+                                var tableData = new TabularDataSet(
+                                    data.Quality is not null
+                                        && data.Quality.Count > 0
+                                        && data.Quality[i] is not null
+                                      ? new[] { data.Quality[i] }
+                                      : null,
+                                    data.TimeStamp,
+                                    new[] { data.Value[i] }
+                                );
+
+                                var timeSeriesTable = new TabularData(
+                                    new List<string>() { dataChannel },
+                                    new List<TabularDataSet>() { tableData },
+                                    "1",
+                                    "1"
+                                );
+
+                                var h = package.Package.Header;
+                                var timeSeriesPackage = new TimeSeriesDataPackage(
+                                    new Package(
+                                        h,
+                                        new[]
+                                        {
+                                            new TimeSeriesData(
+                                                timeSeries.DataConfiguration,
+                                                null,
+                                                new List<TabularData>() { timeSeriesTable }
+                                            )
+                                        }
+                                    )
+                                );
+
                                 var publishMessage = new MqttApplicationMessage()
                                 {
-                                    Payload = Encoding.UTF8.GetBytes(Serializer.Serialize(package)),
+                                    Payload = Encoding.UTF8.GetBytes(
+                                        Serializer.Serialize(timeSeriesPackage)
+                                    ),
                                     Topic = localdIdMqtt.ToString(),
                                 };
 
                                 _logger.LogInformation(
-                                    "{clientId} - ready to publish on {topic}",
+                                    "{clientId} - publishing on {topic}",
                                     clientId,
                                     publishMessage.Topic
                                 );

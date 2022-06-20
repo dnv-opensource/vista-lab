@@ -137,15 +137,6 @@ public sealed class DataChannelRepository : IDataChannelRepository
                     client.Column(field.Name, fieldValue);
                 }
                 client.At(param.Timestamp);
-                
-                if (
-                    !param.Timestamp.Equals(
-                        DateTime.TryParse("04.04.2022 20:44:31", out var newDate)
-                    )
-                )
-                {
-                    _logger.LogInformation("not equal");
-                }
             }
 
             await client.SendAsync(cancellationToken);
