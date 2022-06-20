@@ -27,7 +27,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Models\TimeSeriesResponseTest.cs">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Models\data-channel-response.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Models\time-series-response.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

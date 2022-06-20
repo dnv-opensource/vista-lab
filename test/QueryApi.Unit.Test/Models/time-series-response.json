@@ -1,0 +1,38 @@
+{
+    "query": "SELECT TS.DataChannelId, TS.Value, TS.Quality, TS.Timestamp\nFROM TimeSeries AS TS\n  JOIN DataChannel_InternalId AS DC_ID ON TS.DataChannelId = DC_ID.DataChannelId\nWHERE DC_ID.InternalId = '7a000000-9a3c-0005-d90a-08da52b17801'",
+    "columns": [
+        {
+            "name": "DataChannelId",
+            "type": "SYMBOL"
+        },
+        {
+            "name": "Value",
+            "type": "STRING"
+        },
+        {
+            "name": "Quality",
+            "type": "STRING"
+        },
+        {
+            "name": "Timestamp",
+            "type": "TIMESTAMP"
+        }
+    ],
+    "dataset": [
+        [ "\/dnv-v2\/vis-3-4a\/621.11i-P\/H135\/meta\/qty-temperature\/cnt-low.sulphur.heavy.fuel.oil\/detail-settling", "50.77", "", "2022-06-20T11:41:00.120331Z" ],
+        [ "\/dnv-v2\/vis-3-4a\/621.11i-P\/H135\/meta\/qty-temperature\/cnt-low.sulphur.heavy.fuel.oil\/detail-settling", "48.83", "", "2022-06-20T11:42:00.135822Z" ],
+        [ "\/dnv-v2\/vis-3-4a\/621.11i-P\/H135\/meta\/qty-temperature\/cnt-low.sulphur.heavy.fuel.oil\/detail-settling", "50.91", "", "2022-06-20T11:43:00.127445Z" ],
+        [ "\/dnv-v2\/vis-3-4a\/621.11i-P\/H135\/meta\/qty-temperature\/cnt-low.sulphur.heavy.fuel.oil\/detail-settling", "49.29", "", "2022-06-20T11:44:00.127897Z" ],
+        [ "\/dnv-v2\/vis-3-4a\/621.11i-P\/H135\/meta\/qty-temperature\/cnt-low.sulphur.heavy.fuel.oil\/detail-settling", "54.18", "", "2022-06-20T11:45:00.125865Z" ],
+        [ "\/dnv-v2\/vis-3-4a\/621.11i-P\/H135\/meta\/qty-temperature\/cnt-low.sulphur.heavy.fuel.oil\/detail-settling", "57.03", "", "2022-06-20T11:46:00.123047Z" ],
+        [ "\/dnv-v2\/vis-3-4a\/621.11i-P\/H135\/meta\/qty-temperature\/cnt-low.sulphur.heavy.fuel.oil\/detail-settling", "53.29", "", "2022-06-20T11:47:00.120092Z" ],
+        [ "\/dnv-v2\/vis-3-4a\/621.11i-P\/H135\/meta\/qty-temperature\/cnt-low.sulphur.heavy.fuel.oil\/detail-settling", "54.15", "", "2022-06-20T11:48:00.133649Z" ],
+        [ "\/dnv-v2\/vis-3-4a\/621.11i-P\/H135\/meta\/qty-temperature\/cnt-low.sulphur.heavy.fuel.oil\/detail-settling", "49.69", "", "2022-06-20T11:49:00.125542Z" ],
+        [ "\/dnv-v2\/vis-3-4a\/621.11i-P\/H135\/meta\/qty-temperature\/cnt-low.sulphur.heavy.fuel.oil\/detail-settling", "47.86", "", "2022-06-20T11:50:00.123456Z" ],
+        [ "\/dnv-v2\/vis-3-4a\/621.11i-P\/H135\/meta\/qty-temperature\/cnt-low.sulphur.heavy.fuel.oil\/detail-settling", "46.97", "", "2022-06-20T11:51:00.136793Z" ],
+        [ "\/dnv-v2\/vis-3-4a\/621.11i-P\/H135\/meta\/qty-temperature\/cnt-low.sulphur.heavy.fuel.oil\/detail-settling", "48.90", "", "2022-06-20T11:52:00.133962Z" ],
+        [ "\/dnv-v2\/vis-3-4a\/621.11i-P\/H135\/meta\/qty-temperature\/cnt-low.sulphur.heavy.fuel.oil\/detail-settling", "47.78", "", "2022-06-20T11:53:00.128623Z" ],
+        [ "\/dnv-v2\/vis-3-4a\/621.11i-P\/H135\/meta\/qty-temperature\/cnt-low.sulphur.heavy.fuel.oil\/detail-settling", "51.73", "", "2022-06-20T11:54:00.138099Z" ]
+    ],
+    "count": 14
+}
