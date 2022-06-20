@@ -104,11 +104,27 @@ public sealed class ChannelStreamer : IHostedService
                                 if (string.IsNullOrWhiteSpace(localIdStr))
                                     continue;
 
-                                var localId = LocalIdBuilder.Parse(localIdStr).BuildMqtt();
+                                var localId = LocalIdBuilder.Parse(localIdStr);
+
+                                if (localId.PrimaryItem is not null)
+                                {
+                                    localId = localId.WithPrimaryItem(
+                                        localId.PrimaryItem.WithoutLocations()
+                                    );
+                                }
+
+                                if (localId.SecondaryItem is not null)
+                                {
+                                    localId = localId.WithSecondaryItem(
+                                        localId.SecondaryItem.WithoutLocations()
+                                    );
+                                }
+
+                                var localdIdMqtt = localId.BuildMqtt();
                                 var publishMessage = new MqttApplicationMessage()
                                 {
                                     Payload = Encoding.UTF8.GetBytes(Serializer.Serialize(package)),
-                                    Topic = localId.ToString(),
+                                    Topic = localdIdMqtt.ToString(),
                                 };
 
                                 _logger.LogInformation(
