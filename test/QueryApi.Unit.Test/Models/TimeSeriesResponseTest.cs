@@ -5,7 +5,7 @@ namespace VistaLab.QueryApi.Unit.Test.Models
 {
     public class TimeSeriesResponseTest
     {
-        private const int TOTAL_OF_DATA_CHANNELS = 14;
+        private const int TOTAL_OF_DATA_CHANNELS = 7;
         private const string TIME_SERIES_SAMPLE_PATH = @"Models/time-series-response.json";
 
         [Fact]
