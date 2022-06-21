@@ -156,8 +156,9 @@ public sealed class DataChannelRepository : IDataChannelRepository
 
                 client
                     .Table("DataChannel_InternalId")
+                    .Symbol("VesselId", param.VesselId)
+                    .Symbol("DataChannelId", param.LocalId)
                     .Column("InternalId", param.InternalId?.ToString())
-                    .Column("DataChannelId", param.LocalId)
                     .At(param.Timestamp);
             }
 
@@ -197,9 +198,11 @@ public sealed class DataChannelRepository : IDataChannelRepository
                         for (int j = 0; j < data.Value.Count; j++)
                         {
                             var dataChannel = table.DataChannelID![j];
+
                             client
                                 .Table("TimeSeries")
                                 .Symbol("DataChannelId", dataChannel)
+                                .Symbol("VesselId", timeSeriesData?.Package?.Header?.ShipID)
                                 .Column("Value", j < data.Value.Count ? data.Value[j] : null)
                                 .Column(
                                     "Quality",

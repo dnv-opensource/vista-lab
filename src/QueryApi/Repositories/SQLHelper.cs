@@ -32,9 +32,9 @@ namespace VistaLab.QueryApi.Repository
         }
 
         internal static string MountTimeSeriesSQL(Guid internalId) =>
-            @$"SELECT TS.DataChannelId, TS.Value, TS.Quality, TS.Timestamp
+            @$"SELECT TS.DataChannelId, TS.VesselId, TS.Value, TS.Quality, TS.Timestamp
 FROM TimeSeries AS TS
-  JOIN DataChannel_InternalId AS DC_ID ON TS.DataChannelId = DC_ID.DataChannelId
+  JOIN DataChannel_InternalId AS DC_ID ON TS.DataChannelId = DC_ID.DataChannelId AND TS.VesselId = DC_ID.VesselId
 WHERE DC_ID.InternalId = '{internalId}'";
 
         private static string MountPrimaryItemFilter(DataChannelFilter filter)
