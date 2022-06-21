@@ -172,7 +172,7 @@ public class Simulator : IHostedService
             {
                 var rand = Random.Shared.NextDouble();
                 // To reduce variation
-                if (rand < 0.1)
+                if (rand < 0.05)
                 {
                     return prevValue == 1 ? 0 : 1;
                 }
