@@ -16,12 +16,27 @@ public sealed class DataChannelRepository : IDataChannelRepository
         _logger = logger;
     }
 
-    public async Task<IEnumerable<DataChannelDto>?> Get(DataChannelFilter filter)
+    public async Task<IEnumerable<DataChannelDto>?> GetDataChannel(
+        DataChannelFilter filter,
+        CancellationToken cancellationToken
+    )
     {
         var response = await _client.ExecuteAsync<DataChannelResponse>(
-            SQLHelper.MountSQL(filter),
-            new CancellationToken()
+            SQLHelper.MountDataChannelSQL(filter),
+            cancellationToken
         );
         return response?.DataChannels;
+    }
+
+    public async Task<IEnumerable<TimeSeriesDto>?> GetTimeSeries(
+        Guid internalId,
+        CancellationToken cancellationToken
+    )
+    {
+        var response = await _client.ExecuteAsync<TimeSeriesResponse>(
+            SQLHelper.MountTimeSeriesSQL(internalId),
+            cancellationToken
+        );
+        return response?.TimeSeries;
     }
 }

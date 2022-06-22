@@ -66,14 +66,39 @@ namespace VistaLab.QueryApi.Unit.Test.Controllers
             var filter = new DataChannelFilter();
 
             mockRepository
-                .Setup(x => x.Get(It.IsAny<DataChannelFilter>()))
+                .Setup(x => x.GetDataChannel(It.IsAny<DataChannelFilter>(), CancellationToken.None))
                 .ReturnsAsync(new List<DataChannelDto>());
 
             //Act
-            await controller.Post(filter);
+            await controller.Post(filter, CancellationToken.None);
 
             //Assert
-            mockRepository.Verify(x => x.Get(It.IsAny<DataChannelFilter>()), Times.Once);
+            mockRepository.Verify(
+                x => x.GetDataChannel(It.IsAny<DataChannelFilter>(), CancellationToken.None),
+                Times.Once
+            );
+        }
+
+        [Fact]
+        public async Task GetTimeSeries_WithFilter_CallsRepository()
+        {
+            //Arrange
+            var mockRepository = new Mock<IDataChannelRepository>();
+            var controller = new DataChannelController(mockRepository.Object);
+            var internalId = Guid.NewGuid();
+
+            mockRepository
+                .Setup(x => x.GetTimeSeries(It.IsAny<Guid>(), CancellationToken.None))
+                .ReturnsAsync(new List<TimeSeriesDto>());
+
+            //Act
+            await controller.Get(internalId, CancellationToken.None);
+
+            //Assert
+            mockRepository.Verify(
+                x => x.GetTimeSeries(It.IsAny<Guid>(), CancellationToken.None),
+                Times.Once
+            );
         }
     }
 }

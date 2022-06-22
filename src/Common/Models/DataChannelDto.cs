@@ -10,6 +10,49 @@ public readonly record struct DataChannelInfo(
     Guid InternalId
 );
 
+/// <summary>
+///
+/// </summary>
+/// <param name="InternalId">Auto generated ID that won't change across the differente VIS versions</param>
+/// <param name="ShortId">Id assigned externally</param>
+/// <param name="LocalId">Same as DataChannelId, the VIS representation of a data channel</param>
+/// <param name="VesselId"></param>
+/// <param name="Name"></param>
+/// <param name="DataChannelType"></param>
+/// <param name="UpdateCycle"></param>
+/// <param name="CalculationPeriod"></param>
+/// <param name="FormatType"></param>
+/// <param name="RangeLow"></param>
+/// <param name="RangeHigh"></param>
+/// <param name="UnitSymbol"></param>
+/// <param name="QuantityName"></param>
+/// <param name="QualityCoding"></param>
+/// <param name="Remarks"></param>
+/// <param name="FormatRestriction_Type"></param>
+/// <param name="FormatRestriction_Enumeration"></param>
+/// <param name="FormatRestriction_FractionDigits"></param>
+/// <param name="FormatRestriction_Length"></param>
+/// <param name="FormatRestriction_MaxExclusive"></param>
+/// <param name="FormatRestriction_MaxInclusive"></param>
+/// <param name="FormatRestriction_MaxLength"></param>
+/// <param name="FormatRestriction_MinExclusive"></param>
+/// <param name="FormatRestriction_MinInclusive"></param>
+/// <param name="FormatRestriction_MinLength"></param>
+/// <param name="FormatRestriction_Pattern"></param>
+/// <param name="FormatRestriction_TotalDigits"></param>
+/// <param name="FormatRestriction_WhiteSpace"></param>
+/// <param name="LocalId_VisVersion"></param>
+/// <param name="LocalId_PrimaryItem"></param>
+/// <param name="LocalId_SecondaryItem"></param>
+/// <param name="LocalId_Position"></param>
+/// <param name="LocalId_Quantity"></param>
+/// <param name="LocalId_Calculation"></param>
+/// <param name="LocalId_State"></param>
+/// <param name="LocalId_Content"></param>
+/// <param name="LocalId_Command"></param>
+/// <param name="LocalId_Type"></param>
+/// <param name="LocalId_Detail"></param>
+/// <param name="Timestamp"></param>
 public record DataChannelDto(
     string InternalId,
     string? ShortId,

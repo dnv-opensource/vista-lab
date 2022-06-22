@@ -12,7 +12,8 @@ public sealed class DataChannelRepository : IDataChannelRepository
     private readonly ILogger<DataChannel> _logger;
     private readonly IDbClient _dbClient;
     private readonly QuestDbInsertClient _qdbClient;
-    private readonly Dictionary<Guid, string> _internalIdMapping = new();
+
+    //private readonly Dictionary<Guid, string> _internalIdMapping = new();
 
     public DataChannelRepository(
         IDbClient client,
@@ -31,6 +32,7 @@ public sealed class DataChannelRepository : IDataChannelRepository
             $@"
             {DbInitTables.DataChannel}
             {DbInitTables.TimeSeries}
+            {DbInitTables.DataChannel_InternalId}
         ";
 
         try
@@ -58,6 +60,20 @@ public sealed class DataChannelRepository : IDataChannelRepository
         CancellationToken cancellationToken
     )
     {
+        //TARGET DataChannel - Always updated with the latest version keeping
+        //TARGET DataChannel_InternalId - Have all possible DataChannel versions for an invariant InternalId
+
+        //------Algorithm------
+        //TODO Check if the incoming DataChannel exists in any possible version in DataChannel
+        //TODO
+        //TODO      DataChannel already EXISTS
+        //TODO          Update DataChannel to the latest version based on InternalID if needed
+        //TODO          Add all possible versions to DataChannel_InternalId that are missing
+        //TODO
+        //TODO      DataChannel does not EXIST
+        //TODO          Upgrade it to the latest version and insert on DataChannel
+        //TODO          Add all possible versions to DataChannel_InternalId
+
         var dataChannelInfo = dataChannelList.Package.DataChannelList.DataChannel
             .Select(
                 d =>
@@ -95,7 +111,7 @@ public sealed class DataChannelRepository : IDataChannelRepository
 
             foreach (var param in dataChannelParam)
             {
-                _internalIdMapping.Add(Guid.Parse(param.InternalId), param.LocalId!);
+                //_internalIdMapping.Add(Guid.Parse(param.InternalId), param.LocalId!);
                 var codeBookNames = Enum.GetValues(typeof(CodebookName))
                     .Cast<CodebookName>()
                     .Select(c => c.ToString());
@@ -137,6 +153,13 @@ public sealed class DataChannelRepository : IDataChannelRepository
                     client.Column(field.Name, fieldValue);
                 }
                 client.At(param.Timestamp);
+
+                client
+                    .Table("DataChannel_InternalId")
+                    .Symbol("VesselId", param.VesselId)
+                    .Symbol("DataChannelId", param.LocalId)
+                    .Column("InternalId", param.InternalId?.ToString())
+                    .At(param.Timestamp);
             }
 
             await client.SendAsync(cancellationToken);
@@ -159,7 +182,8 @@ public sealed class DataChannelRepository : IDataChannelRepository
         {
             _logger.LogInformation("Inserting data into TimeSeries");
             await _qdbClient.EnsureConnectedAsync(cancellationToken);
-            var client = _qdbClient.Client!;
+            _logger.LogInformation($"IS_CONNECTED {_qdbClient?.Client?.IsConnected}");
+            var client = _qdbClient?.Client!;
 
             foreach (var timeSeries in timeSeriesData.Package.TimeSeriesData)
             {
@@ -174,9 +198,11 @@ public sealed class DataChannelRepository : IDataChannelRepository
                         for (int j = 0; j < data.Value.Count; j++)
                         {
                             var dataChannel = table.DataChannelID![j];
+
                             client
                                 .Table("TimeSeries")
                                 .Symbol("DataChannelId", dataChannel)
+                                .Symbol("VesselId", timeSeriesData?.Package?.Header?.ShipID)
                                 .Column("Value", j < data.Value.Count ? data.Value[j] : null)
                                 .Column(
                                     "Quality",

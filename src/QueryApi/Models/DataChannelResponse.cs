@@ -1,12 +1,10 @@
 using Common.Models;
+using System.Dynamic;
 
 namespace VistaLab.QueryApi.Models
 {
-    public sealed record DataChannelResponse
+    public sealed record DataChannelResponse : BaseResponse
     {
-        public string? Query { get; set; }
-        public Column[]? Columns { get; set; }
-        public List<object[]>? Dataset { get; set; }
         public IEnumerable<DataChannelDto>? DataChannels
         {
             get =>
@@ -14,10 +12,10 @@ namespace VistaLab.QueryApi.Models
                     ds =>
                         new DataChannelDto(
                             (string)ds[0],
-                            (string)ds[1],
+                            (string?)ds[1],
                             (string)ds[2],
                             (string)ds[3],
-                            (string)ds[4],
+                            (string?)ds[4],
                             (string)ds[5],
                             (double?)ds[6],
                             (double?)ds[7],
@@ -56,8 +54,5 @@ namespace VistaLab.QueryApi.Models
                         )
                 ) ?? Array.Empty<DataChannelDto>();
         }
-        public int? Count { get; set; }
     }
 }
-
-public sealed record Column(string Name, string Type);

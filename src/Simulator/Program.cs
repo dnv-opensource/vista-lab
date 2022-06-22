@@ -97,7 +97,7 @@ public class Simulator : IHostedService
             var valueStr = value.Value.ToString("0.00", CultureInfo.InvariantCulture);
             data.Add((value.Value, null));
 
-            channelIds.Add(dataChannelId.ShortId ?? dataChannelId.LocalId);
+            channelIds.Add(dataChannelId.LocalId);
             values.Add(valueStr);
         }
 

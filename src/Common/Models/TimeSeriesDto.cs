@@ -1,9 +1,9 @@
 namespace Common.Models;
 
 public sealed record TimeSeriesDto(
-    Guid InternalId,
+    string DataChannelId,
+    string VesselId,
     string? Value,
     string? Quality,
-    string? EventType,
     DateTime Timestamp
 );

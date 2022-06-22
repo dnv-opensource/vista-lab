@@ -64,10 +64,23 @@ public sealed class DbInitTables
         CREATE TABLE IF NOT EXISTS TimeSeries
         (
             DataChannelId SYMBOL capacity 8388608 nocache index capacity 8388608 NOT NULL,
+            VesselId SYMBOL capacity 1024 cache index capacity 1048576 NOT NULL,
             Value STRING,
             Quality STRING,
             Timestamp TIMESTAMP NOT NULL
         ) timestamp(Timestamp)
         PARTITION BY DAY;
+    ";
+
+    public static readonly string DataChannel_InternalId =
+        @"
+        CREATE TABLE IF NOT EXISTS DataChannel_InternalId
+        (
+            DataChannelId SYMBOL capacity 8388608 nocache index capacity 8388608 NOT NULL,
+            VesselId SYMBOL capacity 1024 cache index capacity 1048576 NOT NULL,
+            InternalId STRING NOT NULL,
+            Timestamp TIMESTAMP NOT NULL
+        ) timestamp(Timestamp)
+        PARTITION BY YEAR;
     ";
 }
