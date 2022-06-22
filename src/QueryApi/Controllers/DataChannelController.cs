@@ -26,7 +26,7 @@ public sealed class DataChannelController : ApiControllerBase<DataChannelControl
         CancellationToken cancellationToken
     )
     {
-        var result = await dataChannelRepository.GetDataChannel(filter, cancellationToken);
+        var result = await dataChannelRepository.GetDataChannelByFilter(filter, cancellationToken);
         return Ok(result);
     }
 
@@ -39,7 +39,23 @@ public sealed class DataChannelController : ApiControllerBase<DataChannelControl
     [Route("api/data-channel/{id}/time-series")]
     public async Task<ActionResult> Get(Guid id, CancellationToken cancellationToken)
     {
-        var result = await dataChannelRepository.GetTimeSeries(id, cancellationToken);
+        var result = await dataChannelRepository.GetTimeSeriesByExternalId(id, cancellationToken);
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Search for time series given a data channel internalId
+    /// </summary>
+    /// <param name="filter"></param>
+    /// <param name="cancellationToken"></param>
+    [HttpPost]
+    [Route("api/data-channel/time-series")]
+    public async Task<ActionResult> PostSearchByFilter(
+        DataChannelFilter filter,
+        CancellationToken cancellationToken
+    )
+    {
+        var result = await dataChannelRepository.GetTimeSeriesByFilter(filter, cancellationToken);
         return Ok(result);
     }
 }

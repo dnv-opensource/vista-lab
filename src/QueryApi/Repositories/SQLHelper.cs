@@ -4,9 +4,25 @@ namespace VistaLab.QueryApi.Repository
 {
     public static class SQLHelper
     {
-        private const string SQL_START = "SELECT * FROM DataChannel ";
+        private const string SELECT_DATA_CHANNEL = "SELECT * FROM DataChannel ";
+        private const string SELECT_TIME_SERIES =
+            @"
+SELECT TS.DataChannelId, TS.VesselId, TS.Value, TS.Quality, TS.Timestamp
+FROM TimeSeries AS TS
+  JOIN DataChannel_InternalId AS DC_ID ON TS.DataChannelId = DC_ID.DataChannelId AND TS.VesselId = DC_ID.VesselId";
+        private const string TIME_SERIES_DATA_CHANNEL_JOIN =
+            " JOIN DataChannel DC ON DC_ID.InternalId = DC.InternalId";
 
-        internal static string MountDataChannelSQL(DataChannelFilter filter)
+        internal static string MountDataChannelSQL(DataChannelFilter filter) =>
+            SELECT_DATA_CHANNEL + MountDataChannelWhere(filter);
+
+        internal static string MountTimeSeriesSQL(Guid internalId) =>
+            $"{SELECT_TIME_SERIES} WHERE DC_ID.InternalId = '{internalId}'";
+
+        internal static string MountTimeSeriesSQL(DataChannelFilter filter) =>
+            SELECT_TIME_SERIES + TIME_SERIES_DATA_CHANNEL_JOIN + MountDataChannelWhere(filter);
+
+        private static string MountDataChannelWhere(DataChannelFilter filter)
         {
             var whereSQL = string.Empty;
             var primaryItemsSQL = MountPrimaryItemFilter(filter);
@@ -28,14 +44,8 @@ namespace VistaLab.QueryApi.Repository
                 }
             }
 
-            return SQL_START + whereSQL;
+            return whereSQL;
         }
-
-        internal static string MountTimeSeriesSQL(Guid internalId) =>
-            @$"SELECT TS.DataChannelId, TS.VesselId, TS.Value, TS.Quality, TS.Timestamp
-FROM TimeSeries AS TS
-  JOIN DataChannel_InternalId AS DC_ID ON TS.DataChannelId = DC_ID.DataChannelId AND TS.VesselId = DC_ID.VesselId
-WHERE DC_ID.InternalId = '{internalId}'";
 
         private static string MountPrimaryItemFilter(DataChannelFilter filter)
         {
