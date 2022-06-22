@@ -12,6 +12,7 @@ FROM TimeSeries AS TS
   JOIN DataChannel_InternalId AS DC_ID ON TS.DataChannelId = DC_ID.DataChannelId AND TS.VesselId = DC_ID.VesselId";
         private const string TIME_SERIES_DATA_CHANNEL_JOIN =
             " JOIN DataChannel DC ON DC_ID.InternalId = DC.InternalId";
+        private const string ORDER_BY_TIME_STAMP = " ORDER BY TS.TimeStamp DESC ";
 
         internal static string MountDataChannelSQL(DataChannelFilter filter) =>
             SELECT_DATA_CHANNEL + MountDataChannelWhere(filter);
@@ -20,7 +21,7 @@ FROM TimeSeries AS TS
             $"{SELECT_TIME_SERIES} WHERE DC_ID.InternalId = '{internalId}'";
 
         internal static string MountTimeSeriesSQL(DataChannelFilter filter) =>
-            SELECT_TIME_SERIES + TIME_SERIES_DATA_CHANNEL_JOIN + MountDataChannelWhere(filter);
+            SELECT_TIME_SERIES + TIME_SERIES_DATA_CHANNEL_JOIN + MountDataChannelWhere(filter) + ORDER_BY_TIME_STAMP;
 
         private static string MountDataChannelWhere(DataChannelFilter filter)
         {
