@@ -39,7 +39,7 @@ public sealed class DataChannelController : ApiControllerBase<DataChannelControl
     [Route("api/data-channel/{id}/time-series")]
     public async Task<ActionResult> Get(Guid id, CancellationToken cancellationToken)
     {
-        var result = await dataChannelRepository.GetTimeSeriesByExternalId(id, cancellationToken);
+        var result = await dataChannelRepository.GetTimeSeriesByInternalId(id, cancellationToken);
         return Ok(result);
     }
 

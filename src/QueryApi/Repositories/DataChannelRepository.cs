@@ -28,7 +28,7 @@ public sealed class DataChannelRepository : IDataChannelRepository
         return response?.DataChannels;
     }
 
-    public async Task<IEnumerable<TimeSeriesDto>?> GetTimeSeriesByExternalId(
+    public async Task<IEnumerable<TimeSeriesDto>?> GetTimeSeriesByInternalId(
         Guid internalId,
         CancellationToken cancellationToken
     )

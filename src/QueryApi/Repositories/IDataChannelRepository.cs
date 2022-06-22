@@ -9,7 +9,7 @@ namespace VistaLab.QueryApi.Repository
             DataChannelFilter filter,
             CancellationToken cancellationToken
         );
-        Task<IEnumerable<TimeSeriesDto>?> GetTimeSeriesByExternalId(
+        Task<IEnumerable<TimeSeriesDto>?> GetTimeSeriesByInternalId(
             Guid internalId,
             CancellationToken cancellationToken
         );

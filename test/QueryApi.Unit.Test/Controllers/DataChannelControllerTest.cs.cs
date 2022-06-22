@@ -95,7 +95,7 @@ namespace VistaLab.QueryApi.Unit.Test.Controllers
             var internalId = Guid.NewGuid();
 
             mockRepository
-                .Setup(x => x.GetTimeSeriesByExternalId(It.IsAny<Guid>(), CancellationToken.None))
+                .Setup(x => x.GetTimeSeriesByInternalId(It.IsAny<Guid>(), CancellationToken.None))
                 .ReturnsAsync(new List<TimeSeriesDto>());
 
             //Act
@@ -103,7 +103,7 @@ namespace VistaLab.QueryApi.Unit.Test.Controllers
 
             //Assert
             mockRepository.Verify(
-                x => x.GetTimeSeriesByExternalId(It.IsAny<Guid>(), CancellationToken.None),
+                x => x.GetTimeSeriesByInternalId(It.IsAny<Guid>(), CancellationToken.None),
                 Times.Once
             );
         }
