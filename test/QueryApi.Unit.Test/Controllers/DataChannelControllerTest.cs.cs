@@ -66,7 +66,13 @@ namespace VistaLab.QueryApi.Unit.Test.Controllers
             var filter = new DataChannelFilter();
 
             mockRepository
-                .Setup(x => x.GetDataChannel(It.IsAny<DataChannelFilter>(), CancellationToken.None))
+                .Setup(
+                    x =>
+                        x.GetDataChannelByFilter(
+                            It.IsAny<DataChannelFilter>(),
+                            CancellationToken.None
+                        )
+                )
                 .ReturnsAsync(new List<DataChannelDto>());
 
             //Act
@@ -74,7 +80,8 @@ namespace VistaLab.QueryApi.Unit.Test.Controllers
 
             //Assert
             mockRepository.Verify(
-                x => x.GetDataChannel(It.IsAny<DataChannelFilter>(), CancellationToken.None),
+                x =>
+                    x.GetDataChannelByFilter(It.IsAny<DataChannelFilter>(), CancellationToken.None),
                 Times.Once
             );
         }
@@ -88,7 +95,7 @@ namespace VistaLab.QueryApi.Unit.Test.Controllers
             var internalId = Guid.NewGuid();
 
             mockRepository
-                .Setup(x => x.GetTimeSeries(It.IsAny<Guid>(), CancellationToken.None))
+                .Setup(x => x.GetTimeSeriesByInternalId(It.IsAny<Guid>(), CancellationToken.None))
                 .ReturnsAsync(new List<TimeSeriesDto>());
 
             //Act
@@ -96,7 +103,7 @@ namespace VistaLab.QueryApi.Unit.Test.Controllers
 
             //Assert
             mockRepository.Verify(
-                x => x.GetTimeSeries(It.IsAny<Guid>(), CancellationToken.None),
+                x => x.GetTimeSeriesByInternalId(It.IsAny<Guid>(), CancellationToken.None),
                 Times.Once
             );
         }

@@ -54,6 +54,30 @@
           }
         }
       }
+    },
+    "/api/data-channel/time-series": {
+      "post": {
+        "tags": [
+          "DataChannel"
+        ],
+        "summary": "Search for time series given a data channel internalId",
+        "operationId": "DataChannelPostSearchByFilter",
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DataChannelFilter"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
     }
   },
   "components": {

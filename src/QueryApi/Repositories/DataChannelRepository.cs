@@ -16,7 +16,7 @@ public sealed class DataChannelRepository : IDataChannelRepository
         _logger = logger;
     }
 
-    public async Task<IEnumerable<DataChannelDto>?> GetDataChannel(
+    public async Task<IEnumerable<DataChannelDto>?> GetDataChannelByFilter(
         DataChannelFilter filter,
         CancellationToken cancellationToken
     )
@@ -28,13 +28,25 @@ public sealed class DataChannelRepository : IDataChannelRepository
         return response?.DataChannels;
     }
 
-    public async Task<IEnumerable<TimeSeriesDto>?> GetTimeSeries(
+    public async Task<IEnumerable<TimeSeriesDto>?> GetTimeSeriesByInternalId(
         Guid internalId,
         CancellationToken cancellationToken
     )
     {
         var response = await _client.ExecuteAsync<TimeSeriesResponse>(
             SQLHelper.MountTimeSeriesSQL(internalId),
+            cancellationToken
+        );
+        return response?.TimeSeries;
+    }
+
+    public async Task<IEnumerable<TimeSeriesDto>?> GetTimeSeriesByFilter(
+        DataChannelFilter filter,
+        CancellationToken cancellationToken
+    )
+    {
+        var response = await _client.ExecuteAsync<TimeSeriesResponse>(
+            SQLHelper.MountTimeSeriesSQL(filter),
             cancellationToken
         );
         return response?.TimeSeries;
