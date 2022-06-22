@@ -54,7 +54,7 @@ public class Simulator : IHostedService
         var header = dataChannelList.Package.Header;
         var dataChannels = GetDataChannelsForSimulation(dataChannelList);
 
-        var tickInterval = System.TimeSpan.FromSeconds(60);
+        var tickInterval = System.TimeSpan.FromSeconds(1);
         var timer = new PeriodicTimer(tickInterval);
 
         var sentData = new Dictionary<string, List<(double Value, string? Quality)>>();

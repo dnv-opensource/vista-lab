@@ -122,7 +122,6 @@ public sealed class ChannelStreamer : IHostedService
                                 }
                                 var localdIdMqtt = localId.BuildMqtt();
 
-
                                 var tableData = new TabularDataSet(
                                     data.Quality is not null
                                         && data.Quality.Count > 0
