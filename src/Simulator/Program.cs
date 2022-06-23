@@ -7,7 +7,6 @@ using Vista.SDK;
 using Vista.SDK.Transport.Json;
 using Vista.SDK.Transport.Json.DataChannel;
 using Vista.SDK.Transport.Json.TimeSeriesData;
-using Vista.SDK.Transport.TimeSeries;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .UseSerilog((context, logging) => logging.WriteTo.Console())
@@ -41,14 +40,37 @@ public class Simulator : IHostedService
 
     public async Task StartAsync(CancellationToken stoppingToken)
     {
-        var dataChannelListDto = await GetDataChannelList(stoppingToken);
-        var dataChannelList = dataChannelListDto.ToDomainModel();
+        var dataChannelListDtos = (await GetDataChannelLists(stoppingToken)).ToArray();
+        var dataChannelCount = dataChannelListDtos.Length;
+
+        var maxThreads = Math.Min(Math.Min(Environment.ProcessorCount, dataChannelCount), 16);
+        var threads = new Task[maxThreads];
+
+        _logger.LogInformation(
+            "Max threads available: {maxThreads}, ProcessorCount: {processorCount}",
+            maxThreads,
+            Environment.ProcessorCount
+        );
 
         await _mqttClient.ConnectAsync(_mqttOptions, stoppingToken);
         _logger.LogInformation("Connected to ingest API");
         await _mqttClient.PingAsync(stoppingToken);
         _logger.LogInformation("Pinged ingest API successfully");
 
+        for (int i = 0; i < maxThreads; i++)
+        {
+            // Assumes no more than 16 data channel lists
+            var dataChannelDto = dataChannelListDtos[i];
+            threads[i] = Task.Run(() => SimulateDataChannel(dataChannelDto, stoppingToken));
+        }
+    }
+
+    private async Task SimulateDataChannel(
+        DataChannelListPackage dataChannelListDto,
+        CancellationToken stoppingToken
+    )
+    {
+        var dataChannelList = dataChannelListDto.ToDomainModel();
         await Send(dataChannelListDto);
 
         var header = dataChannelList.Package.Header;
@@ -64,8 +86,17 @@ public class Simulator : IHostedService
         {
             var currentTick = DateTimeOffset.UtcNow;
 
-            var timeSeries = Simulate(currentTick, lastTick, header, dataChannels, sentData);
-            await Send(timeSeries.ToJsonDto());
+            var timeSeries = Simulate(
+                currentTick,
+                lastTick,
+                header,
+                dataChannels,
+                sentData,
+                out var simulatedIds
+            );
+
+            if (simulatedIds.Count > 0)
+                await Send(timeSeries.ToJsonDto());
 
             lastTick = currentTick;
         } while (await timer.WaitForNextTickAsync(stoppingToken));
@@ -76,11 +107,12 @@ public class Simulator : IHostedService
         DateTimeOffset lastTick,
         Vista.SDK.Transport.DataChannel.Header header,
         DataChannelInfo[] dataChannels,
-        Dictionary<string, List<(double Value, string? Quality)>> sentData
+        Dictionary<string, List<(double Value, string? Quality)>> sentData,
+        out List<string> channelIds
     )
     {
         var values = new List<string>();
-        var channelIds = new List<string>();
+        channelIds = new List<string>();
         for (int i = 0; i < dataChannels.Length; i++)
         {
             ref readonly var dataChannel = ref dataChannels[i];
@@ -101,7 +133,11 @@ public class Simulator : IHostedService
             values.Add(valueStr);
         }
 
-        _logger.LogInformation("Simulation tick for {channelCount} datachannels", channelIds.Count);
+        _logger.LogInformation(
+            "Simulation tick for {channelCount} datachannels for {dataChannelListId}",
+            channelIds.Count,
+            header.DataChannelListId.Id
+        );
 
         var tableData = new Vista.SDK.Transport.TimeSeries.TabularDataSet(
             currentTick,
@@ -273,7 +309,10 @@ public class Simulator : IHostedService
 
     async Task Send(Vista.SDK.Transport.Json.TimeSeriesData.TimeSeriesDataPackage timeSeriesData)
     {
-        _logger.LogInformation("Sending TimeSeriesData");
+        _logger.LogInformation(
+            "Sending TimeSeriesData for {shipId}",
+            timeSeriesData.Package.Header?.ShipID
+        );
         var json = Serializer.Serialize(timeSeriesData);
         var imoNumber = timeSeriesData.Package.Header?.ShipID.Split("IMO")[1];
         if (string.IsNullOrWhiteSpace(imoNumber))
@@ -284,34 +323,42 @@ public class Simulator : IHostedService
 
     async Task Send(DataChannelListPackage dataChannelList)
     {
-        _logger.LogInformation("Sending DataChannelList");
+        _logger.LogInformation(
+            "Sending DataChannelList for {shipId}",
+            dataChannelList.Package.Header.ShipID
+        );
         var json = Serializer.Serialize(dataChannelList);
         await _mqttClient.PublishStringAsync("DataChannelLists", json);
     }
 
-    async Task<DataChannelListPackage> GetDataChannelList(CancellationToken stoppingToken)
+    async Task<IEnumerable<DataChannelListPackage>> GetDataChannelLists(
+        CancellationToken stoppingToken
+    )
     {
-        Stream GetResource(string name)
+        Stream GetResource(string resourceName)
         {
-            var assembly = Assembly.GetExecutingAssembly();
-            var names = assembly.GetManifestResourceNames();
-            var resourceName = names.FirstOrDefault(n => n.EndsWith(name.Replace("/", ".")));
-            if (resourceName is null)
-                throw new Exception("Couldnt find file");
             return Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName)
                 ?? throw new Exception("Couldnt find file");
         }
+        var assembly = Assembly.GetExecutingAssembly();
+        var names = assembly.GetManifestResourceNames();
 
-        await using var dataChannelsFile = GetResource("resources/DataChannelList.json");
+        var dataChannels = new List<DataChannelListPackage>();
 
-        var dataChannelListDto = await Serializer.DeserializeDataChannelListAsync(
-            dataChannelsFile,
-            stoppingToken
-        );
-        if (dataChannelListDto is null)
-            throw new Exception("Couldnt load datachannels");
+        foreach (var name in names)
+        {
+            await using var dataChannelsFile = GetResource(name);
+            var dataChannelListDto = await Serializer.DeserializeDataChannelListAsync(
+                dataChannelsFile,
+                stoppingToken
+            );
+            if (dataChannelListDto is null)
+                throw new Exception("Couldnt load datachannels");
 
-        return dataChannelListDto;
+            dataChannels.Add(dataChannelListDto);
+        }
+
+        return dataChannels.ToArray();
     }
 
     DataChannelInfo[] GetDataChannelsForSimulation(

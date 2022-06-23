@@ -90,6 +90,9 @@
             "items": {
               "type": "string"
             },
+            "default": [
+              "411/*/C101"
+            ],
             "nullable": true
           },
           "secondaryItem": {
@@ -97,6 +100,7 @@
             "items": {
               "type": "string"
             },
+            "default": null,
             "nullable": true
           },
           "meta": {
@@ -104,6 +108,7 @@
             "items": {
               "type": "string"
             },
+            "default": null,
             "nullable": true
           }
         },

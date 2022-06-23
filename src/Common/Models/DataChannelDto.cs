@@ -123,7 +123,7 @@ public record DataChannelDto(
               : null,
             dc.DataChannel.Property.Format.Type,
             double.TryParse(dc.DataChannel.Property.Range?.Low, out var rangeLow) ? rangeLow : null,
-            double.TryParse(dc.DataChannel.Property.Range?.Low, out var rangehigh)
+            double.TryParse(dc.DataChannel.Property.Range?.High, out var rangehigh)
               ? rangehigh
               : null,
             dc.DataChannel.Property.Unit?.UnitSymbol,
