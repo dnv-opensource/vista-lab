@@ -56,7 +56,7 @@ FROM TimeSeries AS TS
                     " OR ",
                     filter.PrimaryItem.Select(
                         x =>
-                            $" LocalId_PrimaryItem LIKE \'%{x.Replace("/", string.Empty).Replace('*', '%')}%\' "
+                            $" LocalId_PrimaryItem LIKE \'{x.Replace('*', '%')}\' "
                     )
                 );
             return sql;
@@ -70,7 +70,7 @@ FROM TimeSeries AS TS
                     " OR ",
                     filter.SecondaryItem.Select(
                         x =>
-                            $" LocalId_SecondaryItem LIKE \'%{x.Replace("/", string.Empty).Replace('*', '%')}%\' "
+                            $" LocalId_SecondaryItem LIKE \'{x.Replace('*', '%')}\' "
                     )
                 );
             return sql;
