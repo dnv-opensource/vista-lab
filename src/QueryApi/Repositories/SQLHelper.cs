@@ -21,7 +21,10 @@ FROM TimeSeries AS TS
             $"{SELECT_TIME_SERIES} WHERE DC_ID.InternalId = '{internalId}'";
 
         internal static string MountTimeSeriesSQL(DataChannelFilter filter) =>
-            SELECT_TIME_SERIES + TIME_SERIES_DATA_CHANNEL_JOIN + MountDataChannelWhere(filter) + ORDER_BY_TIME_STAMP;
+            SELECT_TIME_SERIES
+            + TIME_SERIES_DATA_CHANNEL_JOIN
+            + MountDataChannelWhere(filter)
+            + ORDER_BY_TIME_STAMP;
 
         private static string MountDataChannelWhere(DataChannelFilter filter)
         {
@@ -55,8 +58,7 @@ FROM TimeSeries AS TS
                 sql += string.Join(
                     " OR ",
                     filter.PrimaryItem.Select(
-                        x =>
-                            $" LocalId_PrimaryItem LIKE \'{x.Replace('*', '%')}\' "
+                        x => $" LocalId_PrimaryItem LIKE \'%{x.Replace('*', '%')}\' "
                     )
                 );
             return sql;
@@ -69,8 +71,7 @@ FROM TimeSeries AS TS
                 sql += string.Join(
                     " OR ",
                     filter.SecondaryItem.Select(
-                        x =>
-                            $" LocalId_SecondaryItem LIKE \'{x.Replace('*', '%')}\' "
+                        x => $" LocalId_SecondaryItem LIKE \'%{x.Replace('*', '%')}\' "
                     )
                 );
             return sql;
