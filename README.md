@@ -18,3 +18,7 @@ This lab project is still under active development.
 ```sh
 docker-compose up -d
 ```
+
+### Architecture
+
+![Architecture diagram](img/Architecture.png)

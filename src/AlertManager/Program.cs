@@ -92,7 +92,7 @@ public class Manager : IHostedService
                           => (
                               LogLevel.Error,
                               string.Format(
-                                  "{0} - Exceeded upper limit {1}",
+                                  "{0} - Exceeded lower limit {1}",
                                   alert.Name,
                                   value.ToString()
                               )

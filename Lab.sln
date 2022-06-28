@@ -36,9 +36,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QueryApi.Unit.Test", "test\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MqttBroker", "src\MqttBroker\MqttBroker.csproj", "{81CEFE93-0E20-4D96-97FE-018CAAE7E785}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlertManager", "src\AlertManager\AlertManager.csproj", "{508C40B5-7585-4BC8-BBA0-85F9A7ABBCDB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlertManager", "src\AlertManager\AlertManager.csproj", "{508C40B5-7585-4BC8-BBA0-85F9A7ABBCDB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChannelStreamer", "src\ChannelStreamer\ChannelStreamer.csproj", "{FD545A08-9A9C-4D77-A63B-DAAC4FEDB24C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChannelStreamer", "src\ChannelStreamer\ChannelStreamer.csproj", "{FD545A08-9A9C-4D77-A63B-DAAC4FEDB24C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -91,6 +91,7 @@ Global
 		{7A936296-48A2-4DB6-A35A-5F4ADE42F52A} = {C88C1029-A7C4-418D-8237-AD5E4816CE07}
 		{81CEFE93-0E20-4D96-97FE-018CAAE7E785} = {0A3D72B8-906E-47B5-A037-0E85A2E2FD39}
 		{508C40B5-7585-4BC8-BBA0-85F9A7ABBCDB} = {0A3D72B8-906E-47B5-A037-0E85A2E2FD39}
+		{FD545A08-9A9C-4D77-A63B-DAAC4FEDB24C} = {0A3D72B8-906E-47B5-A037-0E85A2E2FD39}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A0945772-7394-4A0D-BFC1-2B98CB6F215E}
