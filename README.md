@@ -7,11 +7,8 @@ We also want to identify and give guidance on topics that are important to consi
 * Storage, indexing, querying,
 * VIS versioning
 
----
-**NOTE**
-
-This lab project is still under active development.
----
+> **Note**
+> This project is currently under active development, so it may change rapidly
 
 ### Try it out
 
