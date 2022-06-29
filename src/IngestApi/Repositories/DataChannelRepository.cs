@@ -13,8 +13,6 @@ public sealed class DataChannelRepository : IDataChannelRepository
     private readonly IDbClient _dbClient;
     private readonly QuestDbInsertClient _qdbClient;
 
-    //private readonly Dictionary<Guid, string> _internalIdMapping = new();
-
     public DataChannelRepository(
         IDbClient client,
         QuestDbInsertClient qdbClient,
@@ -111,47 +109,97 @@ public sealed class DataChannelRepository : IDataChannelRepository
 
             foreach (var param in dataChannelParam)
             {
-                //_internalIdMapping.Add(Guid.Parse(param.InternalId), param.LocalId!);
-                var codeBookNames = Enum.GetValues(typeof(CodebookName))
-                    .Cast<CodebookName>()
-                    .Select(c => c.ToString());
+                client
+                    .Table("DataChannel")
+                    .Symbol("VesselId", param.VesselId)
+                    .Symbol("LocalId_Position", param.LocalIdBuilder.Position)
+                    .Symbol("LocalId_Quantity", param.LocalIdBuilder.Quantity)
+                    .Symbol("LocalId_Calculation", param.LocalIdBuilder.Calculation)
+                    .Symbol("LocalId_Content", param.LocalIdBuilder.Content)
+                    .Symbol("LocalId_Command", param.LocalIdBuilder.Command)
+                    .Symbol("LocalId_Type", param.LocalIdBuilder.Type)
+                    .Symbol("LocalId_Detail", param.LocalIdBuilder.Detail)
+                    .Column("InternalId", param.InternalId?.ToString())
+                    .Column("ShortId", param.ShortId)
+                    .Column("LocalId", param.LocalId)
+                    .Column("Name", param.Name)
+                    .Column("DataChannelType", param.DataChannelType)
+                    .Column("FormatType", param.FormatType)
+                    .Column("UnitSymbol", param.UnitSymbol)
+                    .Column("QuantityName", param.QuantityName)
+                    .Column("QualityCoding", param.QualityCoding)
+                    .Column("Remarks", param.Remarks)
+                    .Column("FormatRestriction_Type", param.FormatRestriction?.Type)
+                    .Column("FormatRestriction_Enumeration", param.FormatRestriction?.Enumeration)
+                    .Column(
+                        "FormatRestriction_FractionDigits",
+                        param.FormatRestriction?.FractionDigits
+                    )
+                    .Column("FormatRestriction_WhiteSpace", param.FormatRestriction?.WhiteSpace)
+                    .Column("LocalId_VisVersion", param.LocalIdBuilder!.VisVersion)
+                    .Column("LocalId_PrimaryItem", param.LocalIdBuilder.PrimaryItem)
+                    .Column("LocalId_SecondaryItem", param.LocalIdBuilder.SecondaryItem);
 
-                client.Table("DataChannel").Symbol("VesselId", param.VesselId);
+                if (param.UpdateCycle is not null)
+                    client.Column("UpdateCycle", (double)param.UpdateCycle);
 
-                var paramType = param.GetType();
+                if (param.CalculationPeriod is not null)
+                    client.Column("CalculationPeriod", (double)param.CalculationPeriod);
 
-                foreach (var codebook in codeBookNames)
-                {
-                    var val = paramType.GetProperty("LocalId_" + codebook)?.GetValue(param, null);
-                    if (val is null)
-                        continue;
+                if (param.RangeLow is not null)
+                    client.Column("RangeLow", (double)param.RangeLow);
 
-                    client.Symbol("LocalId_" + codebook, val.ToString());
-                }
+                if (param.RangeHigh is not null)
+                    client.Column("RangeHigh", (double)param.RangeHigh);
 
-                foreach (
-                    var field in paramType
-                        .GetProperties()
-                        .Where(
-                            n =>
-                                !codeBookNames.Contains(n.Name.Split("LocalId_").Last())
-                                && n.Name != "Timestamp"
-                        )
-                )
-                {
-                    var fieldValue = field.GetValue(param, null)?.ToString();
+                if (param.FormatRestriction?.MaxExclusive is not null)
+                    client.Column(
+                        "FormatRestriction_MaxExclusive",
+                        (double)param.FormatRestriction.MaxExclusive
+                    );
 
-                    if (fieldValue is null)
-                        continue;
+                if (param.FormatRestriction?.MaxInclusive is not null)
+                    client.Column(
+                        "FormatRestriction_MaxInclusive",
+                        (double)param.FormatRestriction.MaxInclusive
+                    );
 
-                    if (double.TryParse(fieldValue, out double value))
-                    {
-                        client.Column(field.Name, value);
-                        continue;
-                    }
+                if (param.FormatRestriction?.MinExclusive is not null)
+                    client.Column(
+                        "FormatRestriction_MinExclusive",
+                        (double)param.FormatRestriction.MinExclusive
+                    );
 
-                    client.Column(field.Name, fieldValue);
-                }
+                if (param.FormatRestriction?.MinInclusive is not null)
+                    client.Column(
+                        "FormatRestriction_MinInclusive",
+                        (double)param.FormatRestriction.MinInclusive
+                    );
+
+                if (param.FormatRestriction?.Length is not null)
+                    client.Column(
+                        "FormatRestriction_Length",
+                        (double)param.FormatRestriction.Length
+                    );
+
+                if (param.FormatRestriction?.MinLength is not null)
+                    client.Column(
+                        "FormatRestriction_MinLength",
+                        (double)param.FormatRestriction.MinLength
+                    );
+
+                if (param.FormatRestriction?.Pattern is not null)
+                    client.Column(
+                        "FormatRestriction_Pattern",
+                        (double)param.FormatRestriction.Pattern
+                    );
+
+                if (param.FormatRestriction?.TotalDigits is not null)
+                    client.Column(
+                        "FormatRestriction_TotalDigits",
+                        (double)param.FormatRestriction.TotalDigits
+                    );
+
                 client.At(param.Timestamp);
 
                 client
