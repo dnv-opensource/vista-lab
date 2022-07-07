@@ -7,13 +7,16 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "generate-client": "rm -rf client/* && openapi-generator-cli generate -i api-openapi-schema.json -g typescript-fetch -o client/ --additional-properties=typescriptThreePlus=true"
+    "generate-client": "rimraf ./client && openapi-generator-cli generate -i ./api-openapi-schema.json --skip-validate-spec -g typescript-fetch -o client/ --additional-properties=typescriptThreePlus=true"
   },
   "dependencies": {
     "@openapitools/openapi-generator-cli": "^2.4.26",
+    "eslint-plugin-prettier": "^4.2.1",
     "next": "12.1.0",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "rimraf": "^3.0.2",
+    "rm": "^0.1.8"
   },
   "devDependencies": {
     "@types/node": "17.0.21",

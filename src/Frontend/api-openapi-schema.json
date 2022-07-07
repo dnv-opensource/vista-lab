@@ -91,7 +91,7 @@
               "type": "string"
             },
             "default": [
-              "411/*/C101"
+              "411/*/C101.31-*"
             ],
             "nullable": true
           },

@@ -1,7 +1,7 @@
-apis/QueryApi.ts
-apis/VesselApi.ts
+.openapi-generator-ignore
+apis/DataChannelApi.ts
 apis/index.ts
 index.ts
-models/Vessel.ts
+models/DataChannelFilter.ts
 models/index.ts
 runtime.ts
