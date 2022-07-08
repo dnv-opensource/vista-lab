@@ -1,0 +1,61 @@
+@import 'src/styles/global';
+@import 'src/styles/colors';
+
+.header-wrapper {
+  width: 100%;
+  height: 50px;
+  box-shadow: $drop-shadow;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  padding: 0.5rem 1rem;
+
+  .dnv-logo {
+    height: 100%;
+    width: 84px;
+    background-repeat: no-repeat;
+    background-image: url('../../assets/DNV_logo_RGB.svg');
+  }
+
+  .routes {
+    flex: 1;
+    padding: 1.5rem;
+    .route {
+      font-size: 18px;
+      font-weight: 500;
+      margin-right: 1rem;
+      white-space: nowrap;
+
+      &:hover {
+        color: $placeholder-grey;
+      }
+
+      &.active-route {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .vista-info {
+    display: flex;
+
+    p {
+      margin: 0;
+      margin-top: auto;
+    }
+
+    .vista-logo {
+      font-size: 1.25rem;
+      white-space: nowrap;
+      font-weight: 500;
+      padding-right: 0.5rem;
+      border-right: black solid 2px;
+    }
+
+    .vista-help {
+      margin-top: auto;
+      margin-left: 0.5rem;
+    }
+  }
+}
