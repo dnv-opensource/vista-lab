@@ -7,9 +7,7 @@
   "paths": {
     "/api/data-channel": {
       "post": {
-        "tags": [
-          "DataChannel"
-        ],
+        "tags": ["DataChannel"],
         "summary": "Search for data channels based in the given filters",
         "operationId": "DataChannelPost",
         "requestBody": {
@@ -24,16 +22,24 @@
         },
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DataChannelDto"
+                  }
+                }
+              }
+            }
           }
         }
       }
     },
     "/api/data-channel/{id}/time-series": {
       "get": {
-        "tags": [
-          "DataChannel"
-        ],
+        "tags": ["DataChannel"],
         "summary": "Search for time series given a data channel internalId",
         "operationId": "DataChannelGet",
         "parameters": [
@@ -57,9 +63,7 @@
     },
     "/api/data-channel/time-series": {
       "post": {
-        "tags": [
-          "DataChannel"
-        ],
+        "tags": ["DataChannel"],
         "summary": "Search for time series given a data channel internalId",
         "operationId": "DataChannelPostSearchByFilter",
         "requestBody": {
@@ -82,6 +86,82 @@
   },
   "components": {
     "schemas": {
+      "DataChannelDto": {
+        "type": "object",
+        "properties": {
+          "internalId": {
+            "type": "string"
+          },
+          "shortId": {
+            "type": "string",
+            "nullable": true
+          },
+          "localId": {
+            "type": "string"
+          },
+          "vesselId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "dataChannelType": {
+            "type": "string"
+          },
+          "updateCycle": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "calculationPeriod": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "formatType": {
+            "type": "string",
+            "nullable": true
+          },
+          "rangeLow": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "rangeHigh": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "unitSymbol": {
+            "type": "string",
+            "nullable": true
+          },
+          "quantityName": {
+            "type": "string",
+            "nullable": true
+          },
+          "qualityCoding": {
+            "type": "string",
+            "nullable": true
+          },
+          "remarks": {
+            "type": "string",
+            "nullable": true
+          },
+          "formatRestriction": {
+            "$ref": "#/components/schemas/FormatRestrictionDto"
+          },
+          "localIdBuilder": {
+            "$ref": "#/components/schemas/LocalIdDto"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
       "DataChannelFilter": {
         "type": "object",
         "properties": {
@@ -90,9 +170,7 @@
             "items": {
               "type": "string"
             },
-            "default": [
-              "411/*/C101.31-*"
-            ],
+            "default": ["411/*/C101.31-*"],
             "nullable": true
           },
           "secondaryItem": {
@@ -109,6 +187,121 @@
               "type": "string"
             },
             "default": null,
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FormatRestrictionDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "enumeration": {
+            "type": "string",
+            "nullable": true
+          },
+          "fractionDigits": {
+            "type": "string",
+            "nullable": true
+          },
+          "length": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "maxExclusive": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "maxInclusive": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "maxLength": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "minExclusive": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "minInclusive": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "minLength": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pattern": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "totalDigits": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "whiteSpace": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "LocalIdDto": {
+        "type": "object",
+        "properties": {
+          "visVersion": {
+            "type": "string"
+          },
+          "primaryItem": {
+            "type": "string"
+          },
+          "secondaryItem": {
+            "type": "string",
+            "nullable": true
+          },
+          "position": {
+            "type": "string",
+            "nullable": true
+          },
+          "quantity": {
+            "type": "string",
+            "nullable": true
+          },
+          "calculation": {
+            "type": "string",
+            "nullable": true
+          },
+          "state": {
+            "type": "string",
+            "nullable": true
+          },
+          "content": {
+            "type": "string",
+            "nullable": true
+          },
+          "command": {
+            "type": "string",
+            "nullable": true
+          },
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
             "nullable": true
           }
         },

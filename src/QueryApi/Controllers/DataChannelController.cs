@@ -1,3 +1,4 @@
+using Common.Models;
 using Microsoft.AspNetCore.Mvc;
 using VistaLab.QueryApi.Models;
 using VistaLab.QueryApi.Repository;
@@ -21,7 +22,7 @@ public sealed class DataChannelController : ApiControllerBase<DataChannelControl
     /// <param name="cancellationToken"></param>
     [HttpPost]
     [Route("api/data-channel")]
-    public async Task<ActionResult> Post(
+    public async Task<ActionResult<IEnumerable<DataChannelDto>?>> Post(
         DataChannelFilter filter,
         CancellationToken cancellationToken
     )
