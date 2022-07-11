@@ -19,6 +19,7 @@
   }
 
   .routes {
+    display: flex;
     flex: 1;
     padding: 1.5rem;
     .route {
@@ -46,7 +47,6 @@
     }
 
     .vista-logo {
-      font-size: 1.25rem;
       white-space: nowrap;
       font-weight: 500;
       padding-right: 0.5rem;
