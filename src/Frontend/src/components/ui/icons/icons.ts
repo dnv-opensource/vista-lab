@@ -13,6 +13,7 @@ import {
   faTag,
   faMicrochip,
   faTimes,
+  faSpinner,
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
@@ -28,7 +29,8 @@ library.add(
   faArrowLeft,
   faTag,
   faMicrochip,
-  faTimes
+  faTimes,
+  faSpinner
 );
 
 // Make sure these correspond with FontAwsome v6.1 icon names
@@ -44,6 +46,7 @@ export enum IconName {
   Tag = 'tag',
   Microchip = 'microchip',
   Times = 'times',
+  Spinner = 'spinner',
 }
 
 export enum IconVariant {

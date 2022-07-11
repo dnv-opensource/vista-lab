@@ -21,8 +21,6 @@ const Icon: React.FC<Props> = ({ icon, variant = IconVariant.Solid, className, o
       //@ts-ignore
       icon={`fa-${variant} fa-${icon}`}
       onClick={e => {
-        console.log(e);
-
         onClick?.(e);
       }}
       tabIndex={onClick && 0}

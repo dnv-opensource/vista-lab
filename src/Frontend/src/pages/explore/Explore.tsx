@@ -1,19 +1,21 @@
-import React from 'react';
-import { IconName } from '../../components/ui/icons/icons';
-import Input from '../../components/ui/input/Input';
+import React, { useCallback } from 'react';
+import SearchBar from '../../components/explore/SearchBar/SearchBar';
+import './Explore.scss';
 
-interface Props {}
+const Explore: React.FC = () => {
+  const handleSearchSubmit = useCallback(async (value?: string) => {
+    await new Promise(res => {
+      setTimeout(() => {
+        console.log(value);
+        res(undefined);
+      }, 1000);
+    });
+  }, []);
 
-const Explore: React.FC<Props> = () => {
   return (
-    <form
-      onSubmit={e => {
-        e.preventDefault();
-        console.log('sub');
-      }}
-    >
-      <Input icon={IconName.Search} placeholder="Search" />
-    </form>
+    <div className={'vista-explore'}>
+      <SearchBar onSubmit={handleSearchSubmit} />
+    </div>
   );
 };
 
