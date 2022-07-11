@@ -1,0 +1,16 @@
+.ui-text {
+  margin: 0;
+}
+
+.ui-text-with-icon-wrapper {
+  display: flex;
+  align-items: center;
+
+  .icon-left {
+    margin-right: 0.3rem;
+  }
+
+  .icon-right {
+    margin-left: 0.3rem;
+  }
+}
