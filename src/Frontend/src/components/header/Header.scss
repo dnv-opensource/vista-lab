@@ -9,7 +9,7 @@
   justify-content: space-between;
   align-items: center;
   background-color: white;
-  padding: 0.5rem 1rem;
+  padding: 9px 18px;
 
   .dnv-logo {
     height: 100%;
@@ -21,11 +21,12 @@
   .routes {
     display: flex;
     flex: 1;
-    padding: 1.5rem;
+    padding: 24px;
+    font-size: 24px;
+
     .route {
-      font-size: 18px;
       font-weight: 500;
-      margin-right: 1rem;
+      margin-right: 18px;
       white-space: nowrap;
 
       &:hover {
@@ -35,11 +36,16 @@
       &.active-route {
         text-decoration: underline;
       }
+
+      .route-icon {
+        font-size: 0.8em;
+      }
     }
   }
 
   .vista-info {
     display: flex;
+    font-size: 18px;
 
     p {
       margin: 0;
@@ -47,15 +53,17 @@
     }
 
     .vista-logo {
+      font-size: 1em;
       white-space: nowrap;
       font-weight: 500;
-      padding-right: 0.5rem;
+      padding-right: 9px;
       border-right: black solid 2px;
     }
 
     .vista-help {
+      font-size: 1em;
       margin-top: auto;
-      margin-left: 0.5rem;
+      margin-left: 9px;
     }
   }
 }

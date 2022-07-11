@@ -1,0 +1,57 @@
+@import 'src/styles/colors';
+@import 'src/styles/variables';
+@import 'src/styles/global';
+
+.ui-input {
+  @include remove-input-style;
+  width: 100%;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0.3em;
+  gap: 0.4em;
+  color: $dark-blue;
+
+  background-color: $white;
+  box-shadow: $drop-shadow;
+  border-radius: 4px;
+  border: 1px solid #e3e8ee;
+
+  &:focus-within {
+    border: 1px solid $teal;
+  }
+
+  input {
+    color: inherit;
+    font-weight: 500;
+    font-size: 0.8em;
+
+    &::placeholder {
+      /* Chrome, Firefox, Opera, Safari 10.1+ */
+      color: $placeholder-grey;
+      opacity: 1; /* Firefox */
+    }
+
+    &:-ms-input-placeholder {
+      /* Internet Explorer 10-11 */
+      color: $placeholder-grey;
+    }
+
+    &::-ms-input-placeholder {
+      /* Microsoft Edge */
+      color: $placeholder-grey;
+    }
+  }
+
+  .ui-icon {
+    color: $grey;
+    font-size: 0.6em;
+  }
+
+  .cancel-icon {
+    &.empty {
+      visibility: hidden;
+    }
+  }
+}

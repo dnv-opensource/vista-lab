@@ -1,0 +1,11 @@
+@mixin remove-input-style {
+  input {
+    padding: unset;
+    border: unset;
+    background-color: unset;
+
+    &:focus-visible {
+      outline: unset;
+    }
+  }
+}

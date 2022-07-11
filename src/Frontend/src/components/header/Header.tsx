@@ -17,7 +17,9 @@ const Header: React.FC = () => {
             to={route.path}
             className={({ isActive }) => clsx('route', isActive && 'active-route')}
           >
-            <TextWithIcon icon={IconName.Search}>{route.title}</TextWithIcon>
+            <TextWithIcon icon={IconName.Search} iconClassName="route-icon">
+              {route.title}
+            </TextWithIcon>
           </NavLink>
         ))}
       </div>
