@@ -3,8 +3,11 @@ using System.Dynamic;
 
 namespace VistaLab.QueryApi.Models
 {
-    public sealed record DataChannelResponse : BaseResponse
+    public sealed record DataChannelResponse : BaseResponse<DataChannelDto>
     {
+        public DataChannelResponse(string Query, Column[] Columns, object[][] Dataset, int Count)
+            : base(Query, Columns, Dataset, Count) { }
+
         public IEnumerable<DataChannelDto>? DataChannels
         {
             get =>

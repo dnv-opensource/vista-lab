@@ -9,6 +9,7 @@ var configuration = builder.Configuration;
 
 builder.Host.UseSerilog((context, logging) => logging.WriteTo.Console());
 builder.Services.AddSingleton<IDataChannelRepository, DataChannelRepository>();
+builder.Services.AddSingleton<VesselRepository>();
 builder.Services.AddHttpClient<IDbClient, DbClient>();
 builder.Services.AddVIS();
 

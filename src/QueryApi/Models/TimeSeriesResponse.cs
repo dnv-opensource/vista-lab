@@ -2,8 +2,11 @@ using Common.Models;
 
 namespace VistaLab.QueryApi.Models
 {
-    public sealed record TimeSeriesResponse : BaseResponse
+    public sealed record TimeSeriesResponse : BaseResponse<TimeSeriesDto>
     {
+        public TimeSeriesResponse(string Query, Column[] Columns, object[][] Dataset, int Count)
+            : base(Query, Columns, Dataset, Count) { }
+
         public IEnumerable<TimeSeriesDto>? TimeSeries
         {
             get =>

@@ -1,5 +1,5 @@
-using Newtonsoft.Json;
 using System.Net;
+using System.Text.Json;
 
 using System.Web;
 
@@ -14,12 +14,14 @@ public interface IDbClient
 public sealed class DbClient : IDbClient
 {
     private readonly HttpClient _httpClient;
+    private readonly JsonSerializerOptions _jsonOptions;
 
     public DbClient(HttpClient httpClient)
     {
         _httpClient = httpClient;
         var dbHost = Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost:9000";
         _httpClient.BaseAddress = new Uri($"http://{dbHost}/exec");
+        _jsonOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
     }
 
     public async ValueTask ExecuteAsync(string query, CancellationToken cancellationToken)
@@ -43,9 +45,14 @@ public sealed class DbClient : IDbClient
             );
         }
 
-        var json = JsonConvert.DeserializeObject<T>(
-            await result.Content.ReadAsStringAsync(cancellationToken)
+        var json = JsonSerializer.Deserialize<T>(
+            await result.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false),
+            _jsonOptions
         );
+
+        //var json = JsonConvert.DeserializeObject<T>(
+        //    await result.Content.ReadAsStringAsync(cancellationToken)
+        //);
 
         return json;
     }
