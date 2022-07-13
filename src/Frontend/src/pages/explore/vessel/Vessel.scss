@@ -1,0 +1,16 @@
+@import 'src/styles/colors';
+
+.vessel-result-bar {
+  color: $placeholder-grey;
+  .back {
+    cursor: pointer;
+    display: flex;
+    gap: 0 5px;
+    align-items: center;
+  }
+  .status {
+    display: flex;
+    gap: 0 10px;
+    align-items: center;
+  }
+}

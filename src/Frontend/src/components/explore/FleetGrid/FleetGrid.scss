@@ -1,0 +1,16 @@
+@import 'src/styles/colors';
+@import 'src/styles/variables';
+
+.fleet-grid-result {
+  color: $placeholder-grey;
+}
+
+.fleet-grid {
+  margin-top: 0.2em;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6em;
+
+  overflow-y: auto;
+  @include scroll-bar;
+}

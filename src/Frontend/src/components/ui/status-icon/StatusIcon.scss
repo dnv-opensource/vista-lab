@@ -1,0 +1,22 @@
+@import 'src/styles/colors';
+@import 'src/styles/global';
+
+.status-icon {
+  border-radius: 50%;
+  $icon-size: 1.2em;
+  width: $icon-size;
+  height: $icon-size;
+  box-shadow: $drop-shadow;
+
+  &.good {
+    background-color: $good;
+  }
+
+  &.warning {
+    background-color: $warning;
+  }
+
+  &.danger {
+    background-color: $danger;
+  }
+}
