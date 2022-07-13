@@ -6,7 +6,13 @@ import { IconName } from '../../../components/ui/icons/icons';
 import StatusIcon, { StatusVariant } from '../../../components/ui/status-icon/StatusIcon';
 import './Vessel.scss';
 
-const Vessel: React.FC = () => {
+export type Vessel = {
+  numDataChannels: number;
+  vesselId: string;
+  status: number;
+};
+
+const VesselComp: React.FC = () => {
   const { vesselId } = useParams();
   const [searchParams] = useSearchParams();
   const queryParam = useMemo(() => searchParams.get('query'), [searchParams]);
@@ -33,4 +39,4 @@ const Vessel: React.FC = () => {
   );
 };
 
-export default Vessel;
+export default VesselComp;

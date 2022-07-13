@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
-import { Vessel } from '../../../client/models/Vessel';
+import { Vessel } from '../../../pages/explore/vessel/Vessel';
 import FlipCard from '../../ui/flip-card/FlipCard';
 import Icon from '../../ui/icons/Icon';
 import { IconName } from '../../ui/icons/icons';

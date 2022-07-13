@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
-import { Vessel } from '../../../client/models/Vessel';
-import { VesselStatus } from '../../../client/models/VesselStatus';
+import { Vessel } from '../../../pages/explore/vessel/Vessel';
 import ResultBar from '../../shared/result-bar/ResultBar';
 import VesselCard from '../VesselCard/VesselCard';
 import './FleetGrid.scss';
@@ -8,24 +7,24 @@ import './FleetGrid.scss';
 const FleetGrid: React.FC = () => {
   const vessels = useMemo<Vessel[]>(
     () => [
-      { numDataChannels: 120, vesselId: 'IMO1234567', status: VesselStatus.NUMBER_0 },
-      { numDataChannels: 120, vesselId: 'IMO1234567', status: VesselStatus.NUMBER_0 },
-      { numDataChannels: 120, vesselId: 'IMO1234567', status: VesselStatus.NUMBER_0 },
-      { numDataChannels: 120, vesselId: 'IMO1234567', status: VesselStatus.NUMBER_0 },
-      { numDataChannels: 120, vesselId: 'IMO1234567', status: VesselStatus.NUMBER_0 },
-      { numDataChannels: 120, vesselId: 'IMO1234567', status: VesselStatus.NUMBER_0 },
-      { numDataChannels: 120, vesselId: 'IMO1234567', status: VesselStatus.NUMBER_0 },
-      { numDataChannels: 120, vesselId: 'IMO1234567', status: VesselStatus.NUMBER_0 },
-      { numDataChannels: 120, vesselId: 'IMO1234567', status: VesselStatus.NUMBER_0 },
-      { numDataChannels: 120, vesselId: 'IMO1234567', status: VesselStatus.NUMBER_0 },
-      { numDataChannels: 120, vesselId: 'IMO1234567', status: VesselStatus.NUMBER_0 },
-      { numDataChannels: 120, vesselId: 'IMO1234567', status: VesselStatus.NUMBER_0 },
-      { numDataChannels: 120, vesselId: 'IMO1234567', status: VesselStatus.NUMBER_0 },
-      { numDataChannels: 120, vesselId: 'IMO1234567', status: VesselStatus.NUMBER_0 },
-      { numDataChannels: 120, vesselId: 'IMO1234567', status: VesselStatus.NUMBER_0 },
-      { numDataChannels: 120, vesselId: 'IMO1234567', status: VesselStatus.NUMBER_0 },
-      { numDataChannels: 120, vesselId: 'IMO1234567', status: VesselStatus.NUMBER_0 },
-      { numDataChannels: 120, vesselId: 'IMO1234567', status: VesselStatus.NUMBER_0 },
+      { numDataChannels: 120, vesselId: 'IMO1234567', status: 0 },
+      { numDataChannels: 120, vesselId: 'IMO1234567', status: 0 },
+      { numDataChannels: 120, vesselId: 'IMO1234567', status: 0 },
+      { numDataChannels: 120, vesselId: 'IMO1234567', status: 0 },
+      { numDataChannels: 120, vesselId: 'IMO1234567', status: 0 },
+      { numDataChannels: 120, vesselId: 'IMO1234567', status: 0 },
+      { numDataChannels: 120, vesselId: 'IMO1234567', status: 0 },
+      { numDataChannels: 120, vesselId: 'IMO1234567', status: 0 },
+      { numDataChannels: 120, vesselId: 'IMO1234567', status: 0 },
+      { numDataChannels: 120, vesselId: 'IMO1234567', status: 0 },
+      { numDataChannels: 120, vesselId: 'IMO1234567', status: 0 },
+      { numDataChannels: 120, vesselId: 'IMO1234567', status: 0 },
+      { numDataChannels: 120, vesselId: 'IMO1234567', status: 0 },
+      { numDataChannels: 120, vesselId: 'IMO1234567', status: 0 },
+      { numDataChannels: 120, vesselId: 'IMO1234567', status: 0 },
+      { numDataChannels: 120, vesselId: 'IMO1234567', status: 0 },
+      { numDataChannels: 120, vesselId: 'IMO1234567', status: 0 },
+      { numDataChannels: 120, vesselId: 'IMO1234567', status: 0 },
     ],
     []
   );
