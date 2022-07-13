@@ -6,10 +6,10 @@ public sealed class DbSchemas
         $@"
         CREATE TABLE IF NOT EXISTS {DataChannelEntity.TableName}
         (
-            {nameof(DataChannelEntity.InternalId)} SYMBOL capacity 8388608 nocache index capacity 8388608 NOT NULL,
+            {nameof(DataChannelEntity.InternalId)} SYMBOL capacity 1048576 nocache index capacity 8192 NOT NULL,
             {nameof(DataChannelEntity.ShortId)} STRING,
             {nameof(DataChannelEntity.LocalId)} STRING NOT NULL,
-            {nameof(DataChannelEntity.VesselId)} SYMBOL capacity 1024 cache index capacity 1048576 NOT NULL,
+            {nameof(DataChannelEntity.VesselId)} SYMBOL capacity 1024 cache index capacity 8192 NOT NULL,
 
             {nameof(DataChannelEntity.NameObject_NamingRule)} STRING,
 
@@ -42,16 +42,16 @@ public sealed class DbSchemas
             {nameof(DataChannelEntity.Name)} STRING,
             {nameof(DataChannelEntity.Remarks)} STRING,
 
-            {nameof(DataChannelEntity.LocalId_VisVersion)} SYMBOL capacity 1024 cache index capacity 1024 NOT NULL,
-            {nameof(DataChannelEntity.LocalId_PrimaryItem)} SYMBOL capacity 1024 cache index capacity 1048576 NOT NULL,
-            {nameof(DataChannelEntity.LocalId_SecondaryItem)} SYMBOL capacity 1024 cache index capacity 1048576,
-            {nameof(DataChannelEntity.LocalId_Position)} SYMBOL capacity 1024 cache index capacity 1024,
-            {nameof(DataChannelEntity.LocalId_Quantity)} SYMBOL capacity 1024 cache index capacity 1024,
-            {nameof(DataChannelEntity.LocalId_Calculation)} SYMBOL capacity 1024 cache index capacity 1024,
-            {nameof(DataChannelEntity.LocalId_Content)} SYMBOL capacity 1024 cache index capacity 1024,
-            {nameof(DataChannelEntity.LocalId_Command)} SYMBOL capacity 1024 cache index capacity 1024,
-            {nameof(DataChannelEntity.LocalId_Type)} SYMBOL capacity 1024 cache index capacity 1024,
-            {nameof(DataChannelEntity.LocalId_Detail)} SYMBOL capacity 1024 cache index capacity 1024,
+            {nameof(DataChannelEntity.LocalId_VisVersion)} SYMBOL capacity 128 cache index capacity 8192 NOT NULL,
+            {nameof(DataChannelEntity.LocalId_PrimaryItem)} SYMBOL capacity 8192 cache index capacity 8192 NOT NULL,
+            {nameof(DataChannelEntity.LocalId_SecondaryItem)} SYMBOL capacity 8192 cache index capacity 8192,
+            {nameof(DataChannelEntity.LocalId_Position)} SYMBOL capacity 1024 cache index capacity 8192,
+            {nameof(DataChannelEntity.LocalId_Quantity)} SYMBOL capacity 1024 cache index capacity 8192,
+            {nameof(DataChannelEntity.LocalId_Calculation)} SYMBOL capacity 1024 cache index capacity 8192,
+            {nameof(DataChannelEntity.LocalId_Content)} SYMBOL capacity 1024 cache index capacity 8192,
+            {nameof(DataChannelEntity.LocalId_Command)} SYMBOL capacity 1024 cache index capacity 8192,
+            {nameof(DataChannelEntity.LocalId_Type)} SYMBOL capacity 1024 cache index capacity 8192,
+            {nameof(DataChannelEntity.LocalId_Detail)} SYMBOL capacity 1024 cache index capacity 8192,
 
             {nameof(DataChannelEntity.Timestamp)} TIMESTAMP NOT NULL
         ) timestamp({nameof(DataChannelEntity.Timestamp)})
@@ -62,8 +62,8 @@ public sealed class DbSchemas
         $@"
         CREATE TABLE IF NOT EXISTS {TimeSeriesEntity.TableName}
         (
-            {nameof(TimeSeriesEntity.DataChannelId)} SYMBOL capacity 8388608 nocache index capacity 8388608 NOT NULL,
-            {nameof(TimeSeriesEntity.VesselId)} SYMBOL capacity 1024 cache index capacity 1048576 NOT NULL,
+            {nameof(TimeSeriesEntity.DataChannelId)} SYMBOL capacity 1048576 nocache index capacity 8192 NOT NULL,
+            {nameof(TimeSeriesEntity.VesselId)} SYMBOL capacity 1024 cache index capacity 8192 NOT NULL,
             {nameof(TimeSeriesEntity.Value)} STRING,
             {nameof(TimeSeriesEntity.Quality)} STRING,
             {nameof(TimeSeriesEntity.Timestamp)} TIMESTAMP NOT NULL
@@ -75,9 +75,9 @@ public sealed class DbSchemas
         $@"
         CREATE TABLE IF NOT EXISTS {DataChannelInternalIdEntity.TableName}
         (
-            {nameof(DataChannelInternalIdEntity.DataChannelId)} SYMBOL capacity 8388608 nocache index capacity 8388608 NOT NULL,
-            {nameof(DataChannelInternalIdEntity.VesselId)} SYMBOL capacity 1024 cache index capacity 1048576 NOT NULL,
-            {nameof(DataChannelInternalIdEntity.InternalId)} SYMBOL capacity 8388608 nocache index capacity 8388608 NOT NULL,
+            {nameof(DataChannelInternalIdEntity.DataChannelId)} SYMBOL capacity 1048576 nocache index capacity 8192 NOT NULL,
+            {nameof(DataChannelInternalIdEntity.VesselId)} SYMBOL capacity 1024 cache index capacity 8192 NOT NULL,
+            {nameof(DataChannelInternalIdEntity.InternalId)} SYMBOL capacity 1048576 nocache index capacity 8192 NOT NULL,
             {nameof(DataChannelInternalIdEntity.Timestamp)} TIMESTAMP NOT NULL
         ) timestamp({nameof(DataChannelInternalIdEntity.Timestamp)})
         PARTITION BY YEAR;

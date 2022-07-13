@@ -210,6 +210,8 @@ public sealed class DataChannelRepository : IHostedService
 
             var vesselId = timeSeriesData.Package.Header?.ShipID;
 
+            var count = 0;
+
             foreach (var timeSeries in timeSeriesData.Package.TimeSeriesData)
             {
                 foreach (var table in timeSeries.TabularData!)
@@ -237,12 +239,17 @@ public sealed class DataChannelRepository : IHostedService
                                     j < data.Quality?.Count ? data.Quality?[j] : null
                                 )
                                 .At(data.TimeStamp.DateTime);
+                            count++;
                         }
                     }
                 }
             }
+
             await client.SendAsync(cancellationToken);
-            _logger.LogInformation("Finished inserting data into TimeSeries");
+            _logger.LogInformation(
+                "Finished inserting data into TimeSeries - samples={samplesCount}",
+                count
+            );
         }
         catch (Exception ex)
         {

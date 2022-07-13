@@ -1,9 +1,9 @@
 using Common;
+using QueryApi.Models;
 using System.Globalization;
 using System.Text.Json;
 using Vista.SDK.Transport.Json.DataChannel;
 using Vista.SDK.Transport.Json.TimeSeriesData;
-using QueryApi.Models;
 
 namespace QueryApi.Repository;
 
@@ -36,8 +36,13 @@ public sealed class DataChannelRepository
                 .GetString();
             var dataChannelId = new DataChannelID(
                 response.GetValue(i, nameof(DataChannelEntity.LocalId)).GetStringNonNull(),
-                namingRule is null ? null : new NameObject(namingRule),
+                new NameObject(namingRule ?? "N/A"),
                 response.GetValue(i, nameof(DataChannelEntity.ShortId)).GetString()
+            );
+
+            dataChannelId.NameObject!.AdditionalProperties.Add(
+                nameof(DataChannelEntity.InternalId),
+                response.GetValue(i, nameof(DataChannelEntity.InternalId)).GetStringNonNull()
             );
 
             var formatRestrictionEnumerationStr = response
