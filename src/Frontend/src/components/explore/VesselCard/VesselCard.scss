@@ -1,0 +1,38 @@
+@import 'src/styles/global';
+
+.vessel-card {
+  cursor: pointer;
+  box-shadow: $drop-shadow;
+  border-radius: 0.2em;
+  padding: 0.5em;
+  background-color: white;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .vessel-card-content {
+    height: 8em;
+  }
+
+  .vessel-icon-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0.5em;
+  }
+
+  .data-channel-count {
+    font-size: 0.7em;
+  }
+
+  .card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+
+    .status-icon {
+      align-self: center;
+    }
+  }
+}

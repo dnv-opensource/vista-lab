@@ -9,3 +9,18 @@
     }
   }
 }
+
+@mixin scroll-bar($color: rgb(0, 0, 0)) {
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: rgba($color, 0.1);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba($color, 0.5);
+    border-radius: 100px;
+  }
+}

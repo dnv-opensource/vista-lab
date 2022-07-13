@@ -42,7 +42,7 @@ export enum IconName {
   Hashtag = 'hashtag',
   Expand = 'expand',
   Marker = 'map-marker-alt',
-  LeftArrow = 'arrow-left',
+  LeftArrow = 'long-arrow-alt-left',
   Tag = 'tag',
   Microchip = 'microchip',
   Times = 'times',
