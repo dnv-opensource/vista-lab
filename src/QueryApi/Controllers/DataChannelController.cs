@@ -1,18 +1,19 @@
-using Common.Models;
 using Microsoft.AspNetCore.Mvc;
-using VistaLab.QueryApi.Models;
-using VistaLab.QueryApi.Repository;
+using Vista.SDK.Transport.Json.DataChannel;
+using Vista.SDK.Transport.Json.TimeSeriesData;
+using QueryApi.Models;
+using QueryApi.Repository;
 
-namespace VistaLab.QueryApi.Controllers;
+namespace QueryApi.Controllers;
 
 [ApiController]
-public sealed class DataChannelController : ApiControllerBase<DataChannelController>
+public sealed class DataChannelController : ControllerBase
 {
-    private readonly IDataChannelRepository dataChannelRepository;
+    private readonly DataChannelRepository _dataChannelRepository;
 
-    public DataChannelController(IDataChannelRepository dataChannelRepository)
+    public DataChannelController(DataChannelRepository dataChannelRepository)
     {
-        this.dataChannelRepository = dataChannelRepository;
+        _dataChannelRepository = dataChannelRepository;
     }
 
     /// <summary>
@@ -22,12 +23,12 @@ public sealed class DataChannelController : ApiControllerBase<DataChannelControl
     /// <param name="cancellationToken"></param>
     [HttpPost]
     [Route("api/data-channel")]
-    public async Task<ActionResult<IEnumerable<DataChannelDto>?>> Post(
+    public async Task<ActionResult<IEnumerable<DataChannel>>> Post(
         DataChannelFilter filter,
         CancellationToken cancellationToken
     )
     {
-        var result = await dataChannelRepository.GetDataChannelByFilter(filter, cancellationToken);
+        var result = await _dataChannelRepository.GetDataChannelByFilter(filter, cancellationToken);
         return Ok(result);
     }
 
@@ -38,9 +39,12 @@ public sealed class DataChannelController : ApiControllerBase<DataChannelControl
     /// <param name="cancellationToken"></param>
     [HttpGet]
     [Route("api/data-channel/{id}/time-series")]
-    public async Task<ActionResult> Get(Guid id, CancellationToken cancellationToken)
+    public async Task<ActionResult<IEnumerable<EventDataSet>>> Get(
+        Guid id,
+        CancellationToken cancellationToken
+    )
     {
-        var result = await dataChannelRepository.GetTimeSeriesByInternalId(id, cancellationToken);
+        var result = await _dataChannelRepository.GetTimeSeriesByInternalId(id, cancellationToken);
         return Ok(result);
     }
 
@@ -51,12 +55,12 @@ public sealed class DataChannelController : ApiControllerBase<DataChannelControl
     /// <param name="cancellationToken"></param>
     [HttpPost]
     [Route("api/data-channel/time-series")]
-    public async Task<ActionResult> PostSearchByFilter(
+    public async Task<ActionResult<IEnumerable<EventDataSet>>> PostSearchByFilter(
         DataChannelFilter filter,
         CancellationToken cancellationToken
     )
     {
-        var result = await dataChannelRepository.GetTimeSeriesByFilter(filter, cancellationToken);
+        var result = await _dataChannelRepository.GetTimeSeriesByFilter(filter, cancellationToken);
         return Ok(result);
     }
 }
