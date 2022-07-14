@@ -15,9 +15,15 @@
 
 import * as runtime from '../runtime';
 import {
+    DataChannel,
+    DataChannelFromJSON,
+    DataChannelToJSON,
     DataChannelFilter,
     DataChannelFilterFromJSON,
     DataChannelFilterToJSON,
+    EventDataSet,
+    EventDataSetFromJSON,
+    EventDataSetToJSON,
 } from '../models';
 
 export interface DataChannelGetRequest {
@@ -40,7 +46,7 @@ export class DataChannelApi extends runtime.BaseAPI {
     /**
      * Search for time series given a data channel internalId
      */
-    async dataChannelGetRaw(requestParameters: DataChannelGetRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<void>> {
+    async dataChannelGetRaw(requestParameters: DataChannelGetRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<Array<EventDataSet>>> {
         if (requestParameters.id === null || requestParameters.id === undefined) {
             throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling dataChannelGet.');
         }
@@ -56,20 +62,21 @@ export class DataChannelApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.VoidApiResponse(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(EventDataSetFromJSON));
     }
 
     /**
      * Search for time series given a data channel internalId
      */
-    async dataChannelGet(requestParameters: DataChannelGetRequest, initOverrides?: RequestInit): Promise<void> {
-        await this.dataChannelGetRaw(requestParameters, initOverrides);
+    async dataChannelGet(requestParameters: DataChannelGetRequest, initOverrides?: RequestInit): Promise<Array<EventDataSet>> {
+        const response = await this.dataChannelGetRaw(requestParameters, initOverrides);
+        return await response.value();
     }
 
     /**
      * Search for data channels based in the given filters
      */
-    async dataChannelPostRaw(requestParameters: DataChannelPostRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<void>> {
+    async dataChannelPostRaw(requestParameters: DataChannelPostRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<Array<DataChannel>>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -84,20 +91,21 @@ export class DataChannelApi extends runtime.BaseAPI {
             body: DataChannelFilterToJSON(requestParameters.dataChannelFilter),
         }, initOverrides);
 
-        return new runtime.VoidApiResponse(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(DataChannelFromJSON));
     }
 
     /**
      * Search for data channels based in the given filters
      */
-    async dataChannelPost(requestParameters: DataChannelPostRequest = {}, initOverrides?: RequestInit): Promise<void> {
-        await this.dataChannelPostRaw(requestParameters, initOverrides);
+    async dataChannelPost(requestParameters: DataChannelPostRequest = {}, initOverrides?: RequestInit): Promise<Array<DataChannel>> {
+        const response = await this.dataChannelPostRaw(requestParameters, initOverrides);
+        return await response.value();
     }
 
     /**
      * Search for time series given a data channel internalId
      */
-    async dataChannelPostSearchByFilterRaw(requestParameters: DataChannelPostSearchByFilterRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<void>> {
+    async dataChannelPostSearchByFilterRaw(requestParameters: DataChannelPostSearchByFilterRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<Array<EventDataSet>>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -112,14 +120,15 @@ export class DataChannelApi extends runtime.BaseAPI {
             body: DataChannelFilterToJSON(requestParameters.dataChannelFilter),
         }, initOverrides);
 
-        return new runtime.VoidApiResponse(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(EventDataSetFromJSON));
     }
 
     /**
      * Search for time series given a data channel internalId
      */
-    async dataChannelPostSearchByFilter(requestParameters: DataChannelPostSearchByFilterRequest = {}, initOverrides?: RequestInit): Promise<void> {
-        await this.dataChannelPostSearchByFilterRaw(requestParameters, initOverrides);
+    async dataChannelPostSearchByFilter(requestParameters: DataChannelPostSearchByFilterRequest = {}, initOverrides?: RequestInit): Promise<Array<EventDataSet>> {
+        const response = await this.dataChannelPostSearchByFilterRaw(requestParameters, initOverrides);
+        return await response.value();
     }
 
 }

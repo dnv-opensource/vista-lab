@@ -40,7 +40,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/DataChannel"
+                    "$ref": "#/components/schemas/DataChannelListPackage"
                   }
                 }
               },
@@ -48,7 +48,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/DataChannel"
+                    "$ref": "#/components/schemas/DataChannelListPackage"
                   }
                 }
               },
@@ -56,7 +56,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/DataChannel"
+                    "$ref": "#/components/schemas/DataChannelListPackage"
                   }
                 }
               }
@@ -180,6 +180,23 @@
   },
   "components": {
     "schemas": {
+      "ConfigurationReference": {
+        "type": "object",
+        "properties": {
+          "ID": {
+            "type": "string"
+          },
+          "Version": {
+            "type": "string",
+            "nullable": true
+          },
+          "TimeStamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
       "DataChannel": {
         "type": "object",
         "properties": {
@@ -220,6 +237,10 @@
             },
             "default": null,
             "nullable": true
+          },
+          "isEmpty": {
+            "type": "boolean",
+            "readOnly": true
           }
         },
         "additionalProperties": false
@@ -236,6 +257,27 @@
           },
           "NameObject": {
             "$ref": "#/components/schemas/NameObject"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DataChannelList": {
+        "type": "object",
+        "properties": {
+          "DataChannel": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DataChannel"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "DataChannelListPackage": {
+        "type": "object",
+        "properties": {
+          "Package": {
+            "$ref": "#/components/schemas/Package"
           }
         },
         "additionalProperties": false
@@ -289,6 +331,30 @@
         },
         "additionalProperties": false
       },
+      "Header": {
+        "type": "object",
+        "properties": {
+          "ShipID": {
+            "type": "string"
+          },
+          "DataChannelListID": {
+            "$ref": "#/components/schemas/ConfigurationReference"
+          },
+          "VersionInformation": {
+            "$ref": "#/components/schemas/VersionInformation"
+          },
+          "Author": {
+            "type": "string",
+            "nullable": true
+          },
+          "DateCreated": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": { }
+      },
       "NameObject": {
         "type": "object",
         "properties": {
@@ -297,6 +363,18 @@
           }
         },
         "additionalProperties": { }
+      },
+      "Package": {
+        "type": "object",
+        "properties": {
+          "Header": {
+            "$ref": "#/components/schemas/Header"
+          },
+          "DataChannelList": {
+            "$ref": "#/components/schemas/DataChannelList"
+          }
+        },
+        "additionalProperties": false
       },
       "Property": {
         "type": "object",
@@ -421,6 +499,22 @@
           }
         },
         "additionalProperties": { }
+      },
+      "VersionInformation": {
+        "type": "object",
+        "properties": {
+          "NamingRule": {
+            "type": "string"
+          },
+          "NamingSchemeVersion": {
+            "type": "string"
+          },
+          "ReferenceURL": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
       }
     }
   }

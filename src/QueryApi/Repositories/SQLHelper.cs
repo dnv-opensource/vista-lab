@@ -5,7 +5,8 @@ namespace QueryApi.Repository;
 
 public static class SQLGenerator
 {
-    private static readonly string SELECT_DATA_CHANNEL = $"SELECT * FROM {DataChannelEntity.TableName}";
+    private static readonly string SELECT_DATA_CHANNEL =
+        $"SELECT * FROM {DataChannelEntity.TableName}";
 
     private static readonly string SELECT_TIME_SERIES =
         $@"
@@ -25,10 +26,11 @@ public static class SQLGenerator
         $@" JOIN {DataChannelEntity.TableName} DC ON
             DC_ID.{nameof(DataChannelInternalIdEntity.InternalId)} = DC.{nameof(DataChannelEntity.InternalId)}";
 
-    private static readonly string ORDER_BY_TIME_STAMP = $" ORDER BY TS.{nameof(TimeSeriesEntity.Timestamp)} DESC ";
+    private static readonly string ORDER_BY_TIME_STAMP =
+        $" ORDER BY TS.{nameof(TimeSeriesEntity.Timestamp)} DESC ";
 
     internal static string MountDataChannelSQL(DataChannelFilter filter) =>
-        SELECT_DATA_CHANNEL + MountDataChannelWhere(filter);
+        SELECT_DATA_CHANNEL + (filter.IsEmpty ? "" : MountDataChannelWhere(filter));
 
     internal static string MountTimeSeriesSQL(Guid internalId) =>
         $"{SELECT_TIME_SERIES} WHERE DC_ID.{nameof(DataChannelInternalIdEntity.InternalId)} = '{internalId}'";
@@ -71,7 +73,8 @@ public static class SQLGenerator
             sql += string.Join(
                 " OR ",
                 filter.PrimaryItem.Select(
-                    x => $" {nameof(DataChannelEntity.LocalId_PrimaryItem)} LIKE \'%{x.Replace('*', '%')}\' "
+                    x =>
+                        $" {nameof(DataChannelEntity.LocalId_PrimaryItem)} LIKE \'%{x.Replace('*', '%')}\' "
                 )
             );
         return sql;
@@ -84,7 +87,8 @@ public static class SQLGenerator
             sql += string.Join(
                 " OR ",
                 filter.SecondaryItem.Select(
-                    x => $" {nameof(DataChannelEntity.LocalId_SecondaryItem)} LIKE \'%{x.Replace('*', '%')}\' "
+                    x =>
+                        $" {nameof(DataChannelEntity.LocalId_SecondaryItem)} LIKE \'%{x.Replace('*', '%')}\' "
                 )
             );
         return sql;

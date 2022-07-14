@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Outlet, useSearchParams } from 'react-router-dom';
 import SearchBar from '../../components/explore/SearchBar/SearchBar';
+import { ExploreContextProvider } from '../../context/ExploreContext';
 import { isNullOrWhitespace } from '../../util/string';
 import './Explore.scss';
 
@@ -27,10 +28,12 @@ const Explore: React.FC = () => {
   );
 
   return (
-    <div className={'vista-explore'}>
-      <SearchBar text={queryParam} onSubmit={handleSearchSubmit} loading={loading} />
-      <Outlet />
-    </div>
+    <ExploreContextProvider>
+      <div className={'vista-explore'}>
+        <SearchBar text={queryParam} onSubmit={handleSearchSubmit} loading={loading} />
+        <Outlet />
+      </div>
+    </ExploreContextProvider>
   );
 };
 

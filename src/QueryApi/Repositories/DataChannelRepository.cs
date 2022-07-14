@@ -18,7 +18,7 @@ public sealed class DataChannelRepository
         _logger = logger;
     }
 
-    public async Task<IEnumerable<DataChannel>> GetDataChannelByFilter(
+    public async Task<IEnumerable<DataChannelListPackage>> GetDataChannelByFilter(
         DataChannelFilter filter,
         CancellationToken cancellationToken
     )
@@ -28,9 +28,78 @@ public sealed class DataChannelRepository
             cancellationToken
         );
 
-        var dataChannels = new List<DataChannel>();
+        var dataChannelListsPackage =
+            new Dictionary<
+                string,
+                (List<DataChannel> DataChannelList, DataChannelListPackage Package)
+            >();
+
+        (List<DataChannel> DataChannelList, DataChannelListPackage Package) GetDataChannelListPackageFromResponse(
+            int i,
+            DbResponse response,
+            ref Dictionary<
+                string,
+                (List<DataChannel> DataChannelList, DataChannelListPackage Package)
+            > dataChannelListPackages
+        )
+        {
+            var vesselId = response
+                .GetValue(i, nameof(DataChannelEntity.VesselId))
+                .GetStringNonNull();
+            if (!dataChannelListsPackage.ContainsKey(vesselId))
+            {
+                var dcList = new List<DataChannel>();
+                var timestamp = response
+                    .GetValue(i, nameof(DataChannelEntity.Timestamp))
+                    .GetDateTimeOffset();
+                var visVersion = response
+                    .GetValue(i, nameof(DataChannelEntity.LocalId_VisVersion))
+                    .GetStringNonNull();
+                var namingRule = response
+                    .GetValue(i, nameof(DataChannelEntity.NameObject_NamingRule))
+                    .GetString();
+
+                var configurationReference =
+                    new Vista.SDK.Transport.Json.DataChannel.ConfigurationReference(
+                        vesselId,
+                        timestamp,
+                        visVersion
+                    );
+                var versionInformation = new VersionInformation(
+                    namingRule ?? "N/A",
+                    "N/A",
+                    visVersion
+                );
+                var header = new Vista.SDK.Transport.Json.DataChannel.Header(
+                    "N/A",
+                    configurationReference,
+                    timestamp,
+                    vesselId,
+                    versionInformation
+                );
+                var package = new Vista.SDK.Transport.Json.DataChannel.Package(
+                    new DataChannelList(dcList),
+                    header
+                );
+
+                var dataChannelListPackage = new DataChannelListPackage(package);
+
+                dataChannelListPackages.Add(vesselId, (dcList, dataChannelListPackage));
+                return (dcList, dataChannelListPackage);
+            }
+
+            return dataChannelListPackages[vesselId];
+        }
+
         for (int i = 0; i < response.Count; i++)
         {
+            var dataChannelListPackageMap = GetDataChannelListPackageFromResponse(
+                i,
+                response,
+                ref dataChannelListsPackage
+            );
+            var dataChannelList = dataChannelListPackageMap.DataChannelList;
+
             var namingRule = response
                 .GetValue(i, nameof(DataChannelEntity.NameObject_NamingRule))
                 .GetString();
@@ -157,10 +226,21 @@ public sealed class DataChannelRepository
                     )
             );
             var dataChannel = new DataChannel(dataChannelId, property);
-            dataChannels.Add(dataChannel);
+            dataChannelList.Add(dataChannel);
         }
 
-        return dataChannels;
+        return dataChannelListsPackage
+            .Select(
+                d =>
+                {
+                    var package = new Vista.SDK.Transport.Json.DataChannel.Package(
+                        new DataChannelList(d.Value.DataChannelList),
+                        d.Value.Package.Package.Header
+                    );
+                    return new DataChannelListPackage(package);
+                }
+            )
+            .ToArray();
     }
 
     private static IEnumerable<EventDataSet> ToTimeSeries(DbResponse response)
@@ -199,7 +279,10 @@ public sealed class DataChannelRepository
         CancellationToken cancellationToken
     )
     {
-        var response = await _client.Query(SQLGenerator.MountTimeSeriesSQL(filter), cancellationToken);
+        var response = await _client.Query(
+            SQLGenerator.MountTimeSeriesSQL(filter),
+            cancellationToken
+        );
 
         return ToTimeSeries(response);
     }

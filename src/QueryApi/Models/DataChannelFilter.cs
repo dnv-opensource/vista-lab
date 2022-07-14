@@ -12,4 +12,9 @@ public class DataChannelFilter
 
     [property: DefaultValue(null)]
     public string[]? Meta { get; set; }
+
+    public bool IsEmpty =>
+        (PrimaryItem == null || !PrimaryItem.Any())
+        && (SecondaryItem == null || !SecondaryItem.Any())
+        && (Meta == null || !Meta.Any());
 }

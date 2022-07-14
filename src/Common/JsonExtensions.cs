@@ -12,6 +12,13 @@ public static class JsonExtensions
             );
     }
 
+    public static int GetIntNonNull(this JsonElement el)
+    {
+        return el.ValueKind == JsonValueKind.Number && el.TryGetInt32(out var v)
+          ? v
+          : throw new Exception($"{nameof(GetIntNonNull)} called on invalid JsonElement: {el}");
+    }
+
     public static double? GetDoubleOrNull(this JsonElement el) =>
         el.ValueKind == JsonValueKind.Number && el.TryGetDouble(out var v) ? v : null;
 

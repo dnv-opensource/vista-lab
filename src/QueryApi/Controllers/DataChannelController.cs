@@ -23,7 +23,7 @@ public sealed class DataChannelController : ControllerBase
     /// <param name="cancellationToken"></param>
     [HttpPost]
     [Route("api/data-channel")]
-    public async Task<ActionResult<IEnumerable<DataChannel>>> Post(
+    public async Task<ActionResult<IEnumerable<DataChannelListPackage>>> Post(
         DataChannelFilter filter,
         CancellationToken cancellationToken
     )

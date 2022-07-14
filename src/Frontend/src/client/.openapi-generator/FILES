@@ -2,6 +2,17 @@
 apis/DataChannelApi.ts
 apis/index.ts
 index.ts
+models/DataChannel.ts
 models/DataChannelFilter.ts
+models/DataChannelID.ts
+models/DataChannelType.ts
+models/EventDataSet.ts
+models/Format.ts
+models/NameObject.ts
+models/Property.ts
+models/Range.ts
+models/Restriction.ts
+models/RestrictionWhiteSpace.ts
+models/Unit.ts
 models/index.ts
 runtime.ts
