@@ -2,15 +2,17 @@ using Common;
 
 using Vista.SDK;
 using Serilog;
-using VistaLab.QueryApi.Repository;
+using QueryApi.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
 builder.Host.UseSerilog((context, logging) => logging.WriteTo.Console());
-builder.Services.AddSingleton<IDataChannelRepository, DataChannelRepository>();
-builder.Services.AddHttpClient<IDbClient, DbClient>();
+
 builder.Services.AddVIS();
+
+builder.Services.AddSingleton<DataChannelRepository>();
+builder.Services.AddHttpClient<QuestDbClient>();
 
 builder.Services.AddCors(
     options =>
@@ -26,7 +28,6 @@ builder.Services.AddCors(
 
 builder.Services.AddControllers();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(
     options =>
@@ -36,7 +37,7 @@ builder.Services.AddSwaggerGen(
             e =>
                 $"{e.ActionDescriptor.RouteValues["controller"]}{e.ActionDescriptor.RouteValues["action"]}"
         );
-        var assembly = typeof(ApiControllerBase<>).Assembly;
+        var assembly = typeof(Program).Assembly;
 
         var xmlFilename = $"{assembly.GetName().Name}.xml";
         options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));

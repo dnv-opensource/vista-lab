@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace VistaLab.QueryApi.Models;
+namespace QueryApi.Models;
 
 public class DataChannelFilter
 {
