@@ -14,7 +14,7 @@ const SearchBar: React.FC<Props> = ({ text, onSubmit, loading }) => {
   const [searchText, setSearchText] = useState<string>();
 
   useEffect(() => {
-    text && setSearchText(text);
+    setSearchText(text);
   }, [text]);
 
   return (

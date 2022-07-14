@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import ResultBar from '../../../components/shared/result-bar/ResultBar';
-import Tree from '../../../components/shared/tree/Tree';
 import Icon from '../../../components/ui/icons/Icon';
 import { IconName } from '../../../components/ui/icons/icons';
 import StatusIcon, { StatusVariant } from '../../../components/ui/status-icon/StatusIcon';

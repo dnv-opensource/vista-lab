@@ -12,6 +12,8 @@ const Explore: React.FC = () => {
   useEffect(() => {
     if (!queryParam) return;
     setLoading(true);
+    // Typically where you would fetch filter from DB
+    // Mabye store in context / localstorage
     setTimeout(() => {
       setLoading(false);
     }, 1000);
