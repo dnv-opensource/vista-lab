@@ -7,13 +7,25 @@
   "paths": {
     "/api/data-channel": {
       "post": {
-        "tags": ["DataChannel"],
+        "tags": [
+          "DataChannel"
+        ],
         "summary": "Search for data channels based in the given filters",
         "operationId": "DataChannelPost",
         "requestBody": {
           "description": "",
           "content": {
             "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DataChannelFilter"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DataChannelFilter"
+              }
+            },
+            "application/*+json": {
               "schema": {
                 "$ref": "#/components/schemas/DataChannelFilter"
               }
@@ -24,11 +36,27 @@
           "200": {
             "description": "Success",
             "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DataChannel"
+                  }
+                }
+              },
               "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/DataChannelDto"
+                    "$ref": "#/components/schemas/DataChannel"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DataChannel"
                   }
                 }
               }
@@ -39,7 +67,9 @@
     },
     "/api/data-channel/{id}/time-series": {
       "get": {
-        "tags": ["DataChannel"],
+        "tags": [
+          "DataChannel"
+        ],
         "summary": "Search for time series given a data channel internalId",
         "operationId": "DataChannelGet",
         "parameters": [
@@ -56,14 +86,42 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventDataSet"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventDataSet"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventDataSet"
+                  }
+                }
+              }
+            }
           }
         }
       }
     },
     "/api/data-channel/time-series": {
       "post": {
-        "tags": ["DataChannel"],
+        "tags": [
+          "DataChannel"
+        ],
         "summary": "Search for time series given a data channel internalId",
         "operationId": "DataChannelPostSearchByFilter",
         "requestBody": {
@@ -73,12 +131,48 @@
               "schema": {
                 "$ref": "#/components/schemas/DataChannelFilter"
               }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DataChannelFilter"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DataChannelFilter"
+              }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventDataSet"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventDataSet"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventDataSet"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -86,78 +180,14 @@
   },
   "components": {
     "schemas": {
-      "DataChannelDto": {
+      "DataChannel": {
         "type": "object",
         "properties": {
-          "internalId": {
-            "type": "string"
+          "DataChannelID": {
+            "$ref": "#/components/schemas/DataChannelID"
           },
-          "shortId": {
-            "type": "string",
-            "nullable": true
-          },
-          "localId": {
-            "type": "string"
-          },
-          "vesselId": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string",
-            "nullable": true
-          },
-          "dataChannelType": {
-            "type": "string"
-          },
-          "updateCycle": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "calculationPeriod": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "formatType": {
-            "type": "string",
-            "nullable": true
-          },
-          "rangeLow": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "rangeHigh": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "unitSymbol": {
-            "type": "string",
-            "nullable": true
-          },
-          "quantityName": {
-            "type": "string",
-            "nullable": true
-          },
-          "qualityCoding": {
-            "type": "string",
-            "nullable": true
-          },
-          "remarks": {
-            "type": "string",
-            "nullable": true
-          },
-          "formatRestriction": {
-            "$ref": "#/components/schemas/FormatRestrictionDto"
-          },
-          "localIdBuilder": {
-            "$ref": "#/components/schemas/LocalIdDto"
-          },
-          "timestamp": {
-            "type": "string",
-            "format": "date-time"
+          "Property": {
+            "$ref": "#/components/schemas/Property"
           }
         },
         "additionalProperties": false
@@ -170,7 +200,9 @@
             "items": {
               "type": "string"
             },
-            "default": ["411/*/C101.31-*"],
+            "default": [
+              "411/*/C101.31-*"
+            ],
             "nullable": true
           },
           "secondaryItem": {
@@ -192,120 +224,203 @@
         },
         "additionalProperties": false
       },
-      "FormatRestrictionDto": {
+      "DataChannelID": {
         "type": "object",
         "properties": {
-          "type": {
+          "LocalID": {
+            "type": "string"
+          },
+          "ShortID": {
             "type": "string",
             "nullable": true
           },
-          "enumeration": {
+          "NameObject": {
+            "$ref": "#/components/schemas/NameObject"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DataChannelType": {
+        "type": "object",
+        "properties": {
+          "Type": {
+            "type": "string"
+          },
+          "UpdateCycle": {
             "type": "string",
             "nullable": true
           },
-          "fractionDigits": {
-            "type": "string",
-            "nullable": true
-          },
-          "length": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "maxExclusive": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "maxInclusive": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "maxLength": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "minExclusive": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "minInclusive": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "minLength": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "pattern": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "totalDigits": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "whiteSpace": {
+          "CalculationPeriod": {
             "type": "string",
             "nullable": true
           }
         },
         "additionalProperties": false
       },
-      "LocalIdDto": {
+      "EventDataSet": {
         "type": "object",
         "properties": {
-          "visVersion": {
+          "TimeStamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "DataChannelID": {
             "type": "string"
           },
-          "primaryItem": {
+          "Value": {
             "type": "string"
           },
-          "secondaryItem": {
-            "type": "string",
-            "nullable": true
-          },
-          "position": {
-            "type": "string",
-            "nullable": true
-          },
-          "quantity": {
-            "type": "string",
-            "nullable": true
-          },
-          "calculation": {
-            "type": "string",
-            "nullable": true
-          },
-          "state": {
-            "type": "string",
-            "nullable": true
-          },
-          "content": {
-            "type": "string",
-            "nullable": true
-          },
-          "command": {
-            "type": "string",
-            "nullable": true
-          },
-          "type": {
-            "type": "string",
-            "nullable": true
-          },
-          "detail": {
+          "Quality": {
             "type": "string",
             "nullable": true
           }
         },
         "additionalProperties": false
+      },
+      "Format": {
+        "type": "object",
+        "properties": {
+          "Type": {
+            "type": "string"
+          },
+          "Restriction": {
+            "$ref": "#/components/schemas/Restriction"
+          }
+        },
+        "additionalProperties": false
+      },
+      "NameObject": {
+        "type": "object",
+        "properties": {
+          "NamingRule": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": { }
+      },
+      "Property": {
+        "type": "object",
+        "properties": {
+          "DataChannelType": {
+            "$ref": "#/components/schemas/DataChannelType"
+          },
+          "Format": {
+            "$ref": "#/components/schemas/Format"
+          },
+          "Range": {
+            "$ref": "#/components/schemas/Range"
+          },
+          "Unit": {
+            "$ref": "#/components/schemas/Unit"
+          },
+          "QualityCoding": {
+            "type": "string",
+            "nullable": true
+          },
+          "AlertPriority": {
+            "type": "string",
+            "nullable": true
+          },
+          "Name": {
+            "type": "string",
+            "nullable": true
+          },
+          "Remarks": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": { }
+      },
+      "Range": {
+        "type": "object",
+        "properties": {
+          "High": {
+            "type": "string"
+          },
+          "Low": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Restriction": {
+        "type": "object",
+        "properties": {
+          "Enumeration": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "FractionDigits": {
+            "type": "string",
+            "nullable": true
+          },
+          "Length": {
+            "type": "string",
+            "nullable": true
+          },
+          "MaxExclusive": {
+            "type": "string",
+            "nullable": true
+          },
+          "MaxInclusive": {
+            "type": "string",
+            "nullable": true
+          },
+          "MaxLength": {
+            "type": "string",
+            "nullable": true
+          },
+          "MinExclusive": {
+            "type": "string",
+            "nullable": true
+          },
+          "MinInclusive": {
+            "type": "string",
+            "nullable": true
+          },
+          "MinLength": {
+            "type": "string",
+            "nullable": true
+          },
+          "Pattern": {
+            "type": "string",
+            "nullable": true
+          },
+          "TotalDigits": {
+            "type": "string",
+            "nullable": true
+          },
+          "WhiteSpace": {
+            "$ref": "#/components/schemas/RestrictionWhiteSpace"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RestrictionWhiteSpace": {
+        "enum": [
+          0,
+          1,
+          2
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "Unit": {
+        "type": "object",
+        "properties": {
+          "UnitSymbol": {
+            "type": "string"
+          },
+          "QuantityName": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": { }
       }
     }
   }

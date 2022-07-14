@@ -7,14 +7,21 @@ using Vista.SDK;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((context, logging) => logging.WriteTo.Console());
-builder.Services.AddSingleton<DataChannelRepository>();
-builder.Services.AddSingleton<QuestDbInsertClient>();
+
 builder.Services.AddVIS();
-builder.Services.AddHttpClient<IDbClient, DbClient>();
+
+builder.Services
+    .AddSingleton<DataChannelRepository>()
+    .AddSingleton<IHostedService>(sp => sp.GetRequiredService<DataChannelRepository>());
+
+builder.Services
+    .AddSingleton<QuestDbInsertClient>()
+    .AddSingleton<IHostedService>(sp => sp.GetRequiredService<QuestDbInsertClient>());
+
+builder.Services.AddHttpClient<QuestDbClient>();
 
 if (!builder.Environment.IsEnvironment("OpenApi"))
 {
-    builder.Services.AddHostedService<DbInitService>();
     builder.Services.AddHostedService<MqttSubscriberClient>();
 }
 

@@ -1,56 +1,24 @@
 using Common;
-using Common.Models;
-using MassTransit;
-using Vista.SDK;
 using Vista.SDK.Transport.Json.DataChannel;
 using Vista.SDK.Transport.Json.TimeSeriesData;
 
 namespace IngestApi.Repositories;
 
-public sealed class DataChannelRepository : IDataChannelRepository
+public sealed class DataChannelRepository : IHostedService
 {
     private readonly ILogger<DataChannel> _logger;
-    private readonly IDbClient _dbClient;
-    private readonly QuestDbInsertClient _qdbClient;
+    private readonly QuestDbClient _dbClient;
+    private readonly QuestDbInsertClient _questDbClient;
 
     public DataChannelRepository(
-        IDbClient client,
-        QuestDbInsertClient qdbClient,
+        QuestDbClient client,
+        QuestDbInsertClient questDbClient,
         ILogger<DataChannel> logger
     )
     {
-        _qdbClient = qdbClient;
+        _questDbClient = questDbClient;
         _dbClient = client;
         _logger = logger;
-    }
-
-    public async ValueTask Initialize(CancellationToken cancellationToken)
-    {
-        var query =
-            $@"
-            {DbInitTables.DataChannel}
-            {DbInitTables.TimeSeries}
-            {DbInitTables.DataChannel_InternalId}
-        ";
-
-        try
-        {
-            _logger.LogInformation("Initializing DB");
-            var queries = query.Split(
-                ";",
-                StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries
-            );
-            foreach (var q in queries)
-            {
-                await _dbClient.ExecuteAsync(q, cancellationToken);
-            }
-            _logger.LogInformation("DB initialized");
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to initialize database");
-            throw;
-        }
     }
 
     public async ValueTask InsertDataChannel(
@@ -72,142 +40,151 @@ public sealed class DataChannelRepository : IDataChannelRepository
         //TODO          Upgrade it to the latest version and insert on DataChannel
         //TODO          Add all possible versions to DataChannel_InternalId
 
-        var dataChannelInfo = dataChannelList.Package.DataChannelList.DataChannel
-            .Select(
-                d =>
-                    new DataChannelInfo(
-                        LocalIdBuilder.TryParse(d.DataChannelID.LocalID, out var localId),
-                        localId,
-                        d,
-                        NewId.NextGuid()
-                    )
-            )
-            .Where(
-                d =>
-                    d.LocalIdParsed
-                    && (d.LocalId?.IsValid ?? false)
-                    && !d.DataChannel.DataChannelID.LocalID.Contains("~", StringComparison.Ordinal)
-            )
-            .ToArray();
-
-        var dataChannelParam = dataChannelInfo
-            .Select(
-                d =>
-                    DataChannelDto.CreateFromDataChannel(
-                        dataChannelList.Package.Header.ShipID,
-                        d,
-                        dataChannelList.Package.Header.DataChannelListID.TimeStamp.DateTime
-                    )
-            )
+        var dataChannels = dataChannelList.Package.DataChannelList.DataChannel
+            .Select(d => DataChannelEntity.FromSdkDataChannel(d, dataChannelList.Package.Header))
+            .Where(d => d is not null)
+            .Cast<DataChannelEntity>()
             .ToArray();
 
         try
         {
             _logger.LogInformation("Inserting data into DataChannel");
-            await _qdbClient.EnsureConnectedAsync(cancellationToken);
-            var client = _qdbClient.Client!;
+            var client = _questDbClient.Client;
 
-            foreach (var param in dataChannelParam)
+            foreach (var dataChannel in dataChannels)
             {
                 client
-                    .Table("DataChannel")
-                    .Symbol("VesselId", param.VesselId)
-                    .Symbol("LocalId_Position", param.LocalIdBuilder.Position)
-                    .Symbol("LocalId_Quantity", param.LocalIdBuilder.Quantity)
-                    .Symbol("LocalId_Calculation", param.LocalIdBuilder.Calculation)
-                    .Symbol("LocalId_Content", param.LocalIdBuilder.Content)
-                    .Symbol("LocalId_Command", param.LocalIdBuilder.Command)
-                    .Symbol("LocalId_Type", param.LocalIdBuilder.Type)
-                    .Symbol("LocalId_Detail", param.LocalIdBuilder.Detail)
-                    .Column("InternalId", param.InternalId?.ToString())
-                    .Column("ShortId", param.ShortId)
-                    .Column("LocalId", param.LocalId)
-                    .Column("Name", param.Name)
-                    .Column("DataChannelType", param.DataChannelType)
-                    .Column("FormatType", param.FormatType)
-                    .Column("UnitSymbol", param.UnitSymbol)
-                    .Column("QuantityName", param.QuantityName)
-                    .Column("QualityCoding", param.QualityCoding)
-                    .Column("Remarks", param.Remarks)
-                    .Column("FormatRestriction_Type", param.FormatRestriction?.Type)
-                    .Column("FormatRestriction_Enumeration", param.FormatRestriction?.Enumeration)
-                    .Column(
-                        "FormatRestriction_FractionDigits",
-                        param.FormatRestriction?.FractionDigits
+                    .Table(DataChannelEntity.TableName)
+                    // Symbols first
+                    .Symbol(nameof(DataChannelEntity.VesselId), dataChannel.VesselId)
+                    .Symbol(nameof(DataChannelEntity.InternalId), dataChannel.InternalId)
+                    .Symbol(
+                        nameof(DataChannelEntity.LocalId_VisVersion),
+                        dataChannel.LocalId_VisVersion
                     )
-                    .Column("FormatRestriction_WhiteSpace", param.FormatRestriction?.WhiteSpace)
-                    .Column("LocalId_VisVersion", param.LocalIdBuilder!.VisVersion)
-                    .Column("LocalId_PrimaryItem", param.LocalIdBuilder.PrimaryItem)
-                    .Column("LocalId_SecondaryItem", param.LocalIdBuilder.SecondaryItem);
-
-                if (param.UpdateCycle is not null)
-                    client.Column("UpdateCycle", (double)param.UpdateCycle);
-
-                if (param.CalculationPeriod is not null)
-                    client.Column("CalculationPeriod", (double)param.CalculationPeriod);
-
-                if (param.RangeLow is not null)
-                    client.Column("RangeLow", (double)param.RangeLow);
-
-                if (param.RangeHigh is not null)
-                    client.Column("RangeHigh", (double)param.RangeHigh);
-
-                if (param.FormatRestriction?.MaxExclusive is not null)
-                    client.Column(
-                        "FormatRestriction_MaxExclusive",
-                        (double)param.FormatRestriction.MaxExclusive
-                    );
-
-                if (param.FormatRestriction?.MaxInclusive is not null)
-                    client.Column(
-                        "FormatRestriction_MaxInclusive",
-                        (double)param.FormatRestriction.MaxInclusive
-                    );
-
-                if (param.FormatRestriction?.MinExclusive is not null)
-                    client.Column(
-                        "FormatRestriction_MinExclusive",
-                        (double)param.FormatRestriction.MinExclusive
-                    );
-
-                if (param.FormatRestriction?.MinInclusive is not null)
-                    client.Column(
-                        "FormatRestriction_MinInclusive",
-                        (double)param.FormatRestriction.MinInclusive
-                    );
-
-                if (param.FormatRestriction?.Length is not null)
-                    client.Column(
-                        "FormatRestriction_Length",
-                        (double)param.FormatRestriction.Length
-                    );
-
-                if (param.FormatRestriction?.MinLength is not null)
-                    client.Column(
-                        "FormatRestriction_MinLength",
-                        (double)param.FormatRestriction.MinLength
-                    );
-
-                if (param.FormatRestriction?.Pattern is not null)
-                    client.Column(
-                        "FormatRestriction_Pattern",
-                        (double)param.FormatRestriction.Pattern
-                    );
-
-                if (param.FormatRestriction?.TotalDigits is not null)
-                    client.Column(
-                        "FormatRestriction_TotalDigits",
-                        (double)param.FormatRestriction.TotalDigits
-                    );
-
-                client.At(param.Timestamp);
+                    .Symbol(
+                        nameof(DataChannelEntity.LocalId_PrimaryItem),
+                        dataChannel.LocalId_PrimaryItem
+                    )
+                    .TrySymbol(
+                        nameof(DataChannelEntity.LocalId_SecondaryItem),
+                        dataChannel.LocalId_SecondaryItem
+                    )
+                    .TrySymbol(
+                        nameof(DataChannelEntity.LocalId_Position),
+                        dataChannel.LocalId_Position
+                    )
+                    .TrySymbol(
+                        nameof(DataChannelEntity.LocalId_Quantity),
+                        dataChannel.LocalId_Quantity
+                    )
+                    .TrySymbol(
+                        nameof(DataChannelEntity.LocalId_Calculation),
+                        dataChannel.LocalId_Calculation
+                    )
+                    .TrySymbol(
+                        nameof(DataChannelEntity.LocalId_Content),
+                        dataChannel.LocalId_Content
+                    )
+                    .TrySymbol(
+                        nameof(DataChannelEntity.LocalId_Command),
+                        dataChannel.LocalId_Command
+                    )
+                    .TrySymbol(nameof(DataChannelEntity.LocalId_Type), dataChannel.LocalId_Type)
+                    .TrySymbol(nameof(DataChannelEntity.LocalId_Detail), dataChannel.LocalId_Detail)
+                    // Columns
+                    .Column(nameof(DataChannelEntity.LocalId), dataChannel.LocalId)
+                    .TryColumn(nameof(DataChannelEntity.ShortId), dataChannel.ShortId)
+                    .TryColumn(
+                        nameof(DataChannelEntity.NameObject_NamingRule),
+                        dataChannel.NameObject_NamingRule
+                    )
+                    .Column(
+                        nameof(DataChannelEntity.DataChannelType_Type),
+                        dataChannel.DataChannelType_Type
+                    )
+                    .TryColumn(
+                        nameof(DataChannelEntity.DataChannelType_UpdateCycle),
+                        dataChannel.DataChannelType_UpdateCycle
+                    )
+                    .TryColumn(
+                        nameof(DataChannelEntity.DataChannelType_CalculationPeriod),
+                        dataChannel.DataChannelType_CalculationPeriod
+                    )
+                    .Column(nameof(DataChannelEntity.Format_Type), dataChannel.Format_Type)
+                    .TryColumn(
+                        nameof(DataChannelEntity.Format_Restriction_Enumeration),
+                        dataChannel.Format_Restriction_Enumeration
+                    )
+                    .TryColumn(
+                        nameof(DataChannelEntity.Format_Restriction_FractionDigits),
+                        dataChannel.Format_Restriction_FractionDigits
+                    )
+                    .TryColumn(
+                        nameof(DataChannelEntity.Format_Restriction_Length),
+                        dataChannel.Format_Restriction_Length
+                    )
+                    .TryColumn(
+                        nameof(DataChannelEntity.Format_Restriction_MaxExclusive),
+                        dataChannel.Format_Restriction_MaxExclusive
+                    )
+                    .TryColumn(
+                        nameof(DataChannelEntity.Format_Restriction_MaxInclusive),
+                        dataChannel.Format_Restriction_MaxInclusive
+                    )
+                    .TryColumn(
+                        nameof(DataChannelEntity.Format_Restriction_MaxLength),
+                        dataChannel.Format_Restriction_MaxLength
+                    )
+                    .TryColumn(
+                        nameof(DataChannelEntity.Format_Restriction_MinExclusive),
+                        dataChannel.Format_Restriction_MinExclusive
+                    )
+                    .TryColumn(
+                        nameof(DataChannelEntity.Format_Restriction_MinInclusive),
+                        dataChannel.Format_Restriction_MinInclusive
+                    )
+                    .TryColumn(
+                        nameof(DataChannelEntity.Format_Restriction_MinLength),
+                        dataChannel.Format_Restriction_MinLength
+                    )
+                    .TryColumn(
+                        nameof(DataChannelEntity.Format_Restriction_Pattern),
+                        dataChannel.Format_Restriction_Pattern
+                    )
+                    .TryColumn(
+                        nameof(DataChannelEntity.Format_Restriction_TotalDigits),
+                        dataChannel.Format_Restriction_TotalDigits
+                    )
+                    .TryColumn(
+                        nameof(DataChannelEntity.Format_Restriction_WhiteSpace),
+                        dataChannel.Format_Restriction_WhiteSpace
+                    )
+                    .TryColumn(nameof(DataChannelEntity.Range_Low), dataChannel.Range_Low)
+                    .TryColumn(nameof(DataChannelEntity.Range_High), dataChannel.Range_High)
+                    .TryColumn(
+                        nameof(DataChannelEntity.Unit_UnitSymbol),
+                        dataChannel.Unit_UnitSymbol
+                    )
+                    .TryColumn(
+                        nameof(DataChannelEntity.Unit_QuantityName),
+                        dataChannel.Unit_QuantityName
+                    )
+                    .TryColumn(nameof(DataChannelEntity.QualityCoding), dataChannel.QualityCoding)
+                    .TryColumn(nameof(DataChannelEntity.AlertPriority), dataChannel.AlertPriority)
+                    .TryColumn(nameof(DataChannelEntity.Name), dataChannel.Name)
+                    .TryColumn(nameof(DataChannelEntity.Remarks), dataChannel.Remarks)
+                    .At(dataChannel.Timestamp);
 
                 client
-                    .Table("DataChannel_InternalId")
-                    .Symbol("VesselId", param.VesselId)
-                    .Symbol("DataChannelId", param.LocalId)
-                    .Column("InternalId", param.InternalId?.ToString())
-                    .At(param.Timestamp);
+                    .Table(DataChannelInternalIdEntity.TableName)
+                    .Symbol(nameof(DataChannelInternalIdEntity.VesselId), dataChannel.VesselId)
+                    .Symbol(nameof(DataChannelInternalIdEntity.DataChannelId), dataChannel.LocalId)
+                    .Symbol(
+                        nameof(DataChannelInternalIdEntity.InternalId),
+                        dataChannel.InternalId?.ToString()
+                    )
+                    .At(dataChannel.Timestamp);
             }
 
             await client.SendAsync(cancellationToken);
@@ -229,9 +206,11 @@ public sealed class DataChannelRepository : IDataChannelRepository
         try
         {
             _logger.LogInformation("Inserting data into TimeSeries");
-            await _qdbClient.EnsureConnectedAsync(cancellationToken);
-            _logger.LogInformation($"IS_CONNECTED {_qdbClient?.Client?.IsConnected}");
-            var client = _qdbClient?.Client!;
+            var client = _questDbClient.Client;
+
+            var vesselId = timeSeriesData.Package.Header?.ShipID;
+
+            var count = 0;
 
             foreach (var timeSeries in timeSeriesData.Package.TimeSeriesData)
             {
@@ -248,21 +227,29 @@ public sealed class DataChannelRepository : IDataChannelRepository
                             var dataChannel = table.DataChannelID![j];
 
                             client
-                                .Table("TimeSeries")
-                                .Symbol("DataChannelId", dataChannel)
-                                .Symbol("VesselId", timeSeriesData?.Package?.Header?.ShipID)
-                                .Column("Value", j < data.Value.Count ? data.Value[j] : null)
-                                .Column(
-                                    "Quality",
+                                .Table(TimeSeriesEntity.TableName)
+                                .Symbol(nameof(TimeSeriesEntity.DataChannelId), dataChannel)
+                                .Symbol(nameof(TimeSeriesEntity.VesselId), vesselId)
+                                .TryColumn(
+                                    nameof(TimeSeriesEntity.Value),
+                                    j < data.Value.Count ? data.Value[j] : null
+                                )
+                                .TryColumn(
+                                    nameof(TimeSeriesEntity.Quality),
                                     j < data.Quality?.Count ? data.Quality?[j] : null
                                 )
                                 .At(data.TimeStamp.DateTime);
+                            count++;
                         }
                     }
                 }
             }
+
             await client.SendAsync(cancellationToken);
-            _logger.LogInformation("Finished inserting data into TimeSeries");
+            _logger.LogInformation(
+                "Finished inserting data into TimeSeries - samples={samplesCount}",
+                count
+            );
         }
         catch (Exception ex)
         {
@@ -270,4 +257,35 @@ public sealed class DataChannelRepository : IDataChannelRepository
             throw;
         }
     }
+
+    public async Task StartAsync(CancellationToken cancellationToken)
+    {
+        var query =
+            $@"
+            {DbSchemas.DataChannel}
+            {DbSchemas.TimeSeries}
+            {DbSchemas.DataChannel_InternalId}
+        ";
+
+        try
+        {
+            _logger.LogInformation("Initializing DB");
+            var queries = query.Split(
+                ";",
+                StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries
+            );
+            foreach (var q in queries)
+            {
+                await _dbClient.Execute(q, cancellationToken);
+            }
+            _logger.LogInformation("DB initialized");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to initialize database");
+            throw;
+        }
+    }
+
+    public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 }
