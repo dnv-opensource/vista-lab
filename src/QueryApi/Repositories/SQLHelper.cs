@@ -1,24 +1,37 @@
+using Common;
 using QueryApi.Models;
 
 namespace QueryApi.Repository;
 
-public static class SQLHelper
+public static class SQLGenerator
 {
-    private const string SELECT_DATA_CHANNEL = "SELECT * FROM DataChannel ";
-    private const string SELECT_TIME_SERIES =
-        @"
-SELECT TS.DataChannelId, TS.VesselId, TS.Value, TS.Quality, TS.Timestamp
-FROM TimeSeries AS TS
-  JOIN DataChannel_InternalId AS DC_ID ON TS.DataChannelId = DC_ID.DataChannelId AND TS.VesselId = DC_ID.VesselId";
-    private const string TIME_SERIES_DATA_CHANNEL_JOIN =
-        " JOIN DataChannel DC ON DC_ID.InternalId = DC.InternalId";
-    private const string ORDER_BY_TIME_STAMP = " ORDER BY TS.TimeStamp DESC ";
+    private static readonly string SELECT_DATA_CHANNEL = $"SELECT * FROM {DataChannelEntity.TableName}";
+
+    private static readonly string SELECT_TIME_SERIES =
+        $@"
+        SELECT
+            TS.{nameof(TimeSeriesEntity.DataChannelId)},
+            TS.{nameof(TimeSeriesEntity.VesselId)},
+            TS.{nameof(TimeSeriesEntity.Value)},
+            TS.{nameof(TimeSeriesEntity.Quality)},
+            TS.{nameof(TimeSeriesEntity.Timestamp)}
+        FROM {TimeSeriesEntity.TableName} AS TS
+          JOIN {DataChannelInternalIdEntity.TableName} AS DC_ID ON
+            TS.{nameof(TimeSeriesEntity.DataChannelId)} = DC_ID.{nameof(DataChannelInternalIdEntity.DataChannelId)}
+            AND TS.{nameof(TimeSeriesEntity.VesselId)} = DC_ID.{nameof(DataChannelInternalIdEntity.VesselId)}
+    ";
+
+    private static readonly string TIME_SERIES_DATA_CHANNEL_JOIN =
+        $@" JOIN {DataChannelEntity.TableName} DC ON
+            DC_ID.{nameof(DataChannelInternalIdEntity.InternalId)} = DC.{nameof(DataChannelEntity.InternalId)}";
+
+    private static readonly string ORDER_BY_TIME_STAMP = $" ORDER BY TS.{nameof(TimeSeriesEntity.Timestamp)} DESC ";
 
     internal static string MountDataChannelSQL(DataChannelFilter filter) =>
         SELECT_DATA_CHANNEL + MountDataChannelWhere(filter);
 
     internal static string MountTimeSeriesSQL(Guid internalId) =>
-        $"{SELECT_TIME_SERIES} WHERE DC_ID.InternalId = '{internalId}'";
+        $"{SELECT_TIME_SERIES} WHERE DC_ID.{nameof(DataChannelInternalIdEntity.InternalId)} = '{internalId}'";
 
     internal static string MountTimeSeriesSQL(DataChannelFilter filter) =>
         SELECT_TIME_SERIES
@@ -58,7 +71,7 @@ FROM TimeSeries AS TS
             sql += string.Join(
                 " OR ",
                 filter.PrimaryItem.Select(
-                    x => $" LocalId_PrimaryItem LIKE \'%{x.Replace('*', '%')}\' "
+                    x => $" {nameof(DataChannelEntity.LocalId_PrimaryItem)} LIKE \'%{x.Replace('*', '%')}\' "
                 )
             );
         return sql;
@@ -71,7 +84,7 @@ FROM TimeSeries AS TS
             sql += string.Join(
                 " OR ",
                 filter.SecondaryItem.Select(
-                    x => $" LocalId_SecondaryItem LIKE \'%{x.Replace('*', '%')}\' "
+                    x => $" {nameof(DataChannelEntity.LocalId_SecondaryItem)} LIKE \'%{x.Replace('*', '%')}\' "
                 )
             );
         return sql;

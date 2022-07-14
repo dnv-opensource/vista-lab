@@ -24,7 +24,7 @@ public sealed class DataChannelRepository
     )
     {
         var response = await _client.Query(
-            SQLHelper.MountDataChannelSQL(filter),
+            SQLGenerator.MountDataChannelSQL(filter),
             cancellationToken
         );
 
@@ -43,6 +43,10 @@ public sealed class DataChannelRepository
             dataChannelId.NameObject!.AdditionalProperties.Add(
                 nameof(DataChannelEntity.InternalId),
                 response.GetValue(i, nameof(DataChannelEntity.InternalId)).GetStringNonNull()
+            );
+            dataChannelId.NameObject!.AdditionalProperties.Add(
+                nameof(DataChannelEntity.VesselId),
+                response.GetValue(i, nameof(DataChannelEntity.VesselId)).GetStringNonNull()
             );
 
             var formatRestrictionEnumerationStr = response
@@ -183,7 +187,7 @@ public sealed class DataChannelRepository
     )
     {
         var response = await _client.Query(
-            SQLHelper.MountTimeSeriesSQL(internalId),
+            SQLGenerator.MountTimeSeriesSQL(internalId),
             cancellationToken
         );
 
@@ -195,7 +199,7 @@ public sealed class DataChannelRepository
         CancellationToken cancellationToken
     )
     {
-        var response = await _client.Query(SQLHelper.MountTimeSeriesSQL(filter), cancellationToken);
+        var response = await _client.Query(SQLGenerator.MountTimeSeriesSQL(filter), cancellationToken);
 
         return ToTimeSeries(response);
     }
