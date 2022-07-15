@@ -66,9 +66,9 @@ public sealed class DataChannelRepository
                         visVersion
                     );
                 var versionInformation = new VersionInformation(
-                    namingRule ?? "N/A",
-                    "N/A",
-                    visVersion
+                    namingRule ?? "dnv",
+                    "v2",
+                    "https://vista.dnv.com/docs"
                 );
                 var header = new Vista.SDK.Transport.Json.DataChannel.Header(
                     "N/A",
