@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Outlet, useSearchParams } from 'react-router-dom';
-import SearchBar from '../../components/explore/SearchBar/SearchBar';
+import SearchBar from '../../components/explore/search-bar/SearchBar';
 import { useExploreContext } from '../../context/ExploreContext';
 import { isNullOrWhitespace } from '../../util/string';
 import './Explore.scss';

@@ -24,8 +24,6 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
       dataChannelFilter: { primaryItem: fetchAll ? null : [query!] },
     });
 
-    console.log(response);
-
     return response;
   }, []);
 
@@ -37,7 +35,10 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
       const dataChannels = dclp?.dataChannelList?.dataChannel;
       if (!dataChannels || dataChannels.length === 0 || !dclp.header?.dataChannelListID?.version) return;
 
-      const visVersion = VisVersions.tryParse(dclp.header?.dataChannelListID?.version);
+      const visVersion =
+        VisVersions.tryParse(dclp.header?.dataChannelListID?.version) ??
+        VisVersions.tryParse(dclp.header?.dataChannelListID?.version.replace('v', '').replace('_', '-'));
+
       if (!visVersion) return;
       const gmod = await VIS.instance.getGmod(visVersion);
       const codebooks = await VIS.instance.getCodebooks(visVersion);

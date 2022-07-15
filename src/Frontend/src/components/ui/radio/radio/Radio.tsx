@@ -2,12 +2,13 @@ import clsx from 'clsx';
 import React, { useCallback, useEffect, useState } from 'react';
 import './Radio.scss';
 
-interface Props {
+export interface RadioProps {
   checked?: boolean;
   onClick?: (checked: boolean) => void;
+  id: string;
 }
 
-const Radio: React.FC<Props> = ({ checked: inputChecked, onClick: inputOnClick }) => {
+const Radio: React.FC<RadioProps> = ({ id, checked: inputChecked, onClick: inputOnClick }) => {
   const [checked, setChecked] = useState(false);
 
   useEffect(() => {
@@ -30,6 +31,7 @@ const Radio: React.FC<Props> = ({ checked: inputChecked, onClick: inputOnClick }
             e.target.click();
         }
       }}
+      id={id}
     >
       {checked && <div className={clsx('inner')} />}
     </div>

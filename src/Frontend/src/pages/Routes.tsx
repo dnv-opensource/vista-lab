@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter, Routes as BrowserRoutes, Route } from 'react-router-dom';
-import FleetGrid from '../components/explore/Fleet/Fleet';
+import FleetGrid from './explore/fleet/Fleet';
 import Layout from '../components/layout/Layout';
 import { ExploreContextProvider } from '../context/ExploreContext';
 import Vessel from './explore/vessel/Vessel';

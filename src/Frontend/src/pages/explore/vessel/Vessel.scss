@@ -21,11 +21,8 @@
   padding: 1em;
   border-radius: 5px;
 
-  p:first-child {
-    margin-top: 0;
-  }
-
-  p:last-child {
-    margin-bottom: 0;
+  .mode-selection {
+    font-size: 0.8em;
+    margin-bottom: 0.5em;
   }
 }

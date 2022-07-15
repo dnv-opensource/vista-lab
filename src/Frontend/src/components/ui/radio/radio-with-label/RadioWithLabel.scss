@@ -1,0 +1,11 @@
+.radio-with-label {
+  cursor: pointer;
+  display: flex;
+  gap: 0.2rem;
+  align-items: center;
+
+  .label {
+    vertical-align: middle;
+    cursor: pointer;
+  }
+}

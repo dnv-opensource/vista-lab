@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
 import { useExploreContext } from '../../../context/ExploreContext';
-import { Vessel } from '../../../pages/explore/vessel/Vessel';
-import ResultBar from '../../shared/result-bar/ResultBar';
-import ScrollableField from '../../ui/scrollable-field/ScrollableField';
-import VesselCard from '../VesselCard/VesselCard';
+import { Vessel } from '../vessel/Vessel';
+import ResultBar from '../../../components/shared/result-bar/ResultBar';
+import ScrollableField from '../../../components/ui/scrollable-field/ScrollableField';
+import VesselCard from '../../../components/explore/vessel-card/VesselCard';
 import './Fleet.scss';
 
 const FleetGrid: React.FC = () => {

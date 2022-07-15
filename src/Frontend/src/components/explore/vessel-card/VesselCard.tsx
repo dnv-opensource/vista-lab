@@ -1,9 +1,9 @@
-import React, { useMemo } from 'react';
-import { Link, useLocation, useSearchParams } from 'react-router-dom';
+import React from 'react';
 import { Vessel } from '../../../pages/explore/vessel/Vessel';
 import FlipCard from '../../ui/flip-card/FlipCard';
 import Icon from '../../ui/icons/Icon';
 import { IconName } from '../../ui/icons/icons';
+import LinkWithQuery from '../../ui/link-with-query/LinkWithQuery';
 import StatusIcon, { StatusVariant } from '../../ui/status-icon/StatusIcon';
 import TextWithIcon from '../../ui/text/TextWithIcon';
 import './VesselCard.scss';
@@ -13,15 +13,8 @@ interface Props {
 }
 
 const VesselCard: React.FC<Props> = ({ vessel }) => {
-  const location = useLocation();
-  const [params] = useSearchParams();
-  const searchQuery = useMemo(() => params.get('query'), [params]);
-
   return (
-    <Link
-      className={'vessel-card'}
-      to={`${location.pathname}/${vessel.vesselId}${searchQuery ? `?query=${searchQuery}` : ''}`}
-    >
+    <LinkWithQuery className={'vessel-card'} to={`${vessel.vesselId}`} queryKey="query">
       <FlipCard
         className="vessel-card-content"
         front={
@@ -41,7 +34,7 @@ const VesselCard: React.FC<Props> = ({ vessel }) => {
           </div>
         }
       />
-    </Link>
+    </LinkWithQuery>
   );
 };
 
