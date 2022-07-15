@@ -14,3 +14,18 @@
     align-items: center;
   }
 }
+
+.vmod-container {
+  height: 100%;
+  background-color: $white;
+  padding: 1em;
+  border-radius: 5px;
+
+  p:first-child {
+    margin-top: 0;
+  }
+
+  p:last-child {
+    margin-bottom: 0;
+  }
+}

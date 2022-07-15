@@ -37,6 +37,12 @@ export interface DataChannelFilter {
      * @memberof DataChannelFilter
      */
     meta?: Array<string> | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof DataChannelFilter
+     */
+    readonly isEmpty?: boolean;
 }
 
 export function DataChannelFilterFromJSON(json: any): DataChannelFilter {
@@ -52,6 +58,7 @@ export function DataChannelFilterFromJSONTyped(json: any, ignoreDiscriminator: b
         'primaryItem': !exists(json, 'primaryItem') ? undefined : json['primaryItem'],
         'secondaryItem': !exists(json, 'secondaryItem') ? undefined : json['secondaryItem'],
         'meta': !exists(json, 'meta') ? undefined : json['meta'],
+        'isEmpty': !exists(json, 'isEmpty') ? undefined : json['isEmpty'],
     };
 }
 

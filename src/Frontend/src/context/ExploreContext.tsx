@@ -1,13 +1,59 @@
-import React, { createContext } from 'react';
+import { LocalId, VIS, VisVersions } from 'dnv-vista-sdk';
+import React, { createContext, useCallback, useState } from 'react';
+import { VistaLabApi } from '../apiConfig';
+import { DataChannelListPackage } from '../client/models/DataChannelListPackage';
+import { isNullOrWhitespace } from '../util/string';
 
-export type ExploreContextType = {};
+export type ExploreContextType = {
+  dataChannelListPackages?: DataChannelListPackage[];
+  setDataChannelListPackages: React.Dispatch<React.SetStateAction<DataChannelListPackage[] | undefined>>;
+  fetchFilteredDataChannels: (query?: string) => Promise<DataChannelListPackage[]>;
+  getVmodForVessel: (vesselId?: string) => Promise<LocalId[] | undefined>;
+};
 
 type ExploreContextProviderProps = React.PropsWithChildren<{}>;
 
 const ExploreContext = createContext<ExploreContextType | undefined>(undefined);
 
 const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
-  return <ExploreContext.Provider value={{}}>{children}</ExploreContext.Provider>;
+  const [dataChannelListPackages, setDataChannelListPackages] = useState<DataChannelListPackage[]>();
+
+  const fetchFilteredDataChannels = useCallback(async (query?: string) => {
+    const fetchAll = isNullOrWhitespace(query);
+    const response = await VistaLabApi.DataChannelApi.dataChannelGetDataChannelByFilter({
+      dataChannelFilter: { primaryItem: fetchAll ? null : [query!] },
+    });
+
+    console.log(response);
+
+    return response;
+  }, []);
+
+  const getVmodForVessel = useCallback(
+    async (vesselId?: string): Promise<LocalId[] | undefined> => {
+      const dclp = dataChannelListPackages?.find(dclp => dclp._package?.header?.shipID === vesselId)?._package;
+      if (!dclp) return;
+
+      const dataChannels = dclp?.dataChannelList?.dataChannel;
+      if (!dataChannels || dataChannels.length === 0 || !dclp.header?.dataChannelListID?.version) return;
+
+      const visVersion = VisVersions.tryParse(dclp.header?.dataChannelListID?.version);
+      if (!visVersion) return;
+      const gmod = await VIS.instance.getGmod(visVersion);
+      const codebooks = await VIS.instance.getCodebooks(visVersion);
+
+      return dclp.dataChannelList?.dataChannel?.map(dc => LocalId.parse(dc.dataChannelID?.localID!, gmod, codebooks));
+    },
+    [dataChannelListPackages]
+  );
+
+  return (
+    <ExploreContext.Provider
+      value={{ dataChannelListPackages, setDataChannelListPackages, fetchFilteredDataChannels, getVmodForVessel }}
+    >
+      {children}
+    </ExploreContext.Provider>
+  );
 };
 
 const useExploreContext = () => {

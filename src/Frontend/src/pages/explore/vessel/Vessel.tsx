@@ -1,25 +1,32 @@
-import React, { useEffect, useMemo } from 'react';
+import { LocalId } from 'dnv-vista-sdk';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import ResultBar from '../../../components/shared/result-bar/ResultBar';
 import Icon from '../../../components/ui/icons/Icon';
 import { IconName } from '../../../components/ui/icons/icons';
+import ScrollableField from '../../../components/ui/scrollable-field/ScrollableField';
 import StatusIcon, { StatusVariant } from '../../../components/ui/status-icon/StatusIcon';
+import { useExploreContext } from '../../../context/ExploreContext';
 import './Vessel.scss';
 
 export type Vessel = {
-  numDataChannels: number;
-  vesselId: string;
-  status: number;
+  numDataChannels?: number;
+  vesselId?: string;
+  status?: number;
 };
 
 const VesselComp: React.FC = () => {
-  const { vesselId } = useParams();
   const [searchParams] = useSearchParams();
   const queryParam = useMemo(() => searchParams.get('query'), [searchParams]);
 
+  const { getVmodForVessel } = useExploreContext();
+  const { vesselId } = useParams();
+
+  const [vmod, setVmod] = useState<LocalId[]>();
+
   useEffect(() => {
-    console.log('vesselId', vesselId);
-  }, [vesselId]);
+    getVmodForVessel(vesselId).then(setVmod);
+  }, [vesselId, getVmodForVessel]);
 
   return (
     <>
@@ -33,8 +40,9 @@ const VesselComp: React.FC = () => {
           <StatusIcon variant={StatusVariant.Good} />
         </div>
       </ResultBar>
-
-      <div>Vessel</div>
+      <ScrollableField className={'vmod-container'}>
+        {vmod?.map(d => <p>{d.toString()}</p>) ?? 'No datachannels found for this query'}
+      </ScrollableField>
     </>
   );
 };

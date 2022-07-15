@@ -15,12 +15,12 @@
 
 import * as runtime from '../runtime';
 import {
-    DataChannel,
-    DataChannelFromJSON,
-    DataChannelToJSON,
     DataChannelFilter,
     DataChannelFilterFromJSON,
     DataChannelFilterToJSON,
+    DataChannelListPackage,
+    DataChannelListPackageFromJSON,
+    DataChannelListPackageToJSON,
     EventDataSet,
     EventDataSetFromJSON,
     EventDataSetToJSON,
@@ -30,7 +30,7 @@ export interface DataChannelGetRequest {
     id: string;
 }
 
-export interface DataChannelPostRequest {
+export interface DataChannelGetDataChannelByFilterRequest {
     dataChannelFilter?: DataChannelFilter;
 }
 
@@ -76,7 +76,7 @@ export class DataChannelApi extends runtime.BaseAPI {
     /**
      * Search for data channels based in the given filters
      */
-    async dataChannelPostRaw(requestParameters: DataChannelPostRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<Array<DataChannel>>> {
+    async dataChannelGetDataChannelByFilterRaw(requestParameters: DataChannelGetDataChannelByFilterRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<Array<DataChannelListPackage>>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -91,14 +91,14 @@ export class DataChannelApi extends runtime.BaseAPI {
             body: DataChannelFilterToJSON(requestParameters.dataChannelFilter),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(DataChannelFromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(DataChannelListPackageFromJSON));
     }
 
     /**
      * Search for data channels based in the given filters
      */
-    async dataChannelPost(requestParameters: DataChannelPostRequest = {}, initOverrides?: RequestInit): Promise<Array<DataChannel>> {
-        const response = await this.dataChannelPostRaw(requestParameters, initOverrides);
+    async dataChannelGetDataChannelByFilter(requestParameters: DataChannelGetDataChannelByFilterRequest = {}, initOverrides?: RequestInit): Promise<Array<DataChannelListPackage>> {
+        const response = await this.dataChannelGetDataChannelByFilterRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

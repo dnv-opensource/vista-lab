@@ -1,7 +1,8 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter, Routes as BrowserRoutes, Route } from 'react-router-dom';
-import FleetGrid from '../components/explore/FleetGrid/FleetGrid';
+import FleetGrid from '../components/explore/Fleet/Fleet';
 import Layout from '../components/layout/Layout';
+import { ExploreContextProvider } from '../context/ExploreContext';
 import Vessel from './explore/vessel/Vessel';
 
 const Home = React.lazy(() => import('./home/Home'));
@@ -10,7 +11,11 @@ const Explore = React.lazy(() => import('./explore/Explore'));
 export const routesList = [
   {
     path: '/explore',
-    element: <Explore />,
+    element: (
+      <ExploreContextProvider>
+        <Explore />
+      </ExploreContextProvider>
+    ),
     title: 'Explore',
     routes: (
       <>

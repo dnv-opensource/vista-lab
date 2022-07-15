@@ -11,7 +11,7 @@
           "DataChannel"
         ],
         "summary": "Search for data channels based in the given filters",
-        "operationId": "DataChannelPost",
+        "operationId": "DataChannelGetDataChannelByFilter",
         "requestBody": {
           "description": "",
           "content": {

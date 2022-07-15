@@ -1,0 +1,6 @@
+@import 'src/styles/variables';
+
+.scrollable-field {
+  overflow-y: auto;
+  @include scroll-bar;
+}

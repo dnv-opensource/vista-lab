@@ -29,13 +29,13 @@ const VesselCard: React.FC<Props> = ({ vessel }) => {
             <div className={'vessel-icon-container'}>
               <Icon className={'vessel-icon'} icon={IconName.Ship} />
             </div>
-            <div>{vessel.vesselId}</div>
+            <div>{vessel.vesselId ?? 'Unknown vessel'}</div>
             <StatusIcon variant={StatusVariant.Good} />
           </div>
         }
         back={
           <div className={'card-info'}>
-            <TextWithIcon icon={IconName.Hashtag}>{vessel.vesselId}</TextWithIcon>
+            <TextWithIcon icon={IconName.Hashtag}>{vessel.vesselId ?? 'Unknown vessel'}</TextWithIcon>
             <TextWithIcon icon={IconName.RSS}>{vessel.numDataChannels}</TextWithIcon>
             <StatusIcon variant={StatusVariant.Good} />
           </div>
