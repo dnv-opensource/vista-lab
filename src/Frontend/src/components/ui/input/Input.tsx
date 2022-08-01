@@ -10,6 +10,7 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   icon?: IconName;
   value?: InputTypes;
   loadingResult?: boolean;
+  onChange?: (e?: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const Input: React.FC<Props> = ({
@@ -27,7 +28,14 @@ const Input: React.FC<Props> = ({
   }, [inputValue]);
 
   const onChange = useCallback(
-    (e: React.ChangeEvent<any>) => onInputChange?.(e) ?? setValue(e.target.value),
+    (e?: React.ChangeEvent<any>) => {
+      if (!e) {
+        onInputChange?.(e) ?? setValue(undefined);
+
+        return;
+      }
+      onInputChange?.(e) ?? setValue(e.target.value);
+    },
     [onInputChange, setValue]
   );
 
@@ -38,7 +46,11 @@ const Input: React.FC<Props> = ({
       {icon && <Icon icon={icon} className="input-icon" />}
       <input value={value ?? ''} onChange={onChange} {...restProps} />
       {!loadingResult ? (
-        <Icon icon={IconName.Times} className={clsx('cancel-icon', isEmpty && 'empty')} onClick={onChange} />
+        <Icon
+          icon={IconName.Times}
+          className={clsx('cancel-icon', isEmpty && 'empty')}
+          onClick={() => onChange(undefined)}
+        />
       ) : (
         <Loader />
       )}

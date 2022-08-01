@@ -31,7 +31,13 @@ const SearchBar: React.FC<Props> = ({ text, onSubmit, loading }) => {
           icon={IconName.Search}
           placeholder="Search"
           value={searchText}
-          onChange={e => setSearchText(e.currentTarget.value)}
+          onChange={e => {
+            if (e === undefined) {
+              onSubmit('');
+              return;
+            }
+            setSearchText(e.currentTarget.value);
+          }}
           loadingResult={loading}
         />
       </form>

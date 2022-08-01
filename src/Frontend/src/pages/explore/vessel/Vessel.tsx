@@ -5,6 +5,7 @@ import ResultBar from '../../../components/shared/result-bar/ResultBar';
 import Icon from '../../../components/ui/icons/Icon';
 import { IconName } from '../../../components/ui/icons/icons';
 import LinkWithQuery from '../../../components/ui/link-with-query/LinkWithQuery';
+import Loader from '../../../components/ui/loader/Loader';
 import RadioSelection from '../../../components/ui/radio/radio-selection/RadioSelection';
 import ScrollableField from '../../../components/ui/scrollable-field/ScrollableField';
 import StatusIcon, { StatusVariant } from '../../../components/ui/status-icon/StatusIcon';
@@ -25,12 +26,15 @@ export enum VesselMode {
 const VesselComp: React.FC = () => {
   const { getVmodForVessel } = useExploreContext();
   const { vesselId } = useParams();
-
+  const [loading, setLoading] = useState(false);
   const [vmod, setVmod] = useState<LocalId[]>();
 
   useEffect(() => {
-    getVmodForVessel(vesselId).then(setVmod);
-  }, [vesselId, getVmodForVessel]);
+    setLoading(true);
+    getVmodForVessel(vesselId)
+      .then(setVmod)
+      .finally(() => setLoading(false));
+  }, [vesselId, getVmodForVessel, setLoading]);
 
   return (
     <>
@@ -51,7 +55,11 @@ const VesselComp: React.FC = () => {
             .filter(([k, _]) => isNaN(+k))
             .map(([key, index]) => ({ index: +index, label: key }))}
         />
-        {vmod?.map(d => <p>{d.toString()}</p>) ?? 'No datachannels found for this query'}
+        {loading ? (
+          <Loader />
+        ) : (
+          vmod?.map((d, index) => <p key={index}>{d.toString()}</p>) ?? 'No datachannels found for this query'
+        )}
       </ScrollableField>
     </>
   );
