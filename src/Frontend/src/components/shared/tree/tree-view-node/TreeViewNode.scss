@@ -1,0 +1,28 @@
+@import 'src/styles/colors';
+
+.tree-node-container {
+  @for $i from 0 through 50 {
+    .tree-depth-#{$i} {
+      margin-left: 25px;
+    }
+  }
+
+  .tree-view-node {
+    display: flex;
+    align-items: center;
+    padding: 0.4em 0.5em;
+
+    &:hover {
+      background-color: $bg-grey;
+    }
+    .tree-view-node-expander {
+      color: $blue;
+      cursor: pointer;
+      padding-right: 0.3em;
+
+      &.no-children {
+        visibility: hidden;
+      }
+    }
+  }
+}

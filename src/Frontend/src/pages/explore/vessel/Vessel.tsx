@@ -1,6 +1,7 @@
-import { LocalId } from 'dnv-vista-sdk';
+import { Pmod } from 'dnv-vista-sdk';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import GmodViewer from '../../../components/explore/gmod-viewer/GmodViewer';
 import ResultBar from '../../../components/shared/result-bar/ResultBar';
 import Icon from '../../../components/ui/icons/Icon';
 import { IconName } from '../../../components/ui/icons/icons';
@@ -27,7 +28,7 @@ const VesselComp: React.FC = () => {
   const { getVmodForVessel } = useExploreContext();
   const { vesselId } = useParams();
   const [loading, setLoading] = useState(false);
-  const [vmod, setVmod] = useState<LocalId[]>();
+  const [vmod, setVmod] = useState<Pmod>();
 
   useEffect(() => {
     setLoading(true);
@@ -55,11 +56,7 @@ const VesselComp: React.FC = () => {
             .filter(([k, _]) => isNaN(+k))
             .map(([key, index]) => ({ index: +index, label: key }))}
         />
-        {loading ? (
-          <Loader />
-        ) : (
-          vmod?.map((d, index) => <p key={index}>{d.toString()}</p>) ?? 'No datachannels found for this query'
-        )}
+        {loading ? <Loader /> : vmod ? <GmodViewer pmod={vmod} /> : <span>No available nodes</span>}
       </ScrollableField>
     </>
   );

@@ -1,4 +1,4 @@
-import { LocalId, VIS, VisVersions } from 'dnv-vista-sdk';
+import { LocalId, Pmod, VIS, VisVersions } from 'dnv-vista-sdk';
 import React, { createContext, useCallback, useState } from 'react';
 import { VistaLabApi } from '../apiConfig';
 import { DataChannelListPackage } from '../client/models/DataChannelListPackage';
@@ -8,7 +8,7 @@ export type ExploreContextType = {
   dataChannelListPackages?: DataChannelListPackage[];
   setDataChannelListPackages: React.Dispatch<React.SetStateAction<DataChannelListPackage[] | undefined>>;
   fetchFilteredDataChannels: (query?: string) => Promise<DataChannelListPackage[]>;
-  getVmodForVessel: (vesselId?: string) => Promise<LocalId[] | undefined>;
+  getVmodForVessel: (vesselId?: string) => Promise<Pmod | undefined>;
 };
 
 type ExploreContextProviderProps = React.PropsWithChildren<{}>;
@@ -28,7 +28,7 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
   }, []);
 
   const getVmodForVessel = useCallback(
-    async (vesselId?: string): Promise<LocalId[] | undefined> => {
+    async (vesselId?: string): Promise<Pmod | undefined> => {
       const dclp = dataChannelListPackages?.find(dclp => dclp._package?.header?.shipID === vesselId)?._package;
       if (!dclp) return;
 
@@ -43,7 +43,11 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
       const gmod = await VIS.instance.getGmod(visVersion);
       const codebooks = await VIS.instance.getCodebooks(visVersion);
 
-      return dclp.dataChannelList?.dataChannel?.map(dc => LocalId.parse(dc.dataChannelID?.localID!, gmod, codebooks));
+      const localIds = dclp.dataChannelList?.dataChannel?.map(dc =>
+        LocalId.parse(dc.dataChannelID?.localID!, gmod, codebooks)
+      );
+
+      return localIds && Pmod.createFromLocalIds(localIds, gmod);
     },
     [dataChannelListPackages]
   );

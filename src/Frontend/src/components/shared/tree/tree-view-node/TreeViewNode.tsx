@@ -3,6 +3,7 @@ import React, { useCallback, useMemo } from 'react';
 import Icon from '../../../ui/icons/Icon';
 import { IconName } from '../../../ui/icons/icons';
 import { TreeNode } from '../types';
+import './TreeViewNode.scss';
 
 export const generateElementNodeId = (node: string, parents: string[]) => {
   return parents.concat(node).join('-');
@@ -103,6 +104,7 @@ function TreeViewNode<T extends { children: T[]; id: string }>({
             className="tree-view-node-expander-icon"
           />
         </div>
+
         <div className="tree-view-node-value">
           {formatElement(
             treeNode,

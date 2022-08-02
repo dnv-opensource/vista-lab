@@ -1,0 +1,23 @@
+.gmod-badge {
+  cursor: default;
+  margin-right: 0.4em;
+
+  .badge-item {
+    border: 1px solid black;
+    padding: 0.05em 0.4em;
+
+    &:first-child {
+      border-bottom-left-radius: 0.5em;
+      border-top-left-radius: 0.5em;
+    }
+
+    &:last-child {
+      border-bottom-right-radius: 0.5em;
+      border-top-right-radius: 0.5em;
+    }
+
+    &:not(:last-child) {
+      border-right: 1px solid black;
+    }
+  }
+}
