@@ -40,6 +40,7 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
         VisVersions.tryParse(dclp.header?.dataChannelListID?.version.replace('v', '').replace('_', '-'));
 
       if (!visVersion) return;
+      fetch('https://mavista.azureedge.net/vis/gmod-vis-3-4a.json');
       const gmod = await VIS.instance.getGmod(visVersion);
       const codebooks = await VIS.instance.getCodebooks(visVersion);
 
