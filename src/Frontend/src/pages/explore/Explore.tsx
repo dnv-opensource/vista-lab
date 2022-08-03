@@ -6,7 +6,7 @@ import { isNullOrWhitespace } from '../../util/string';
 import './Explore.scss';
 
 const Explore: React.FC = () => {
-  const { setDataChannelListPackages, fetchFilteredDataChannels } = useExploreContext();
+  const { setDataChannelListPackages, fetchFilteredDataChannels, mode } = useExploreContext();
   const [searchParams, setSearchParam] = useSearchParams();
   const [loading, setLoading] = useState(false);
   const queryParam = useMemo(() => searchParams.get('query') ?? undefined, [searchParams]);
@@ -20,7 +20,7 @@ const Explore: React.FC = () => {
       .finally(() => {
         setLoading(false);
       });
-  }, [queryParam, setLoading, setDataChannelListPackages, fetchFilteredDataChannels]);
+  }, [queryParam, setLoading, setDataChannelListPackages, fetchFilteredDataChannels, mode]);
 
   const handleSearchSubmit = useCallback(
     (value: string) => {

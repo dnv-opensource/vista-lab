@@ -25,7 +25,7 @@ export enum VesselMode {
 }
 
 const VesselComp: React.FC = () => {
-  const { getVmodForVessel } = useExploreContext();
+  const { getVmodForVessel, mode = VesselMode.Equipment, setMode } = useExploreContext();
   const { vesselId } = useParams();
   const [loading, setLoading] = useState(false);
   const [vmod, setVmod] = useState<Pmod>();
@@ -35,7 +35,11 @@ const VesselComp: React.FC = () => {
     getVmodForVessel(vesselId)
       .then(setVmod)
       .finally(() => setLoading(false));
-  }, [vesselId, getVmodForVessel, setLoading]);
+  }, [vesselId, getVmodForVessel, setLoading, setMode]);
+
+  useEffect(() => {
+    return () => setMode(undefined);
+  }, [setMode]);
 
   return (
     <>
@@ -55,6 +59,10 @@ const VesselComp: React.FC = () => {
           options={Object.entries(VesselMode)
             .filter(([k, _]) => isNaN(+k))
             .map(([key, index]) => ({ index: +index, label: key }))}
+          onChange={option => {
+            setMode(option.index);
+          }}
+          selectedOption={{ index: mode, label: VesselMode[mode] }}
         />
         {loading ? <Loader /> : vmod ? <GmodViewer pmod={vmod} /> : <span>No available nodes</span>}
       </ScrollableField>
