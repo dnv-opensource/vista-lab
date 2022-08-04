@@ -22,8 +22,6 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
   const [dataChannelListPackages, setDataChannelListPackages] = useState<DataChannelListPackage[]>();
   const [mode, setMode] = useState<VesselMode | undefined>(VesselMode.Equipment);
 
-  console.log(mode);
-
   const fetchFilteredDataChannels = useCallback(
     async (query?: string) => {
       const fetchAll = isNullOrWhitespace(query);
