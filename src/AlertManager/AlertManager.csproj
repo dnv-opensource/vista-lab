@@ -11,9 +11,10 @@
     <PackageReference Include="MQTTnet" Version="4.0.0.167" />
       <PackageReference Include="Serilog.Extensions.Hosting" Version="4.2.0" />
       <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
-      <PackageReference Include="DNV.Vista.SDK" Version="0.0.1-preview-*" />
-      <PackageReference Include="DNV.Vista.SDK.Mqtt" Version="0.0.1-preview-*" />
-      <PackageReference Include="DNV.Vista.SDK.System.Text.Json" Version="0.0.1-preview-*" />
   </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Common\Common.csproj" />
+    </ItemGroup>
 
 </Project>

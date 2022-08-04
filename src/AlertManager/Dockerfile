@@ -10,6 +10,7 @@ COPY [".editorconfig", ".editorconfig"]
 COPY ["global.json", "global.json"]
 COPY ["Directory.Build.props", "Directory.Build.props"]
 
+COPY ["src/Common/Common.csproj", "src/Common/"]
 COPY ["src/AlertManager/AlertManager.csproj", "src/AlertManager/"]
 
 RUN dotnet restore "src/AlertManager/"

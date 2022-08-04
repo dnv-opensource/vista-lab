@@ -7,9 +7,6 @@
   <ItemGroup>
     <PackageReference Include="MQTTnet" Version="4.0.0.167" />
     <PackageReference Include="MQTTnet.AspNetCore" Version="4.0.0.167" />
-    <PackageReference Include="DNV.Vista.SDK" Version="0.0.1-preview-*" />
-    <PackageReference Include="DNV.Vista.SDK.Mqtt" Version="0.0.1-preview-*" />
-    <PackageReference Include="DNV.Vista.SDK.System.Text.Json" Version="0.0.1-preview-*" />
     <PackageReference Include="net-questdb-client" Version="1.1.0" />
     <PackageReference Include="NewId" Version="3.0.3" />
     <PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
