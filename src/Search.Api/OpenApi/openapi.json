@@ -1,0 +1,164 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Search.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+    "version": "1.0"
+  },
+  "paths": {
+    "/VIS/search/{visVersion}": {
+      "post": {
+        "tags": [
+          "VIS"
+        ],
+        "summary": "Search for gmod paths.",
+        "operationId": "VISSearchGmod",
+        "parameters": [
+          {
+            "name": "visVersion",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/VisVersion"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GmodSearchRequestDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GmodSearchRequestDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/GmodSearchRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/GmodSearchResultDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GmodSearchResultDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GmodSearchResultDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "GmodSearchRequestDto": {
+        "type": "object",
+        "properties": {
+          "phrase": {
+            "type": "string"
+          },
+          "topResults": {
+            "type": "integer",
+            "format": "int32",
+            "default": 50
+          },
+          "strategies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SearchIndexStrategy"
+            },
+            "default": [
+              0
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "GmodSearchResultDto": {
+        "type": "object",
+        "properties": {
+          "strategies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GmodSearchStrategyResultDto"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "GmodSearchStrategyResultDto": {
+        "type": "object",
+        "properties": {
+          "strategy": {
+            "type": "string"
+          },
+          "query": {
+            "type": "string"
+          },
+          "hitsPlaintext": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "hits": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GmodSearchStrategyResultHitDto"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "GmodSearchStrategyResultHitDto": {
+        "type": "object",
+        "properties": {
+          "score": {
+            "type": "number",
+            "format": "float"
+          },
+          "path": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SearchIndexStrategy": {
+        "enum": [
+          0,
+          1,
+          2
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "VisVersion": {
+        "enum": [
+          0,
+          1
+        ],
+        "type": "integer",
+        "format": "int32"
+      }
+    }
+  }
+}

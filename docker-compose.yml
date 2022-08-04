@@ -26,6 +26,15 @@ services:
             dockerfile: src/QueryApi/Dockerfile
         environment:
             DB_HOST: "vista-lab-db:9000"
+            SEARCH_API_URL: "http://localhost:5053"
+    search-api:
+        container_name: vista-lab-search-api
+        restart: unless-stopped
+        ports:
+            - "5053:5053"
+        build:
+            context: .
+            dockerfile: src/Search.Api/Dockerfile
     # MQTT Services
     alert-manager:
         depends_on:
