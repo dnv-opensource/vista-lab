@@ -16,5 +16,8 @@ export * from './Property';
 export * from './Range';
 export * from './Restriction';
 export * from './RestrictionWhiteSpace';
+export * from './SearchRequestDto';
+export * from './SearchScope';
 export * from './Unit';
 export * from './VersionInformation';
+export * from './VisVersion';

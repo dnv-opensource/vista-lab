@@ -183,7 +183,7 @@
           "Search"
         ],
         "summary": "Search for gmod paths.",
-        "operationId": "SearchSearchGmod",
+        "operationId": "SearchSearch",
         "parameters": [
           {
             "name": "visVersion",
@@ -221,17 +221,26 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/DataChannelListPackage"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DataChannelListPackage"
+                  }
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DataChannelListPackage"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DataChannelListPackage"
+                  }
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DataChannelListPackage"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DataChannelListPackage"
+                  }
                 }
               }
             }
@@ -554,7 +563,8 @@
         "properties": {
           "phrase": {
             "type": "string",
-            "default": "Main engine"
+            "default": "Main engine",
+            "nullable": true
           },
           "scope": {
             "$ref": "#/components/schemas/SearchScope"

@@ -16,7 +16,7 @@ public sealed class VISController : ControllerBase
         _service = service;
     }
 
-    public sealed record SearchDto(string Phrase, int TopResults);
+    public sealed record SearchDto(string Phrase, int? TopResults);
 
     /// <summary>
     /// Search for gmod paths.

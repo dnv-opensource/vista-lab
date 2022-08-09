@@ -82,15 +82,23 @@ public sealed class ElasticSearchService : IHostedService
     public async ValueTask<HitResults> Search(
         VisVersion version,
         string phrase,
-        int topResult,
+        int? topResult,
         CancellationToken cancellationToken
     )
     {
+        if (string.IsNullOrWhiteSpace(phrase))
+            return new HitResults(0, 0, 0, new List<HitResult>());
+
         await _esClient.PingAsync(new PingRequest(), cancellationToken);
         _logger.LogInformation("{cliendId} - Pinged ElasticSearch client successfully", clientId);
         var searchResponse = _esClient.Search<DataChannelEntity>(
             d =>
-                d.Index(version.ToString())
+            {
+                if (topResult is not null)
+                {
+                    d.Size(topResult);
+                }
+                return d.Index(version.ToString())
                     .Query(
                         q =>
                             q.Bool(
@@ -103,8 +111,8 @@ public sealed class ElasticSearchService : IHostedService
                                             )
                                     )
                             )
-                    )
-                    .Size(topResult)
+                    );
+            }
         );
 
         if (!searchResponse.IsValid)

@@ -1,9 +1,9 @@
-import { LocalId, Pmod, VIS, VisVersions } from 'dnv-vista-sdk';
+import { LocalId, Pmod, VIS, VisVersion } from 'dnv-vista-sdk';
 import React, { createContext, useCallback, useState } from 'react';
 import { VistaLabApi } from '../apiConfig';
 import { DataChannelListPackage } from '../client/models/DataChannelListPackage';
 import { VesselMode } from '../pages/explore/vessel/Vessel';
-import { isNullOrWhitespace } from '../util/string';
+import { useVISContext } from './VISContext';
 
 export type ExploreContextType = {
   dataChannelListPackages?: DataChannelListPackage[];
@@ -19,22 +19,25 @@ type ExploreContextProviderProps = React.PropsWithChildren<{}>;
 const ExploreContext = createContext<ExploreContextType | undefined>(undefined);
 
 const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
+  const { visVersion } = useVISContext();
   const [dataChannelListPackages, setDataChannelListPackages] = useState<DataChannelListPackage[]>();
   const [mode, setMode] = useState<VesselMode | undefined>(VesselMode.Equipment);
 
   const fetchFilteredDataChannels = useCallback(
     async (query?: string) => {
-      const fetchAll = isNullOrWhitespace(query);
-      const q = fetchAll ? null : [query!];
-      const key = mode ? (mode === VesselMode.Consequence ? 'secondaryItem' : 'primaryItem') : 'primaryItem';
+      const clientVersion = Object.values(VisVersion).indexOf(visVersion);
 
-      const response = await VistaLabApi.DataChannelApi.dataChannelGetDataChannelByFilter({
-        dataChannelFilter: { [key]: q },
-      });
+      if (clientVersion === -1) throw new Error('ExploreContext: Invalid VisVersion');
+
+      const request = {
+        visVersion: clientVersion,
+        searchRequestDto: { scope: mode ? +mode : undefined, phrase: query ?? '' },
+      };
+      const response = await VistaLabApi.SearchApi.searchSearch(request);
 
       return response;
     },
-    [mode]
+    [mode, visVersion]
   );
 
   const getVmodForVessel = useCallback(
@@ -45,12 +48,6 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
       const dataChannels = dclp?.dataChannelList?.dataChannel;
       if (!dataChannels || dataChannels.length === 0 || !dclp.header?.dataChannelListID?.version) return;
 
-      const visVersion =
-        VisVersions.tryParse(dclp.header?.dataChannelListID?.version) ??
-        VisVersions.tryParse(dclp.header?.dataChannelListID?.version.replace('v', '').replace('_', '-'));
-
-      if (!visVersion) return;
-
       const gmod = await VIS.instance.getGmod(visVersion);
       const codebooks = await VIS.instance.getCodebooks(visVersion);
 
@@ -60,7 +57,7 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
 
       return localIds && Pmod.createFromLocalIds(localIds, gmod);
     },
-    [dataChannelListPackages]
+    [dataChannelListPackages, visVersion]
   );
 
   return (

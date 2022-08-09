@@ -1,5 +1,6 @@
 .openapi-generator-ignore
 apis/DataChannelApi.ts
+apis/SearchApi.ts
 apis/index.ts
 index.ts
 models/ConfigurationReference.ts
@@ -18,7 +19,10 @@ models/Property.ts
 models/Range.ts
 models/Restriction.ts
 models/RestrictionWhiteSpace.ts
+models/SearchRequestDto.ts
+models/SearchScope.ts
 models/Unit.ts
 models/VersionInformation.ts
+models/VisVersion.ts
 models/index.ts
 runtime.ts

@@ -56,7 +56,7 @@ public sealed class SearchController : ControllerBase
     }
 
     public sealed record SearchRequestDto(
-        [property: DefaultValue("Main engine")] string Phrase,
+        [property: DefaultValue("Main engine")] string? Phrase,
         [property: DefaultValue(SearchScope.All)] SearchScope? Scope
     );
 
@@ -69,7 +69,7 @@ public sealed class SearchController : ControllerBase
     /// <returns></returns>
     [HttpPost]
     [Route("api/search/{visVersion}")]
-    public async Task<ActionResult<DataChannelListPackage>> SearchGmod(
+    public async Task<ActionResult<IEnumerable<DataChannelListPackage>>> Search(
         Vista.SDK.VisVersion visVersion,
         SearchRequestDto body,
         CancellationToken cancellationToken
@@ -77,7 +77,7 @@ public sealed class SearchController : ControllerBase
     {
         var gmod = _vis.GetGmod(visVersion);
 
-        var request = new SearchDto(body.Phrase, 10);
+        var request = new SearchDto(body.Phrase, null);
 
         var searchApiResultDto = await _searchClient.VISSearchAsync(
             (Search.Client.VisVersion)visVersion,
