@@ -1,8 +1,11 @@
 using Vista.SDK;
 
 using Search.Api;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog((context, logging) => logging.WriteTo.Console());
 
 if (!builder.Environment.IsEnvironment("OpenApi"))
 {

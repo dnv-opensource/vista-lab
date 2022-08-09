@@ -16,13 +16,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Lucene.Net" Version="4.8.0-beta00016" />
-    <PackageReference Include="Lucene.Net.Analysis.Common" Version="4.8.0-beta00016" />
-    <PackageReference Include="Lucene.Net.Memory" Version="4.8.0-beta00016" />
-      <PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00016" />
-      <PackageReference Include="Lucene.Net.Facet" Version="4.8.0-beta00016" />
-    <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+      <PackageReference Include="Elasticsearch.Net" Version="7.17.4" />
+      <PackageReference Include="NEST" Version="7.17.4" />
+      <PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
+      <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
+    <PackageReference Include="MQTTnet" Version="4.0.0.167" />
+
+      <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     <PackageReference Include="UnitsNet" Version="4.128.0" />
     <PackageReference Include="NSwag.ApiDescription.Client" Version="13.15.5">
       <PrivateAssets>all</PrivateAssets>
@@ -33,9 +33,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-    
+
+
   <Target Name="OpenApiDocGeneration" AfterTargets="PostBuildEvent" Condition="'$(CI_BUILD)' != 'True'">
-      <Exec Command="dotnet tool restore --tool-manifest ../.config/dotnet-tools.json" />
+    <Exec Command="dotnet tool restore --tool-manifest ../.config/dotnet-tools.json" />
     <Exec Command="dotnet swagger tofile --output ./OpenApi/openapi.json $(OutputPath)\$(AssemblyName).dll v1" EnvironmentVariables="ASPNETCORE_ENVIRONMENT=OpenApi" />
   </Target>
 
@@ -43,9 +44,9 @@
     <Exec Command="$(NSwagExe_Net60) run ./OpenApi/nswag.json" />
   </Target>
 
-    <ItemGroup>
-        <ProjectReference Include="..\Common\Common.csproj" />
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj" />
+  </ItemGroup>
 
 
 </Project>

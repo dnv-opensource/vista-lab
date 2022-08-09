@@ -11,7 +11,7 @@
           "VIS"
         ],
         "summary": "Search for gmod paths.",
-        "operationId": "VISSearchGmod",
+        "operationId": "VISSearch",
         "parameters": [
           {
             "name": "visVersion",
@@ -28,17 +28,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/GmodSearchRequestDto"
+                "$ref": "#/components/schemas/SearchDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/GmodSearchRequestDto"
+                "$ref": "#/components/schemas/SearchDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/GmodSearchRequestDto"
+                "$ref": "#/components/schemas/SearchDto"
               }
             }
           }
@@ -49,17 +49,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "$ref": "#/components/schemas/GmodSearchResultDto"
+                  "$ref": "#/components/schemas/HitResults"
                 }
               },
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GmodSearchResultDto"
+                  "$ref": "#/components/schemas/HitResults"
                 }
               },
               "text/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GmodSearchResultDto"
+                  "$ref": "#/components/schemas/HitResults"
                 }
               }
             }
@@ -70,7 +70,323 @@
   },
   "components": {
     "schemas": {
-      "GmodSearchRequestDto": {
+      "DataChannelEntity": {
+        "type": "object",
+        "properties": {
+          "vesselId": {
+            "type": "string"
+          },
+          "internalId": {
+            "type": "string"
+          },
+          "localId": {
+            "type": "string"
+          },
+          "shortId": {
+            "type": "string",
+            "nullable": true
+          },
+          "nameObject_NamingRule": {
+            "type": "string",
+            "nullable": true
+          },
+          "dataChannelType_Type": {
+            "type": "string"
+          },
+          "dataChannelType_CalculationPeriod": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "dataChannelType_UpdateCycle": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "format_Type": {
+            "type": "string"
+          },
+          "format_Restriction_Enumeration": {
+            "type": "string",
+            "nullable": true
+          },
+          "format_Restriction_FractionDigits": {
+            "type": "string",
+            "nullable": true
+          },
+          "format_Restriction_Length": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "format_Restriction_MaxExclusive": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "format_Restriction_MaxInclusive": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "format_Restriction_MaxLength": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "format_Restriction_MinExclusive": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "format_Restriction_MinInclusive": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "format_Restriction_MinLength": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "format_Restriction_Pattern": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "format_Restriction_TotalDigits": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "format_Restriction_WhiteSpace": {
+            "type": "string",
+            "nullable": true
+          },
+          "range_High": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "range_Low": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "unit_UnitSymbol": {
+            "type": "string",
+            "nullable": true
+          },
+          "unit_QuantityName": {
+            "type": "string",
+            "nullable": true
+          },
+          "qualityCoding": {
+            "type": "string",
+            "nullable": true
+          },
+          "alertPriority": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "remarks": {
+            "type": "string",
+            "nullable": true
+          },
+          "localId_VisVersion": {
+            "type": "string"
+          },
+          "localId_PrimaryItem": {
+            "type": "string"
+          },
+          "localId_SecondaryItem": {
+            "type": "string",
+            "nullable": true
+          },
+          "localId_Position": {
+            "type": "string",
+            "nullable": true
+          },
+          "localId_Quantity": {
+            "type": "string",
+            "nullable": true
+          },
+          "localId_Calculation": {
+            "type": "string",
+            "nullable": true
+          },
+          "localId_Content": {
+            "type": "string",
+            "nullable": true
+          },
+          "localId_Command": {
+            "type": "string",
+            "nullable": true
+          },
+          "localId_Type": {
+            "type": "string",
+            "nullable": true
+          },
+          "localId_Detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Explanation": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExplanationDetail"
+            },
+            "nullable": true,
+            "readOnly": true
+          },
+          "value": {
+            "type": "number",
+            "format": "float",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ExplanationDetail": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExplanationDetail"
+            },
+            "nullable": true,
+            "readOnly": true
+          },
+          "value": {
+            "type": "number",
+            "format": "float",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "HitResult": {
+        "type": "object",
+        "properties": {
+          "explanation": {
+            "$ref": "#/components/schemas/Explanation"
+          },
+          "fields": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/LazyDocument"
+            }
+          },
+          "highlight": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "id": {
+            "type": "string"
+          },
+          "index": {
+            "type": "string"
+          },
+          "sorts": {
+            "type": "array",
+            "items": { }
+          },
+          "score": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "matchedQueries": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "primaryTerm": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "routing": {
+            "type": "string"
+          },
+          "sequenceNumber": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "type": {
+            "type": "string"
+          },
+          "version": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "document": {
+            "$ref": "#/components/schemas/DataChannelEntity"
+          }
+        },
+        "additionalProperties": false
+      },
+      "HitResults": {
+        "type": "object",
+        "properties": {
+          "maxScore": {
+            "type": "number",
+            "format": "double"
+          },
+          "numberOfHits": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPotentialHits": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "hits": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HitResult"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "LazyDocument": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "SearchDto": {
         "type": "object",
         "properties": {
           "phrase": {
@@ -78,78 +394,10 @@
           },
           "topResults": {
             "type": "integer",
-            "format": "int32",
-            "default": 50
-          },
-          "strategies": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/SearchIndexStrategy"
-            },
-            "default": [
-              0
-            ]
+            "format": "int32"
           }
         },
         "additionalProperties": false
-      },
-      "GmodSearchResultDto": {
-        "type": "object",
-        "properties": {
-          "strategies": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/GmodSearchStrategyResultDto"
-            }
-          }
-        },
-        "additionalProperties": false
-      },
-      "GmodSearchStrategyResultDto": {
-        "type": "object",
-        "properties": {
-          "strategy": {
-            "type": "string"
-          },
-          "query": {
-            "type": "string"
-          },
-          "hitsPlaintext": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "hits": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/GmodSearchStrategyResultHitDto"
-            }
-          }
-        },
-        "additionalProperties": false
-      },
-      "GmodSearchStrategyResultHitDto": {
-        "type": "object",
-        "properties": {
-          "score": {
-            "type": "number",
-            "format": "float"
-          },
-          "path": {
-            "type": "string"
-          }
-        },
-        "additionalProperties": false
-      },
-      "SearchIndexStrategy": {
-        "enum": [
-          0,
-          1,
-          2
-        ],
-        "type": "integer",
-        "format": "int32"
       },
       "VisVersion": {
         "enum": [

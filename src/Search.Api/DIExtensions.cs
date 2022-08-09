@@ -1,11 +1,11 @@
-﻿namespace Search.Api;
+namespace Search.Api;
 
 internal static class DIExtensions
 {
     public static IServiceCollection AddSearchService(this IServiceCollection services)
     {
-        services.AddSingleton<LuceneSearchService>();
-        services.AddSingleton<IHostedService>(sp => sp.GetRequiredService<LuceneSearchService>());
+        services.AddSingleton<ElasticSearchService>();
+        services.AddSingleton<IHostedService>(sp => sp.GetRequiredService<ElasticSearchService>());
         return services;
     }
 }

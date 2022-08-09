@@ -3,6 +3,7 @@ using Common;
 using Vista.SDK;
 using Serilog;
 using QueryApi.Repository;
+using Search.Client;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -10,6 +11,7 @@ var configuration = builder.Configuration;
 builder.Host.UseSerilog((context, logging) => logging.WriteTo.Console());
 
 builder.Services.AddVIS();
+builder.Services.AddSearchClient(configuration);
 
 builder.Services.AddSingleton<DataChannelRepository>();
 builder.Services.AddHttpClient<QuestDbClient>();

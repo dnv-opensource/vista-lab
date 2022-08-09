@@ -176,6 +176,68 @@
           }
         }
       }
+    },
+    "/api/search/{visVersion}": {
+      "post": {
+        "tags": [
+          "Search"
+        ],
+        "summary": "Search for gmod paths.",
+        "operationId": "SearchSearchGmod",
+        "parameters": [
+          {
+            "name": "visVersion",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/VisVersion"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchRequestDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchRequestDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataChannelListPackage"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataChannelListPackage"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataChannelListPackage"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -487,6 +549,28 @@
         "type": "integer",
         "format": "int32"
       },
+      "SearchRequestDto": {
+        "type": "object",
+        "properties": {
+          "phrase": {
+            "type": "string",
+            "default": "Main engine"
+          },
+          "scope": {
+            "$ref": "#/components/schemas/SearchScope"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SearchScope": {
+        "enum": [
+          0,
+          1,
+          2
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
       "Unit": {
         "type": "object",
         "properties": {
@@ -515,6 +599,14 @@
           }
         },
         "additionalProperties": false
+      },
+      "VisVersion": {
+        "enum": [
+          0,
+          1
+        ],
+        "type": "integer",
+        "format": "int32"
       }
     }
   }

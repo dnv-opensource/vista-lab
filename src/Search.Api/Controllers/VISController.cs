@@ -1,8 +1,7 @@
-using System.ComponentModel;
-using System.Globalization;
-
 using Microsoft.AspNetCore.Mvc;
+using Nest;
 using Vista.SDK;
+using static Search.Api.ElasticSearchService;
 
 namespace Search.Api.Controllers;
 
@@ -10,30 +9,14 @@ namespace Search.Api.Controllers;
 [Route("[controller]")]
 public sealed class VISController : ControllerBase
 {
-    private readonly LuceneSearchService _service;
+    private readonly ElasticSearchService _service;
 
-    public VISController(LuceneSearchService service)
+    public VISController(ElasticSearchService service)
     {
         _service = service;
     }
 
-    public sealed record GmodSearchRequestDto(
-        string Phrase,
-        [property: DefaultValue(50)] int TopResults,
-        [property: DefaultValue(new SearchIndexStrategy[] { SearchIndexStrategy.BM25Similarity })]
-            IReadOnlyList<SearchIndexStrategy> Strategies
-    );
-
-    public sealed record GmodSearchResultDto(IReadOnlyList<GmodSearchStrategyResultDto> Strategies);
-
-    public sealed record GmodSearchStrategyResultDto(
-        string Strategy,
-        string Query,
-        IReadOnlyList<string> HitsPlaintext,
-        IReadOnlyList<GmodSearchStrategyResultHitDto> Hits
-    );
-
-    public sealed record GmodSearchStrategyResultHitDto(float Score, string Path);
+    public sealed record SearchDto(string Phrase, int TopResults);
 
     /// <summary>
     /// Search for gmod paths.
@@ -42,42 +25,21 @@ public sealed class VISController : ControllerBase
     /// <param name="body"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    [HttpPost("search/{visVersion}")]
-    public ActionResult<GmodSearchResultDto> SearchGmod(
+    [HttpPost]
+    [Route("search/{visVersion}")]
+    public async Task<ActionResult<HitResults>> Search(
         VisVersion visVersion,
-        GmodSearchRequestDto body,
+        SearchDto body,
         CancellationToken cancellationToken
     )
     {
-        var result = _service.Search(visVersion, body.Phrase, body.TopResults, body.Strategies);
-
-        var dto = new GmodSearchResultDto(
-            result.Strategies
-                .Select(
-                    s =>
-                        new GmodSearchStrategyResultDto(
-                            s.Strategy,
-                            s.Query,
-                            s.Hits
-                                .Select(
-                                    h =>
-                                        $"{h.Score.ToString("00.00", CultureInfo.InvariantCulture)} | {h.Path.ToStringDump()}"
-                                )
-                                .ToArray(),
-                            s.Hits
-                                .Select(
-                                    h =>
-                                        new GmodSearchStrategyResultHitDto(
-                                            h.Score,
-                                            h.Path.ToString()
-                                        )
-                                )
-                                .ToArray()
-                        )
-                )
-                .ToArray()
+        var result = await _service.Search(
+            visVersion,
+            body.Phrase,
+            body.TopResults,
+            cancellationToken
         );
 
-        return Ok(dto);
+        return Ok(result);
     }
 }

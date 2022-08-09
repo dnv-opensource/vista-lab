@@ -1,6 +1,34 @@
 version: "3"
 
 services:
+    elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:8.3.3
+        container_name: elasticsearch
+        environment:
+            - bootstrap.memory_lock=true
+            - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+            - discovery.type=single-node
+            - xpack.security.enabled=false
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+        ports:
+            - "9200:9200"
+            - "9300:9300"
+        networks:
+            - elastic
+    kibana:
+        image: docker.elastic.co/kibana/kibana:8.3.3
+        container_name: kibana
+        environment:
+            - xpack.security.enabled=false
+        depends_on:
+            - elasticsearch
+        ports:
+            - "5601:5601"
+        networks:
+            - elastic
     broker:
         depends_on:
             - questdb
@@ -25,3 +53,5 @@ services:
             QDB_PG_PASSWORD: "Password1"
             QDB_PG_USER: "sa"
             QDB_LOG_W_STDOUT_LEVEL: ERROR
+networks:
+    elastic:

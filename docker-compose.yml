@@ -26,8 +26,13 @@ services:
             dockerfile: src/QueryApi/Dockerfile
         environment:
             DB_HOST: "vista-lab-db:9000"
-            SEARCH_API_URL: "http://localhost:5053"
+            SEARCH_API_URL: "vista-lab-search-api:5053"
     search-api:
+        depends_on:
+            broker:
+                condition: service_started
+            elasticsearch:
+                condition: service_healthy
         container_name: vista-lab-search-api
         restart: unless-stopped
         ports:
@@ -35,6 +40,9 @@ services:
         build:
             context: .
             dockerfile: src/Search.Api/Dockerfile
+        environment:
+            BROKER_SERVER: "vista-lab-broker"
+            ES_API_URL: "vista-lab-elasticsearch"
     # MQTT Services
     alert-manager:
         depends_on:
@@ -59,6 +67,7 @@ services:
     simulator:
         depends_on:
             - ingest-api
+            - search-api
             - broker
             - channel-streamer
         container_name: vista-lab-simulator
@@ -78,6 +87,37 @@ services:
         build:
             context: .
             dockerfile: src/MqttBroker/Dockerfile
+    # Elastic search
+    elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:8.3.3
+        container_name: vista-lab-elasticsearch
+        environment:
+            - bootstrap.memory_lock=true
+            - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+            - discovery.type=single-node
+            - xpack.security.enabled=false
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+        ports:
+            - "9200:9200"
+            - "9300:9300"
+        healthcheck:
+            test: curl -s http://vista-lab-elasticsearch:9200 >/dev/null || exit 1
+            interval: 30s
+            timeout: 10s
+            retries: 5
+    kibana:
+        image: docker.elastic.co/kibana/kibana:8.3.3
+        container_name: vista-lab-kibana
+        environment:
+            - xpack.security.enabled=false
+        depends_on:
+            elasticsearch:
+                condition: service_healthy
+        ports:
+            - "5601:5601"
     # Database
     questdb:
         image: questdb/questdb

@@ -28,7 +28,7 @@ namespace Search.Client
         /// </summary>
         /// <returns>Success</returns>
         /// <exception cref="SearchApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<GmodSearchResultDto> VISSearchGmodAsync(VisVersion visVersion, GmodSearchRequestDto? body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<HitResults> VISSearchAsync(VisVersion visVersion, SearchDto? body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
     }
 
@@ -73,7 +73,7 @@ namespace Search.Client
         /// </summary>
         /// <returns>Success</returns>
         /// <exception cref="SearchApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<GmodSearchResultDto> VISSearchGmodAsync(VisVersion visVersion, GmodSearchRequestDto? body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<HitResults> VISSearchAsync(VisVersion visVersion, SearchDto? body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (visVersion == null)
                 throw new System.ArgumentNullException("visVersion");
@@ -117,7 +117,7 @@ namespace Search.Client
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<GmodSearchResultDto>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<HitResults>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new SearchApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -245,11 +245,403 @@ namespace Search.Client
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.15.5.0 (NJsonSchema v10.6.6.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class GmodSearchRequestDto
+    public partial class DataChannelEntity
     {
         [System.Text.Json.Serialization.JsonConstructor]
 
-        public GmodSearchRequestDto(string? @phrase, System.Collections.Generic.List<SearchIndexStrategy>? @strategies, int? @topResults)
+        public DataChannelEntity(string? @alertPriority, double? @dataChannelType_CalculationPeriod, string? @dataChannelType_Type, double? @dataChannelType_UpdateCycle, string? @format_Restriction_Enumeration, string? @format_Restriction_FractionDigits, int? @format_Restriction_Length, double? @format_Restriction_MaxExclusive, double? @format_Restriction_MaxInclusive, int? @format_Restriction_MaxLength, double? @format_Restriction_MinExclusive, double? @format_Restriction_MinInclusive, int? @format_Restriction_MinLength, int? @format_Restriction_Pattern, int? @format_Restriction_TotalDigits, string? @format_Restriction_WhiteSpace, string? @format_Type, string? @internalId, string? @localId, string? @localId_Calculation, string? @localId_Command, string? @localId_Content, string? @localId_Detail, string? @localId_Position, string? @localId_PrimaryItem, string? @localId_Quantity, string? @localId_SecondaryItem, string? @localId_Type, string? @localId_VisVersion, string? @name, string? @nameObject_NamingRule, string? @qualityCoding, double? @range_High, double? @range_Low, string? @remarks, string? @shortId, System.DateTimeOffset? @timestamp, string? @unit_QuantityName, string? @unit_UnitSymbol, string? @vesselId)
+
+        {
+
+            this.VesselId = @vesselId;
+
+            this.InternalId = @internalId;
+
+            this.LocalId = @localId;
+
+            this.ShortId = @shortId;
+
+            this.NameObject_NamingRule = @nameObject_NamingRule;
+
+            this.DataChannelType_Type = @dataChannelType_Type;
+
+            this.DataChannelType_CalculationPeriod = @dataChannelType_CalculationPeriod;
+
+            this.DataChannelType_UpdateCycle = @dataChannelType_UpdateCycle;
+
+            this.Format_Type = @format_Type;
+
+            this.Format_Restriction_Enumeration = @format_Restriction_Enumeration;
+
+            this.Format_Restriction_FractionDigits = @format_Restriction_FractionDigits;
+
+            this.Format_Restriction_Length = @format_Restriction_Length;
+
+            this.Format_Restriction_MaxExclusive = @format_Restriction_MaxExclusive;
+
+            this.Format_Restriction_MaxInclusive = @format_Restriction_MaxInclusive;
+
+            this.Format_Restriction_MaxLength = @format_Restriction_MaxLength;
+
+            this.Format_Restriction_MinExclusive = @format_Restriction_MinExclusive;
+
+            this.Format_Restriction_MinInclusive = @format_Restriction_MinInclusive;
+
+            this.Format_Restriction_MinLength = @format_Restriction_MinLength;
+
+            this.Format_Restriction_Pattern = @format_Restriction_Pattern;
+
+            this.Format_Restriction_TotalDigits = @format_Restriction_TotalDigits;
+
+            this.Format_Restriction_WhiteSpace = @format_Restriction_WhiteSpace;
+
+            this.Range_High = @range_High;
+
+            this.Range_Low = @range_Low;
+
+            this.Unit_UnitSymbol = @unit_UnitSymbol;
+
+            this.Unit_QuantityName = @unit_QuantityName;
+
+            this.QualityCoding = @qualityCoding;
+
+            this.AlertPriority = @alertPriority;
+
+            this.Name = @name;
+
+            this.Remarks = @remarks;
+
+            this.LocalId_VisVersion = @localId_VisVersion;
+
+            this.LocalId_PrimaryItem = @localId_PrimaryItem;
+
+            this.LocalId_SecondaryItem = @localId_SecondaryItem;
+
+            this.LocalId_Position = @localId_Position;
+
+            this.LocalId_Quantity = @localId_Quantity;
+
+            this.LocalId_Calculation = @localId_Calculation;
+
+            this.LocalId_Content = @localId_Content;
+
+            this.LocalId_Command = @localId_Command;
+
+            this.LocalId_Type = @localId_Type;
+
+            this.LocalId_Detail = @localId_Detail;
+
+            this.Timestamp = @timestamp;
+
+        }
+        [System.Text.Json.Serialization.JsonPropertyName("vesselId")]
+        public string? VesselId { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("internalId")]
+        public string? InternalId { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("localId")]
+        public string? LocalId { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("shortId")]
+        public string? ShortId { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("nameObject_NamingRule")]
+        public string? NameObject_NamingRule { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("dataChannelType_Type")]
+        public string? DataChannelType_Type { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("dataChannelType_CalculationPeriod")]
+        public double? DataChannelType_CalculationPeriod { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("dataChannelType_UpdateCycle")]
+        public double? DataChannelType_UpdateCycle { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("format_Type")]
+        public string? Format_Type { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("format_Restriction_Enumeration")]
+        public string? Format_Restriction_Enumeration { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("format_Restriction_FractionDigits")]
+        public string? Format_Restriction_FractionDigits { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("format_Restriction_Length")]
+        public int? Format_Restriction_Length { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("format_Restriction_MaxExclusive")]
+        public double? Format_Restriction_MaxExclusive { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("format_Restriction_MaxInclusive")]
+        public double? Format_Restriction_MaxInclusive { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("format_Restriction_MaxLength")]
+        public int? Format_Restriction_MaxLength { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("format_Restriction_MinExclusive")]
+        public double? Format_Restriction_MinExclusive { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("format_Restriction_MinInclusive")]
+        public double? Format_Restriction_MinInclusive { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("format_Restriction_MinLength")]
+        public int? Format_Restriction_MinLength { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("format_Restriction_Pattern")]
+        public int? Format_Restriction_Pattern { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("format_Restriction_TotalDigits")]
+        public int? Format_Restriction_TotalDigits { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("format_Restriction_WhiteSpace")]
+        public string? Format_Restriction_WhiteSpace { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("range_High")]
+        public double? Range_High { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("range_Low")]
+        public double? Range_Low { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("unit_UnitSymbol")]
+        public string? Unit_UnitSymbol { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("unit_QuantityName")]
+        public string? Unit_QuantityName { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("qualityCoding")]
+        public string? QualityCoding { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("alertPriority")]
+        public string? AlertPriority { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("name")]
+        public string? Name { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("remarks")]
+        public string? Remarks { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("localId_VisVersion")]
+        public string? LocalId_VisVersion { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("localId_PrimaryItem")]
+        public string? LocalId_PrimaryItem { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("localId_SecondaryItem")]
+        public string? LocalId_SecondaryItem { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("localId_Position")]
+        public string? LocalId_Position { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("localId_Quantity")]
+        public string? LocalId_Quantity { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("localId_Calculation")]
+        public string? LocalId_Calculation { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("localId_Content")]
+        public string? LocalId_Content { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("localId_Command")]
+        public string? LocalId_Command { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("localId_Type")]
+        public string? LocalId_Type { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("localId_Detail")]
+        public string? LocalId_Detail { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("timestamp")]
+        public System.DateTimeOffset? Timestamp { get; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.15.5.0 (NJsonSchema v10.6.6.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class Explanation
+    {
+        [System.Text.Json.Serialization.JsonConstructor]
+
+        public Explanation(string? @description, System.Collections.Generic.List<ExplanationDetail>? @details, float? @value)
+
+        {
+
+            this.Description = @description;
+
+            this.Details = @details;
+
+            this.Value = @value;
+
+        }
+        [System.Text.Json.Serialization.JsonPropertyName("description")]
+        public string? Description { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("details")]
+        public System.Collections.Generic.List<ExplanationDetail>? Details { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("value")]
+        public float? Value { get; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.15.5.0 (NJsonSchema v10.6.6.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class ExplanationDetail
+    {
+        [System.Text.Json.Serialization.JsonConstructor]
+
+        public ExplanationDetail(string? @description, System.Collections.Generic.List<ExplanationDetail>? @details, float? @value)
+
+        {
+
+            this.Description = @description;
+
+            this.Details = @details;
+
+            this.Value = @value;
+
+        }
+        [System.Text.Json.Serialization.JsonPropertyName("description")]
+        public string? Description { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("details")]
+        public System.Collections.Generic.List<ExplanationDetail>? Details { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("value")]
+        public float? Value { get; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.15.5.0 (NJsonSchema v10.6.6.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class HitResult
+    {
+        [System.Text.Json.Serialization.JsonConstructor]
+
+        public HitResult(DataChannelEntity? @document, Explanation? @explanation, System.Collections.Generic.Dictionary<string, LazyDocument>? @fields, System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>>? @highlight, string? @id, string? @index, System.Collections.Generic.List<string>? @matchedQueries, long? @primaryTerm, string? @routing, double? @score, long? @sequenceNumber, System.Collections.Generic.List<object>? @sorts, string? @type, long? @version)
+
+        {
+
+            this.Explanation = @explanation;
+
+            this.Fields = @fields;
+
+            this.Highlight = @highlight;
+
+            this.Id = @id;
+
+            this.Index = @index;
+
+            this.Sorts = @sorts;
+
+            this.Score = @score;
+
+            this.MatchedQueries = @matchedQueries;
+
+            this.PrimaryTerm = @primaryTerm;
+
+            this.Routing = @routing;
+
+            this.SequenceNumber = @sequenceNumber;
+
+            this.Type = @type;
+
+            this.Version = @version;
+
+            this.Document = @document;
+
+        }
+        [System.Text.Json.Serialization.JsonPropertyName("explanation")]
+        public Explanation? Explanation { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("fields")]
+        public System.Collections.Generic.Dictionary<string, LazyDocument>? Fields { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("highlight")]
+        public System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>>? Highlight { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("id")]
+        public string? Id { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("index")]
+        public string? Index { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("sorts")]
+        public System.Collections.Generic.List<object>? Sorts { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("score")]
+        public double? Score { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("matchedQueries")]
+        public System.Collections.Generic.List<string>? MatchedQueries { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("primaryTerm")]
+        public long? PrimaryTerm { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("routing")]
+        public string? Routing { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("sequenceNumber")]
+        public long? SequenceNumber { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("type")]
+        public string? Type { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("version")]
+        public long? Version { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("document")]
+        public DataChannelEntity? Document { get; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.15.5.0 (NJsonSchema v10.6.6.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class HitResults
+    {
+        [System.Text.Json.Serialization.JsonConstructor]
+
+        public HitResults(System.Collections.Generic.List<HitResult>? @hits, double? @maxScore, int? @numberOfHits, long? @totalPotentialHits)
+
+        {
+
+            this.MaxScore = @maxScore;
+
+            this.NumberOfHits = @numberOfHits;
+
+            this.TotalPotentialHits = @totalPotentialHits;
+
+            this.Hits = @hits;
+
+        }
+        [System.Text.Json.Serialization.JsonPropertyName("maxScore")]
+        public double? MaxScore { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("numberOfHits")]
+        public int? NumberOfHits { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("totalPotentialHits")]
+        public long? TotalPotentialHits { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("hits")]
+        public System.Collections.Generic.List<HitResult>? Hits { get; }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.15.5.0 (NJsonSchema v10.6.6.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class LazyDocument
+    {
+        [System.Text.Json.Serialization.JsonConstructor]
+
+        public LazyDocument()
+
+        {
+
+        }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.15.5.0 (NJsonSchema v10.6.6.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class SearchDto
+    {
+        [System.Text.Json.Serialization.JsonConstructor]
+
+        public SearchDto(string? @phrase, int? @topResults)
 
         {
 
@@ -257,100 +649,12 @@ namespace Search.Client
 
             this.TopResults = @topResults;
 
-            this.Strategies = @strategies;
-
         }
         [System.Text.Json.Serialization.JsonPropertyName("phrase")]
         public string? Phrase { get; }
 
         [System.Text.Json.Serialization.JsonPropertyName("topResults")]
         public int? TopResults { get; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("strategies")]
-        public System.Collections.Generic.List<SearchIndexStrategy>? Strategies { get; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.15.5.0 (NJsonSchema v10.6.6.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class GmodSearchResultDto
-    {
-        [System.Text.Json.Serialization.JsonConstructor]
-
-        public GmodSearchResultDto(System.Collections.Generic.List<GmodSearchStrategyResultDto>? @strategies)
-
-        {
-
-            this.Strategies = @strategies;
-
-        }
-        [System.Text.Json.Serialization.JsonPropertyName("strategies")]
-        public System.Collections.Generic.List<GmodSearchStrategyResultDto>? Strategies { get; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.15.5.0 (NJsonSchema v10.6.6.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class GmodSearchStrategyResultDto
-    {
-        [System.Text.Json.Serialization.JsonConstructor]
-
-        public GmodSearchStrategyResultDto(System.Collections.Generic.List<GmodSearchStrategyResultHitDto>? @hits, System.Collections.Generic.List<string>? @hitsPlaintext, string? @query, string? @strategy)
-
-        {
-
-            this.Strategy = @strategy;
-
-            this.Query = @query;
-
-            this.HitsPlaintext = @hitsPlaintext;
-
-            this.Hits = @hits;
-
-        }
-        [System.Text.Json.Serialization.JsonPropertyName("strategy")]
-        public string? Strategy { get; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("query")]
-        public string? Query { get; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("hitsPlaintext")]
-        public System.Collections.Generic.List<string>? HitsPlaintext { get; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("hits")]
-        public System.Collections.Generic.List<GmodSearchStrategyResultHitDto>? Hits { get; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.15.5.0 (NJsonSchema v10.6.6.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class GmodSearchStrategyResultHitDto
-    {
-        [System.Text.Json.Serialization.JsonConstructor]
-
-        public GmodSearchStrategyResultHitDto(string? @path, float? @score)
-
-        {
-
-            this.Score = @score;
-
-            this.Path = @path;
-
-        }
-        [System.Text.Json.Serialization.JsonPropertyName("score")]
-        public float? Score { get; }
-
-        [System.Text.Json.Serialization.JsonPropertyName("path")]
-        public string? Path { get; }
-
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.15.5.0 (NJsonSchema v10.6.6.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum SearchIndexStrategy
-    {
-
-        _0 = 0,
-
-        _1 = 1,
-
-        _2 = 2,
 
     }
 

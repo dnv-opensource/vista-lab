@@ -4,7 +4,6 @@ WORKDIR /app
 ENV CI_BUILD True
 
 COPY ["resources/", "resources/"]
-
 COPY [".config/", ".config/"]
 COPY [".editorconfig", ".editorconfig"]
 COPY ["global.json", "global.json"]
