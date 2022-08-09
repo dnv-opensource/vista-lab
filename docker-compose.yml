@@ -26,7 +26,7 @@ services:
             dockerfile: src/QueryApi/Dockerfile
         environment:
             DB_HOST: "vista-lab-db:9000"
-            SEARCH_API_URL: "vista-lab-search-api:5053"
+            SEARCH_API_URL: "http://vista-lab-search-api:5053"
     search-api:
         depends_on:
             broker:
