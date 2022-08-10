@@ -6,12 +6,19 @@ import Text from './Text';
 import './Text.scss';
 
 interface Props {
+  className?: string;
   iconClassName?: string;
   iconLast?: boolean;
   icon: IconName;
 }
 
-const TextWithIcon: React.FC<React.PropsWithChildren<Props>> = ({ children, iconLast, icon, iconClassName }) => {
+const TextWithIcon: React.FC<React.PropsWithChildren<Props>> = ({
+  children,
+  iconLast,
+  icon,
+  iconClassName,
+  className,
+}) => {
   const renderIcon = useCallback(() => {
     const childComp = <Text>{children}</Text>;
     switch (iconLast) {
@@ -32,7 +39,7 @@ const TextWithIcon: React.FC<React.PropsWithChildren<Props>> = ({ children, icon
     }
   }, [iconLast, children, icon, iconClassName]);
 
-  return <div className={'ui-text-with-icon-wrapper'}>{renderIcon()}</div>;
+  return <div className={clsx('ui-text-with-icon-wrapper', className)}>{renderIcon()}</div>;
 };
 
 export default TextWithIcon;

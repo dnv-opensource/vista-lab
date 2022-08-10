@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import { GmodNode, GmodPath } from 'dnv-vista-sdk';
 import React, { useMemo } from 'react';
+import GmodViewEndNode from '../gmod-view-end-node/GmodViewEndNode';
 import './GmodViewNode.scss';
 
 export const getBadgeClassNameByNode = (node: GmodNode) => {
@@ -36,8 +37,15 @@ const GmodViewNode: React.FC<Props> = ({ node, mergedChild, skippedParent, paren
     return items;
   }, [node, parents, mergedChild, skippedParent]);
 
+  const isLastNode = useMemo(() => {
+    if (mergedChild) {
+      return mergedChild.children.length === 0;
+    }
+    return node.children.length === 0;
+  }, [mergedChild, node]);
+
   return (
-    <span>
+    <span className={'gmod-view-node-container'}>
       <span className={clsx('gmod-badge')}>
         {items.map(({ node, parents }) => {
           const cls = getBadgeClassNameByNode(node);
@@ -57,6 +65,7 @@ const GmodViewNode: React.FC<Props> = ({ node, mergedChild, skippedParent, paren
         )}
       </span>
       <span className={clsx('gmodtreeviewitem-value')}>{path.getCurrentCommonName()}</span>
+      {isLastNode && <GmodViewEndNode path={path} />}
     </span>
   );
 };

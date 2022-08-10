@@ -1,0 +1,36 @@
+@import 'src/styles/global';
+@import 'src/styles/colors';
+
+.gmod-view-end-node-card {
+  margin: 0.5em 0em 0em 1em;
+  padding: 1em;
+  box-shadow: $drop-shadow;
+  border-radius: 0.4em;
+  background-color: $white;
+
+  display: flex;
+  flex-direction: column;
+  flex-basis: content;
+  gap: 0.5em;
+
+  .end-node-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .local-id-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8em;
+
+    .codebook-name {
+      flex: 0.2;
+      color: $grey;
+    }
+
+    .codebook-value {
+      flex: 0.7;
+    }
+  }
+}
