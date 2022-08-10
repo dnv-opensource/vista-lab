@@ -1,7 +1,7 @@
 @import 'src/styles/global';
 @import 'src/styles/colors';
 
-.gmod-view-end-node-card {
+.data-channel-card {
   margin: 0.5em 0em 0em 1em;
   padding: 1em;
   box-shadow: $drop-shadow;
@@ -13,7 +13,7 @@
   flex-basis: content;
   gap: 0.5em;
 
-  .end-node-card-header {
+  .channel-card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
