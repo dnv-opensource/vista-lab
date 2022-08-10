@@ -24,3 +24,10 @@
     border-radius: 100px;
   }
 }
+
+@mixin without-text-mark {
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}

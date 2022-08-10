@@ -177,6 +177,57 @@
         }
       }
     },
+    "/api/data-channel/time-series/latest": {
+      "post": {
+        "tags": [
+          "DataChannel"
+        ],
+        "summary": "Search for time series given a data channel internalId",
+        "operationId": "DataChannelGetLatestTimeSeriesValue",
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TimeSeriesRequestDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TimeSeriesRequestDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TimeSeriesRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/TimeSeriesDataWithProps"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TimeSeriesDataWithProps"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TimeSeriesDataWithProps"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/search/{visVersion}": {
       "post": {
         "tags": [
@@ -251,6 +302,34 @@
   },
   "components": {
     "schemas": {
+      "AdditionalTimeSeriesProperties": {
+        "type": "object",
+        "properties": {
+          "unitSymbol": {
+            "type": "string",
+            "nullable": true
+          },
+          "quantityName": {
+            "type": "string",
+            "nullable": true
+          },
+          "rangeHigh": {
+            "type": "number",
+            "format": "float",
+            "nullable": true
+          },
+          "rangeLow": {
+            "type": "number",
+            "format": "float",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "ConfigurationReference": {
         "type": "object",
         "properties": {
@@ -580,6 +659,28 @@
         ],
         "type": "integer",
         "format": "int32"
+      },
+      "TimeSeriesDataWithProps": {
+        "type": "object",
+        "properties": {
+          "eventData": {
+            "$ref": "#/components/schemas/EventDataSet"
+          },
+          "additionalProps": {
+            "$ref": "#/components/schemas/AdditionalTimeSeriesProperties"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TimeSeriesRequestDto": {
+        "type": "object",
+        "properties": {
+          "localId": {
+            "type": "string",
+            "default": "/dnv-v2/vis-3-4a/411.1-4/C101.31-3/meta/qty-temperature/pos-inlet"
+          }
+        },
+        "additionalProperties": false
       },
       "Unit": {
         "type": "object",

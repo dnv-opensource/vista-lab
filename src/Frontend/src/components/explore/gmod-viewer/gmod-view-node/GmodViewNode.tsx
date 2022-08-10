@@ -65,7 +65,11 @@ const GmodViewNode: React.FC<Props> = ({ node, mergedChild, skippedParent, paren
         )}
       </span>
       <span className={clsx('gmodtreeviewitem-value')}>{path.getCurrentCommonName()}</span>
-      {isLastNode && <GmodViewEndNode path={path} />}
+      {isLastNode && (
+        <>
+          <GmodViewEndNode path={path} />
+        </>
+      )}
     </span>
   );
 };

@@ -1,5 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
+export * from './AdditionalTimeSeriesProperties';
 export * from './ConfigurationReference';
 export * from './DataChannel';
 export * from './DataChannelFilter';
@@ -18,6 +19,8 @@ export * from './Restriction';
 export * from './RestrictionWhiteSpace';
 export * from './SearchRequestDto';
 export * from './SearchScope';
+export * from './TimeSeriesDataWithProps';
+export * from './TimeSeriesRequestDto';
 export * from './Unit';
 export * from './VersionInformation';
 export * from './VisVersion';

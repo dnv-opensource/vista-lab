@@ -3,6 +3,7 @@ apis/DataChannelApi.ts
 apis/SearchApi.ts
 apis/index.ts
 index.ts
+models/AdditionalTimeSeriesProperties.ts
 models/ConfigurationReference.ts
 models/DataChannel.ts
 models/DataChannelFilter.ts
@@ -21,6 +22,8 @@ models/Restriction.ts
 models/RestrictionWhiteSpace.ts
 models/SearchRequestDto.ts
 models/SearchScope.ts
+models/TimeSeriesDataWithProps.ts
+models/TimeSeriesRequestDto.ts
 models/Unit.ts
 models/VersionInformation.ts
 models/VisVersion.ts

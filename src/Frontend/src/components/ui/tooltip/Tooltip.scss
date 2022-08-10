@@ -1,0 +1,45 @@
+@import 'src/styles/global';
+@import 'src/styles/colors';
+
+.tooltip {
+  font-size: 0.8em;
+  position: absolute;
+  transform: translate(-50%, -100%);
+  background: white;
+  box-shadow: $drop-shadow;
+  padding: 0.6em;
+  border-radius: 0.3em;
+
+  animation: fade-in 0.5s ease;
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  &__arrow {
+    width: 1em;
+    height: 0.5em;
+    position: absolute;
+    top: 99%;
+    left: 50%;
+    transform: translateX(-50%);
+    overflow: hidden;
+
+    &::after {
+      content: '';
+      position: absolute;
+      width: 0.5em;
+      height: 0.5em;
+      background: white;
+      transform: translateX(-50%) translateY(-50%) rotate(45deg);
+      top: 0;
+      left: 50%;
+      box-shadow: $drop-shadow;
+    }
+  }
+}

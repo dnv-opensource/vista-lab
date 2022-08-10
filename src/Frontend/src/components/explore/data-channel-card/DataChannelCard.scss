@@ -17,6 +17,16 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    .status-n-data {
+      display: flex;
+      align-content: center;
+      gap: 0.3em;
+
+      .timeseries-data {
+        font-size: 0.8em;
+      }
+    }
   }
 
   .local-id-item {
@@ -31,6 +41,7 @@
 
     .codebook-value {
       flex: 0.7;
+      overflow-wrap: break-word;
     }
   }
 }

@@ -1,0 +1,35 @@
+@import 'src/styles/colors';
+@import 'src/styles/variables';
+
+.gmod-view-end-node {
+  overflow-y: hidden;
+
+  .expand-data-channel-icon {
+    position: absolute;
+    color: $blue;
+
+    top: 0.15em;
+    transform: translateX(-125%);
+
+    @include without-text-mark;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  .data-channels {
+    padding-bottom: 0.1em;
+    animation: slidein 0.2s ease;
+  }
+
+  @keyframes slidein {
+    from {
+      transform: translateY(-120%);
+    }
+
+    to {
+      transform: translateY(0%);
+    }
+  }
+}

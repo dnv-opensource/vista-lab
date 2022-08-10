@@ -24,6 +24,12 @@ import {
     EventDataSet,
     EventDataSetFromJSON,
     EventDataSetToJSON,
+    TimeSeriesDataWithProps,
+    TimeSeriesDataWithPropsFromJSON,
+    TimeSeriesDataWithPropsToJSON,
+    TimeSeriesRequestDto,
+    TimeSeriesRequestDtoFromJSON,
+    TimeSeriesRequestDtoToJSON,
 } from '../models';
 
 export interface DataChannelGetRequest {
@@ -32,6 +38,10 @@ export interface DataChannelGetRequest {
 
 export interface DataChannelGetDataChannelByFilterRequest {
     dataChannelFilter?: DataChannelFilter;
+}
+
+export interface DataChannelGetLatestTimeSeriesValueRequest {
+    timeSeriesRequestDto?: TimeSeriesRequestDto;
 }
 
 export interface DataChannelPostSearchByFilterRequest {
@@ -99,6 +109,35 @@ export class DataChannelApi extends runtime.BaseAPI {
      */
     async dataChannelGetDataChannelByFilter(requestParameters: DataChannelGetDataChannelByFilterRequest = {}, initOverrides?: RequestInit): Promise<Array<DataChannelListPackage>> {
         const response = await this.dataChannelGetDataChannelByFilterRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Search for time series given a data channel internalId
+     */
+    async dataChannelGetLatestTimeSeriesValueRaw(requestParameters: DataChannelGetLatestTimeSeriesValueRequest, initOverrides?: RequestInit): Promise<runtime.ApiResponse<TimeSeriesDataWithProps>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/api/data-channel/time-series/latest`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: TimeSeriesRequestDtoToJSON(requestParameters.timeSeriesRequestDto),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => TimeSeriesDataWithPropsFromJSON(jsonValue));
+    }
+
+    /**
+     * Search for time series given a data channel internalId
+     */
+    async dataChannelGetLatestTimeSeriesValue(requestParameters: DataChannelGetLatestTimeSeriesValueRequest = {}, initOverrides?: RequestInit): Promise<TimeSeriesDataWithProps> {
+        const response = await this.dataChannelGetLatestTimeSeriesValueRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

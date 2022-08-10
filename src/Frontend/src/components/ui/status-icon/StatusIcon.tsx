@@ -4,7 +4,7 @@ import './StatusIcon.scss';
 
 export enum StatusVariant {
   Good = 'good',
-  warning = 'warning',
+  Warning = 'warning',
   Danger = 'danger',
 }
 

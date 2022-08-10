@@ -1,21 +1,23 @@
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
-  fas,
-  faRss,
-  faShip,
-  faFilter,
-  faMagnifyingGlass,
-  faHashtag,
-  faExpand,
-  faMapMarker,
-  faExpandAlt,
   faArrowLeft,
-  faTag,
-  faMicrochip,
-  faTimes,
-  faSpinner,
-  faCaretUp,
+  faBars,
   faCaretDown,
+  faCaretUp,
+  faExpand,
+  faExpandAlt,
+  faFilter,
+  faHashtag,
+  faMagnifyingGlass,
+  faMapMarker,
+  faMicrochip,
+  faRss,
+  fas,
+  faShip,
+  faSpinner,
+  faStream,
+  faTag,
+  faTimes,
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
@@ -34,7 +36,9 @@ library.add(
   faTimes,
   faSpinner,
   faCaretUp,
-  faCaretDown
+  faCaretDown,
+  faBars,
+  faStream
 );
 
 // Make sure these correspond with FontAwsome v6.1 icon names
@@ -53,6 +57,8 @@ export enum IconName {
   Spinner = 'spinner',
   CaretUp = 'caret-up',
   CaretDown = 'caret-down',
+  Bars = 'bars',
+  Stream = 'stream',
 }
 
 export enum IconVariant {

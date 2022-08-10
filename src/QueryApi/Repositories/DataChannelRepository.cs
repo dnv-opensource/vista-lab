@@ -12,6 +12,19 @@ public sealed class DataChannelRepository
     private readonly ILogger<DataChannelRepository> _logger;
     private readonly QuestDbClient _client;
 
+    public sealed record AdditionalTimeSeriesProperties(
+        string? UnitSymbol,
+        string? QuantityName,
+        float? RangeHigh,
+        float? RangeLow,
+        string? Name
+    );
+
+    public sealed record TimeSeriesDataWithProps(
+        EventDataSet? EventData,
+        AdditionalTimeSeriesProperties? AdditionalProps
+    );
+
     public DataChannelRepository(QuestDbClient client, ILogger<DataChannelRepository> logger)
     {
         _client = client;
@@ -261,6 +274,38 @@ public sealed class DataChannelRepository
         return timeSeriesData;
     }
 
+    private static IEnumerable<AdditionalTimeSeriesProperties> ToAdditionalTimeSeriesProps(
+        DbResponse response
+    )
+    {
+        var props = new List<AdditionalTimeSeriesProperties>();
+        for (int i = 0; i < response.Count; i++)
+        {
+            float? rangeHigh = response
+                .GetValue(i, nameof(DataChannelEntity.Range_High))
+                .TryGetDouble(out var rh)
+              ? (float)rh
+              : null;
+            float? rangeLow = response
+                .GetValue(i, nameof(DataChannelEntity.Range_Low))
+                .TryGetDouble(out var rl)
+              ? (float)rl
+              : null;
+
+            var additionalProps = new AdditionalTimeSeriesProperties(
+                response.GetValue(i, nameof(DataChannelEntity.Unit_UnitSymbol)).GetString(),
+                response.GetValue(i, nameof(DataChannelEntity.Unit_QuantityName)).GetString(),
+                rangeHigh,
+                rangeLow,
+                response.GetValue(i, nameof(DataChannelEntity.Name)).GetString()
+            );
+
+            props.Add(additionalProps);
+        }
+
+        return props;
+    }
+
     public async Task<IEnumerable<EventDataSet>> GetTimeSeriesByInternalId(
         Guid internalId,
         CancellationToken cancellationToken
@@ -285,5 +330,29 @@ public sealed class DataChannelRepository
         );
 
         return ToTimeSeries(response);
+    }
+
+    public async Task<TimeSeriesDataWithProps> GetLatestTimeSeriesForDataChannel(
+        string localId,
+        CancellationToken cancellationToken
+    )
+    {
+        var response = await _client.Query(
+            @$"
+                SELECT t.*, d.Unit_UnitSymbol, d.Unit_QuantityName, d.Range_High, d.Range_Low, d.Name
+                FROM 'TimeSeries' t
+                INNER JOIN 'DataChannel' d
+                ON d.LocalId = t.DataChannelId
+                WHERE t.VesselId = d.VesselId
+                AND DataChannelId = '{localId}'
+                LATEST ON Timestamp PARTITION BY DataChannelId;
+            ",
+            cancellationToken
+        );
+
+        var eventData = ToTimeSeries(response).FirstOrDefault();
+        var additionalProps = ToAdditionalTimeSeriesProps(response).FirstOrDefault();
+
+        return new TimeSeriesDataWithProps(eventData, additionalProps);
     }
 }
