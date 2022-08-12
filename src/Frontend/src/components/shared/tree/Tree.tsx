@@ -52,12 +52,15 @@ function Tree<T extends { children: T[]; id: string }>(
   const handleExpanded = useCallback(
     (node: T) => {
       const prev = expandedNodes;
-      if (prev.find(n => n.id === node.id)) {
-        const newNodes = [...prev];
-        newNodes.splice([...prev].indexOf(node), 1);
+      const foundNodeIndex = prev.findIndex(n => n.id === node.id);
+
+      if (foundNodeIndex !== -1) {
+        const newNodes = [...expandedNodes];
+        newNodes.splice(foundNodeIndex, 1);
         setExpandedNodes(newNodes);
         return;
       }
+
       setExpandedNodes([...prev, node]);
     },
     [expandedNodes, setExpandedNodes]

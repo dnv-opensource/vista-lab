@@ -58,7 +58,7 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
         LocalId.parse(dc.dataChannelID?.localID!, gmod, codebooks)
       );
       localIds && setLocalIds(localIds);
-      return localIds && Pmod.createFromLocalIds(localIds, gmod);
+      return localIds && Pmod.createFromLocalIds(visVersion, localIds);
     },
     [dataChannelListPackages, visVersion, setLocalIds]
   );

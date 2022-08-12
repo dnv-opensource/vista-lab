@@ -17,6 +17,7 @@
       background-color: $bg-grey;
     }
     .tree-view-node-expander {
+      align-self: baseline;
       color: $blue;
       cursor: pointer;
       padding-right: 0.3em;
@@ -24,7 +25,7 @@
       @include without-text-mark;
 
       &.no-children {
-        visibility: hidden;
+        display: none;
       }
     }
 

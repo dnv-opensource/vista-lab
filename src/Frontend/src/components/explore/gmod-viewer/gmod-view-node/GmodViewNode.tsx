@@ -1,7 +1,10 @@
 import clsx from 'clsx';
 import { GmodNode, GmodPath } from 'dnv-vista-sdk';
-import React, { useMemo } from 'react';
-import GmodViewEndNode from '../gmod-view-end-node/GmodViewEndNode';
+import React, { useMemo, useState } from 'react';
+import { useExploreContext } from '../../../../context/ExploreContext';
+import Icon from '../../../ui/icons/Icon';
+import { IconName } from '../../../ui/icons/icons';
+import DataChannelCard from '../../data-channel-card/DataChannelCard';
 import './GmodViewNode.scss';
 
 export const getBadgeClassNameByNode = (node: GmodNode) => {
@@ -22,6 +25,13 @@ const GmodViewNode: React.FC<Props> = ({ node, mergedChild, skippedParent, paren
     [initPath, mergedChild, parents, node]
   );
 
+  const [expanded, setExpanded] = useState(false);
+  const { getLocalIdsFromGmodPath } = useExploreContext();
+
+  const localIds = useMemo(() => {
+    return getLocalIdsFromGmodPath(path);
+  }, [path, getLocalIdsFromGmodPath]);
+
   const items = useMemo(() => {
     const items: { node: GmodNode; parents: GmodNode[] }[] = [];
 
@@ -37,15 +47,15 @@ const GmodViewNode: React.FC<Props> = ({ node, mergedChild, skippedParent, paren
     return items;
   }, [node, parents, mergedChild, skippedParent]);
 
-  const isLastNode = useMemo(() => {
-    if (mergedChild) {
-      return mergedChild.children.length === 0;
-    }
-    return node.children.length === 0;
-  }, [mergedChild, node]);
-
   return (
-    <span className={'gmod-view-node-container'}>
+    <div className={'gmod-view-node-container'}>
+      {localIds.length > 0 && (
+        <Icon
+          className={'expand-data-channel-icon'}
+          icon={expanded ? IconName.Stream : IconName.Bars}
+          onClick={() => setExpanded(prev => (prev ? false : true))}
+        />
+      )}
       <span className={clsx('gmod-badge')}>
         {items.map(({ node, parents }) => {
           const cls = getBadgeClassNameByNode(node);
@@ -64,13 +74,18 @@ const GmodViewNode: React.FC<Props> = ({ node, mergedChild, skippedParent, paren
           </span>
         )}
       </span>
-      <span className={clsx('gmodtreeviewitem-value')}>{path.getCurrentCommonName()}</span>
-      {isLastNode && (
-        <>
-          <GmodViewEndNode path={path} />
-        </>
-      )}
-    </span>
+      <span className={clsx('gmod-tree-view-name')}>{path.getCurrentCommonName()}</span>
+
+      <div className={'data-channels-container'}>
+        {expanded && (
+          <div className={'data-channels'}>
+            {localIds.map((localId, index) => (
+              <DataChannelCard key={localId.toString() + index} localId={localId} />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 

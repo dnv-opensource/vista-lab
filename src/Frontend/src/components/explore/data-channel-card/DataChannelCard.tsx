@@ -16,20 +16,18 @@ interface Props {
 }
 
 const DataChannelCard: React.FC<Props> = ({ localId }) => {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [latestEventData, setLatestEventData] = useState<TimeSeriesDataWithProps>();
 
   useEffect(() => {
     if (localId) {
-      setLoading(false);
+      setLoading(true);
 
       VistaLabApi.DataChannelApi.dataChannelGetLatestTimeSeriesValue({
         timeSeriesRequestDto: { localId: localId.toString() },
       })
         .then(res => {
           if (res.eventData) {
-            console.log(res);
-
             setLatestEventData(res);
           }
         })
@@ -95,7 +93,7 @@ const DataChannelCard: React.FC<Props> = ({ localId }) => {
           </Tooltip>
         </div>
       </div>
-
+      <div>{latestEventData?.additionalProps?.name}</div>
       {localId.builder.metadataTags.map(meta => (
         <div key={meta.name} className={'local-id-item'}>
           <TextWithIcon className={'codebook-name'} icon={IconName.Tag}>
