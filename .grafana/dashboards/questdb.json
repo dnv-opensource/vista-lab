@@ -1,0 +1,185 @@
+{
+    "annotations": {
+        "list": [
+            {
+                "builtIn": 1,
+                "datasource": {
+                    "type": "grafana",
+                    "uid": "-- Grafana --"
+                },
+                "enable": true,
+                "hide": true,
+                "iconColor": "rgba(0, 211, 255, 1)",
+                "name": "Annotations & Alerts",
+                "target": {
+                    "limit": 100,
+                    "matchAny": false,
+                    "tags": [],
+                    "type": "dashboard"
+                },
+                "type": "dashboard"
+            }
+        ]
+    },
+    "description": "",
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 0,
+    "id": 1,
+    "links": [],
+    "liveNow": false,
+    "panels": [
+        {
+            "datasource": {
+                "type": "postgres",
+                "uid": "P996140E50C057FC6"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "barAlignment": 0,
+                        "drawStyle": "line",
+                        "fillOpacity": 0,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "lineInterpolation": "linear",
+                        "lineWidth": 1,
+                        "pointSize": 5,
+                        "scaleDistribution": {
+                            "type": "linear"
+                        },
+                        "showPoints": "auto",
+                        "spanNulls": false,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        },
+                        "thresholdsStyle": {
+                            "mode": "off"
+                        }
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 0,
+                "y": 0
+            },
+            "id": 2,
+            "interval": "10s",
+            "options": {
+                "legend": {
+                    "calcs": [],
+                    "displayMode": "list",
+                    "placement": "bottom"
+                },
+                "tooltip": {
+                    "mode": "single",
+                    "sort": "none"
+                }
+            },
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "postgres",
+                        "uid": "P996140E50C057FC6"
+                    },
+                    "format": "time_series",
+                    "group": [],
+                    "metricColumn": "none",
+                    "rawQuery": true,
+                    "rawSql": "SELECT \nt.Timestamp AS time,\navg(CAST(t.value as double)) as average_temperature_lube_oil_inlet\nFROM TimeSeries as t\nINNER JOIN (\nSELECT InternalId, LocalId FROM 'DataChannel' d\n  WHERE d.LocalId_Quantity LIKE '%temperature%'\n  AND d.LocalId_Content = 'lubricating.oil'\n  AND d.LocalId LIKE '%411.1/C101%'\n  AND d.LocalId_Position = 'inlet'\n) d\nON d.LocalId = t.DataChannelId\nWHERE $__timeFilter(t.TimeStamp)\nSAMPLE BY $__interval",
+                    "refId": "LubeOilInlet",
+                    "select": [
+                        [
+                            {
+                                "params": ["value"],
+                                "type": "column"
+                            }
+                        ]
+                    ],
+                    "timeColumn": "time",
+                    "where": [
+                        {
+                            "name": "$__timeFilter",
+                            "params": [],
+                            "type": "macro"
+                        }
+                    ]
+                },
+                {
+                    "datasource": {
+                        "type": "postgres",
+                        "uid": "P996140E50C057FC6"
+                    },
+                    "format": "time_series",
+                    "group": [],
+                    "hide": false,
+                    "metricColumn": "none",
+                    "rawQuery": true,
+                    "rawSql": "SELECT \nt.Timestamp AS time,\navg(CAST(t.value as double)) as average_temperature_lube_oil_outlet\nFROM TimeSeries as t\nINNER JOIN (\nSELECT InternalId, LocalId FROM 'DataChannel' d\n  WHERE d.LocalId_Quantity LIKE '%temperature%'\n  AND d.LocalId_Content = 'lubricating.oil'\n  AND d.LocalId LIKE '%411.1/C101%'\n  AND d.LocalId_Position = 'outlet'\n) d\nON d.LocalId = t.DataChannelId\nWHERE $__timeFilter(t.TimeStamp)\nSAMPLE BY $__interval",
+                    "refId": "LubeOilOutlet",
+                    "select": [
+                        [
+                            {
+                                "params": ["value"],
+                                "type": "column"
+                            }
+                        ]
+                    ],
+                    "timeColumn": "time",
+                    "where": [
+                        {
+                            "name": "$__timeFilter",
+                            "params": [],
+                            "type": "macro"
+                        }
+                    ]
+                }
+            ],
+            "title": "Sample",
+            "type": "timeseries"
+        }
+    ],
+    "schemaVersion": 36,
+    "style": "dark",
+    "tags": [],
+    "templating": {
+        "list": []
+    },
+    "time": {
+        "from": "now-5m",
+        "to": "now"
+    },
+    "timepicker": {},
+    "timezone": "",
+    "title": "QuestDb",
+    "uid": "u7zyoFi4k",
+    "version": 1,
+    "weekStart": ""
+}

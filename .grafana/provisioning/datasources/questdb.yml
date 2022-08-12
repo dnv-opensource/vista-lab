@@ -1,0 +1,17 @@
+apiVersion: 1
+
+deleteDatasources:
+    - name: questdb
+      orgId: 1
+
+datasources:
+    - name: questdb
+      type: postgres
+      access: proxy
+      url: vista-lab-db:8812
+      database: questdb
+      user: $QDB_PG_USER
+      secureJsonData:
+          password: $QDB_PG_PASSWORD
+      jsonData:
+          sslmode: disable

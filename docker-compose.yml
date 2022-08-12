@@ -133,3 +133,22 @@ services:
             QDB_PG_PASSWORD: "Password1"
             QDB_PG_USER: "sa"
             QDB_LOG_W_STDOUT_LEVEL: ERROR
+            QDB_PG_SELECT_CACHE_ENABLED: "false"
+    grafana:
+        depends_on:
+            - questdb
+        container_name: vista-lab-grafana
+        image: grafana/grafana-oss:9.0.7
+        ports:
+            - "3000:3000"
+        volumes:
+            - grafana-storage:/var/lib/grafana
+            - ./.grafana/dashboards:/var/lib/grafana/dashboards
+            - ./.grafana/provisioning:/etc/grafana/provisioning
+        environment:
+            user: admin
+            password: admin
+            QDB_PG_PASSWORD: "Password1"
+            QDB_PG_USER: "sa"
+volumes:
+    grafana-storage:
