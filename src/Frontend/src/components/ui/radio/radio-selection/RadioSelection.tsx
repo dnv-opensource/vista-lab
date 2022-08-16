@@ -25,8 +25,11 @@ const RadioSelection: React.FC<Props> = ({
   }, [controlledSelectedOption]);
 
   const handleChange = useCallback(
-    (option: RadioOption) => onChange?.(option) ?? setSelectedOption(option),
-    [setSelectedOption, onChange]
+    (option: RadioOption) => {
+      if (option.index === selectedOption?.index) return;
+      onChange ? onChange(option) : setSelectedOption(option);
+    },
+    [selectedOption, setSelectedOption, onChange]
   );
 
   return (

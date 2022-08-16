@@ -15,9 +15,10 @@ const Radio: React.FC<RadioProps> = ({ id, checked: inputChecked, onClick: input
     setChecked(!!inputChecked);
   }, [inputChecked]);
 
-  const onClick = useCallback(() => {
-    inputOnClick?.(!checked) ?? setChecked(prev => !prev);
-  }, [checked, inputOnClick, setChecked]);
+  const onClick = useCallback(
+    () => (inputOnClick ? inputOnClick(!checked) : setChecked(prev => !prev)),
+    [checked, inputOnClick, setChecked]
+  );
 
   return (
     <div
@@ -32,9 +33,7 @@ const Radio: React.FC<RadioProps> = ({ id, checked: inputChecked, onClick: input
         }
       }}
       id={id}
-    >
-      {checked && <div className={clsx('inner')} />}
-    </div>
+    />
   );
 };
 

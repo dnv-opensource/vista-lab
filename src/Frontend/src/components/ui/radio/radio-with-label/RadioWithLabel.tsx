@@ -11,7 +11,7 @@ interface Props extends Omit<RadioProps, 'id'> {
 const RadioWithLabel: React.FC<Props> = ({ className, label, onClick, ...restProps }) => {
   return (
     <div className={clsx('radio-with-label', className)} onClick={() => onClick?.(true)} tabIndex={-1}>
-      <Radio id={label} {...restProps} />
+      <Radio id={label} {...restProps} onClick={() => null} />
       <label htmlFor={label} className={'label'}>
         {label}
       </label>
