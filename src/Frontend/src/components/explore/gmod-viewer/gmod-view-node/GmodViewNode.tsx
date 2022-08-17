@@ -80,7 +80,7 @@ const GmodViewNode: React.FC<Props> = ({ node, mergedChild, skippedParent, paren
         {expanded && (
           <div className={'data-channels'}>
             {localIds.map((localId, index) => (
-              <DataChannelCard key={localId.toString() + index} localId={localId} />
+              <DataChannelCard key={localId.toString() + index} path={path} localId={localId} />
             ))}
           </div>
         )}

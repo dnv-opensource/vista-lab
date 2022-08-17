@@ -1,9 +1,11 @@
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
   faArrowLeft,
+  faArrowRight,
   faBars,
   faCaretDown,
   faCaretUp,
+  faCrosshairs,
   faExpand,
   faExpandAlt,
   faFilter,
@@ -31,6 +33,7 @@ library.add(
   faMapMarker,
   faExpandAlt,
   faArrowLeft,
+  faArrowRight,
   faTag,
   faMicrochip,
   faTimes,
@@ -38,7 +41,9 @@ library.add(
   faCaretUp,
   faCaretDown,
   faBars,
-  faStream
+  faStream,
+  faMicrochip,
+  faCrosshairs
 );
 
 // Make sure these correspond with FontAwsome v6.1 icon names
@@ -51,6 +56,7 @@ export enum IconName {
   Expand = 'expand',
   Marker = 'map-marker-alt',
   LeftArrow = 'long-arrow-alt-left',
+  RightDownArrow = 'arrow-right',
   Tag = 'tag',
   Microchip = 'microchip',
   Times = 'times',
@@ -59,6 +65,7 @@ export enum IconName {
   CaretDown = 'caret-down',
   Bars = 'bars',
   Stream = 'stream',
+  Crosshairs = 'crosshairs',
 }
 
 export enum IconVariant {

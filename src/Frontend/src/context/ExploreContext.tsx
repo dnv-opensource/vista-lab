@@ -12,8 +12,8 @@ export type ExploreContextType = {
   getVmodForVessel: (vesselId?: string) => Promise<Pmod | undefined>;
   getLocalIdsFromGmodPath: (path: GmodPath) => LocalId[];
   localIds: LocalId[] | undefined;
-  mode: VesselMode | undefined;
-  setMode: React.Dispatch<React.SetStateAction<VesselMode | undefined>>;
+  mode: VesselMode;
+  setMode: React.Dispatch<React.SetStateAction<VesselMode>>;
 };
 
 type ExploreContextProviderProps = React.PropsWithChildren<{}>;
@@ -24,7 +24,7 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
   const [localIds, setLocalIds] = useState<LocalId[]>();
   const { visVersion } = useVISContext();
   const [dataChannelListPackages, setDataChannelListPackages] = useState<DataChannelListPackage[]>();
-  const [mode, setMode] = useState<VesselMode | undefined>(VesselMode.Equipment);
+  const [mode, setMode] = useState<VesselMode>(VesselMode.All);
 
   const fetchFilteredDataChannels = useCallback(
     async (query?: string) => {
@@ -34,7 +34,7 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
 
       const request = {
         visVersion: clientVersion,
-        searchRequestDto: { scope: mode ? +mode : undefined, phrase: query ?? '' },
+        searchRequestDto: { scope: +mode, phrase: query ?? '' },
       };
       const response = await VistaLabApi.SearchApi.searchSearch(request);
 
@@ -57,17 +57,29 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
       const localIds = dclp.dataChannelList?.dataChannel?.map(dc =>
         LocalId.parse(dc.dataChannelID?.localID!, gmod, codebooks)
       );
+
       localIds && setLocalIds(localIds);
       return localIds && Pmod.createFromLocalIds(visVersion, localIds);
     },
-    [dataChannelListPackages, visVersion, setLocalIds]
+    [dataChannelListPackages, visVersion]
   );
 
   const getLocalIdsFromGmodPath = useCallback(
     (path: GmodPath): LocalId[] => {
       return (
         localIds?.filter(localId => {
-          const items = [localId.primaryItem, localId.secondaryItem];
+          const items: (GmodPath | undefined)[] = [];
+          switch (mode) {
+            case VesselMode.Equipment:
+              items.push(localId.primaryItem);
+              break;
+            case VesselMode.Consequence:
+              items.push(localId.secondaryItem);
+              break;
+            default:
+              items.push(...[localId.primaryItem, localId.secondaryItem]);
+              break;
+          }
           for (const item of items) {
             if (item?.equals(path)) return true;
           }
@@ -75,7 +87,7 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
         }) ?? []
       );
     },
-    [localIds]
+    [localIds, mode]
   );
 
   return (

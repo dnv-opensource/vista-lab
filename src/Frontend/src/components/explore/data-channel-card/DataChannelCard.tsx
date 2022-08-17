@@ -1,4 +1,4 @@
-import { CodebookName, LocalId } from 'dnv-vista-sdk';
+import { CodebookName, GmodPath, LocalId } from 'dnv-vista-sdk';
 import React, { useEffect, useMemo, useState } from 'react';
 import { VistaLabApi } from '../../../apiConfig';
 import { TimeSeriesDataWithProps } from '../../../client';
@@ -13,9 +13,10 @@ import './DataChannelCard.scss';
 
 interface Props {
   localId: LocalId;
+  path: GmodPath;
 }
 
-const DataChannelCard: React.FC<Props> = ({ localId }) => {
+const DataChannelCard: React.FC<Props> = ({ localId, path }) => {
   const [loading, setLoading] = useState(false);
   const [latestEventData, setLatestEventData] = useState<TimeSeriesDataWithProps>();
 
@@ -75,6 +76,10 @@ const DataChannelCard: React.FC<Props> = ({ localId }) => {
     return { status: StatusVariant.Good, info: 'Status ok' };
   }, [latestEventData]);
 
+  const isConsequence = useMemo(() => {
+    return localId.secondaryItem?.equals(path) ?? false;
+  }, [path, localId]);
+
   return (
     <div className={'data-channel-card'}>
       <div className={'channel-card-header'}>
@@ -93,7 +98,45 @@ const DataChannelCard: React.FC<Props> = ({ localId }) => {
           </Tooltip>
         </div>
       </div>
-      <div>{latestEventData?.additionalProps?.name}</div>
+      {isConsequence
+        ? localId.primaryItem && (
+            <div className={'local-id-item'}>
+              <Tooltip
+                className={'context-tooltip'}
+                content={
+                  <>
+                    <i>{localId.primaryItem.toNamesString()}</i>
+                    <b>serving</b>
+                    <i>{localId.secondaryItem!.toNamesString()}</i>
+                  </>
+                }
+              >
+                <TextWithIcon className={'codebook-name'} icon={IconName.Microchip}>
+                  {localId.primaryItem.toString()}
+                </TextWithIcon>
+              </Tooltip>
+              <span className={'codebook-value'}>{localId.primaryItem.toNamesString()}</span>
+            </div>
+          )
+        : localId.secondaryItem && (
+            <div className={'local-id-item'}>
+              <Tooltip
+                className={'context-tooltip'}
+                content={
+                  <>
+                    <i>{localId.primaryItem!.toNamesString()}</i>
+                    <b>serving</b>
+                    <i>{localId.secondaryItem.toNamesString()}</i>
+                  </>
+                }
+              >
+                <TextWithIcon className={'codebook-name'} icon={IconName.Crosshairs}>
+                  {localId.secondaryItem.toString()}
+                </TextWithIcon>
+              </Tooltip>
+              <span className={'codebook-value'}>{localId.secondaryItem.toNamesString()}</span>
+            </div>
+          )}
       {localId.builder.metadataTags.map(meta => (
         <div key={meta.name} className={'local-id-item'}>
           <TextWithIcon className={'codebook-name'} icon={IconName.Tag}>

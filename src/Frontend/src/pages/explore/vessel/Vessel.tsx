@@ -20,12 +20,13 @@ export type Vessel = {
 };
 
 export enum VesselMode {
-  Equipment,
-  Consequence,
+  All = 0,
+  Equipment = 1,
+  Consequence = 2,
 }
 
 const VesselComp: React.FC = () => {
-  const { getVmodForVessel, mode = VesselMode.Equipment, setMode } = useExploreContext();
+  const { getVmodForVessel, mode, setMode } = useExploreContext();
   const { vesselId } = useParams();
   const [loading, setLoading] = useState(false);
   const [vmod, setVmod] = useState<Pmod>();
@@ -35,10 +36,10 @@ const VesselComp: React.FC = () => {
     getVmodForVessel(vesselId)
       .then(setVmod)
       .finally(() => setLoading(false));
-  }, [vesselId, getVmodForVessel, setLoading, setMode]);
+  }, [vesselId, getVmodForVessel, setLoading, setVmod]);
 
   useEffect(() => {
-    return () => setMode(undefined);
+    return () => setMode(VesselMode.All);
   }, [setMode]);
 
   return (

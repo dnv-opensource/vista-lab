@@ -34,14 +34,20 @@
     align-items: center;
     gap: 0.8em;
 
-    .codebook-name {
+    :first-child {
       flex: 0.2;
       color: $grey;
+      word-break: break-all;
     }
-
-    .codebook-value {
+    :last-child {
       flex: 0.7;
       overflow-wrap: break-word;
     }
   }
+}
+
+.context-tooltip {
+  max-width: 10em;
+  display: flex;
+  flex-direction: column;
 }
