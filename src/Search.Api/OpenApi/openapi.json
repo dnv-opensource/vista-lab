@@ -70,134 +70,10 @@
   },
   "components": {
     "schemas": {
-      "DataChannelEntity": {
+      "DataChannelDocument": {
         "type": "object",
         "properties": {
-          "vesselId": {
-            "type": "string"
-          },
-          "internalId": {
-            "type": "string"
-          },
           "localId": {
-            "type": "string"
-          },
-          "shortId": {
-            "type": "string",
-            "nullable": true
-          },
-          "nameObject_NamingRule": {
-            "type": "string",
-            "nullable": true
-          },
-          "dataChannelType_Type": {
-            "type": "string"
-          },
-          "dataChannelType_CalculationPeriod": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "dataChannelType_UpdateCycle": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "format_Type": {
-            "type": "string"
-          },
-          "format_Restriction_Enumeration": {
-            "type": "string",
-            "nullable": true
-          },
-          "format_Restriction_FractionDigits": {
-            "type": "string",
-            "nullable": true
-          },
-          "format_Restriction_Length": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "format_Restriction_MaxExclusive": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "format_Restriction_MaxInclusive": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "format_Restriction_MaxLength": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "format_Restriction_MinExclusive": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "format_Restriction_MinInclusive": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "format_Restriction_MinLength": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "format_Restriction_Pattern": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "format_Restriction_TotalDigits": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "format_Restriction_WhiteSpace": {
-            "type": "string",
-            "nullable": true
-          },
-          "range_High": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "range_Low": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "unit_UnitSymbol": {
-            "type": "string",
-            "nullable": true
-          },
-          "unit_QuantityName": {
-            "type": "string",
-            "nullable": true
-          },
-          "qualityCoding": {
-            "type": "string",
-            "nullable": true
-          },
-          "alertPriority": {
-            "type": "string",
-            "nullable": true
-          },
-          "name": {
-            "type": "string",
-            "nullable": true
-          },
-          "remarks": {
-            "type": "string",
-            "nullable": true
-          },
-          "localId_VisVersion": {
             "type": "string"
           },
           "localId_PrimaryItem": {
@@ -232,6 +108,22 @@
             "nullable": true
           },
           "localId_Detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "unit_UnitSymbol": {
+            "type": "string",
+            "nullable": true
+          },
+          "unit_QuantityName": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "remarks": {
             "type": "string",
             "nullable": true
           },
@@ -353,7 +245,7 @@
             "format": "int64"
           },
           "document": {
-            "$ref": "#/components/schemas/DataChannelEntity"
+            "$ref": "#/components/schemas/DataChannelDocument"
           }
         },
         "additionalProperties": false
@@ -364,6 +256,16 @@
           "maxScore": {
             "type": "number",
             "format": "double"
+          },
+          "minScore": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "avgScore": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
           },
           "numberOfHits": {
             "type": "integer",
@@ -390,7 +292,8 @@
         "type": "object",
         "properties": {
           "phrase": {
-            "type": "string"
+            "type": "string",
+            "default": "Main engine"
           },
           "topResults": {
             "type": "integer",

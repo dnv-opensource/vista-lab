@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Nest;
+using System.ComponentModel;
 using Vista.SDK;
 using static Search.Api.ElasticSearchService;
 
@@ -16,7 +17,10 @@ public sealed class VISController : ControllerBase
         _service = service;
     }
 
-    public sealed record SearchDto(string Phrase, int? TopResults);
+    public sealed record SearchDto(
+        [property: DefaultValue("Main engine")] string Phrase,
+        int? TopResults
+    );
 
     /// <summary>
     /// Search for gmod paths.

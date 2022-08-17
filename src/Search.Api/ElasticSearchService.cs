@@ -26,6 +26,24 @@ public sealed class ElasticSearchService : IHostedService
 
     private IElasticClient _esClient;
 
+    public sealed record DataChannelDocument(
+        string LocalId,
+        string LocalId_PrimaryItem,
+        string? LocalId_SecondaryItem,
+        string? LocalId_Position,
+        string? LocalId_Quantity,
+        string? LocalId_Calculation,
+        string? LocalId_Content,
+        string? LocalId_Command,
+        string? LocalId_Type,
+        string? LocalId_Detail,
+        string? Unit_UnitSymbol,
+        string? Unit_QuantityName,
+        string? name,
+        string? Remarks,
+        DateTime Timestamp
+    );
+
     public sealed record HitResult(
         Explanation Explanation,
         FieldValues fields,
@@ -40,11 +58,13 @@ public sealed class ElasticSearchService : IHostedService
         long? SequenceNumber,
         string Type,
         long Version,
-        DataChannelEntity Document
+        DataChannelDocument Document
     );
 
     public sealed record HitResults(
         double MaxScore,
+        double? MinScore,
+        double? AvgScore,
         int NumberOfHits,
         long TotalPotentialHits,
         IEnumerable<HitResult> Hits
@@ -87,17 +107,14 @@ public sealed class ElasticSearchService : IHostedService
     )
     {
         if (string.IsNullOrWhiteSpace(phrase))
-            return new HitResults(0, 0, 0, new List<HitResult>());
+            return new HitResults(0, 0, 0, 0, 0, new List<HitResult>());
 
         await _esClient.PingAsync(new PingRequest(), cancellationToken);
         _logger.LogInformation("{cliendId} - Pinged ElasticSearch client successfully", clientId);
-        var searchResponse = _esClient.Search<DataChannelEntity>(
+        var searchResponse = _esClient.Search<DataChannelDocument>(
             d =>
             {
-                if (topResult is not null)
-                {
-                    d.Size(topResult);
-                }
+                if (topResult is not null) { }
                 return d.Index(version.ToString())
                     .Query(
                         q =>
@@ -111,7 +128,8 @@ public sealed class ElasticSearchService : IHostedService
                                             )
                                     )
                             )
-                    );
+                    )
+                    .Size(100);
             }
         );
 
@@ -120,8 +138,14 @@ public sealed class ElasticSearchService : IHostedService
                 $"Invalid search response {searchResponse.DebugInformation} {searchResponse.ServerError.Error}"
             );
 
+        var maxScore = searchResponse.MaxScore;
+        var minScore = searchResponse.Hits.Min(h => h.Score);
+        var avgScore = searchResponse.Hits.Average(h => h.Score);
+
         return new HitResults(
-            searchResponse.MaxScore,
+            maxScore,
+            minScore,
+            avgScore,
             searchResponse.Hits.Count,
             searchResponse.Total,
             searchResponse.Hits
@@ -204,10 +228,23 @@ public sealed class ElasticSearchService : IHostedService
                         continue;
 
                     var index = _esClient.Index(
-                        entity with
-                        {
-                            Timestamp = DateTime.UtcNow
-                        },
+                        new DataChannelDocument(
+                            entity.LocalId,
+                            entity.LocalId_PrimaryItem,
+                            entity.LocalId_SecondaryItem,
+                            entity.LocalId_Position,
+                            entity.LocalId_Quantity,
+                            entity.LocalId_Calculation,
+                            entity.LocalId_Content,
+                            entity.LocalId_Command,
+                            entity.LocalId_Type,
+                            entity.LocalId_Detail,
+                            entity.Unit_UnitSymbol,
+                            entity.Unit_QuantityName,
+                            entity.Name,
+                            entity.Remarks,
+                            DateTime.UtcNow
+                        ),
                         i => i.Index(entity.LocalId_VisVersion)
                     );
                     if (!index.IsValid)
