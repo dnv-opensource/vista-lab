@@ -4,6 +4,9 @@ using Vista.SDK.Transport.Json.TimeSeriesData;
 using QueryApi.Models;
 using QueryApi.Repository;
 using System.ComponentModel;
+using GeoJSON.Text.Geometry;
+using GeoJSON.Text.Feature;
+using static QueryApi.Repository.DataChannelRepository;
 
 namespace QueryApi.Controllers;
 
@@ -87,6 +90,20 @@ public sealed class DataChannelController : ControllerBase
             request.LocalId,
             cancellationToken
         );
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Retreives the latest vessel positions
+    /// </summary>
+    /// <param name="cancellationToken"></param>
+    [HttpGet]
+    [Route("api/data-channel/time-series/position/latest")]
+    public async Task<ActionResult<IEnumerable<Feature<Point, FeatureProps>>>> GetVesselPositions(
+        CancellationToken cancellationToken
+    )
+    {
+        var result = await _dataChannelRepository.GetLatestVesselPositions(cancellationToken);
         return Ok(result);
     }
 }

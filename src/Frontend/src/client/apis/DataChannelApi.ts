@@ -24,6 +24,9 @@ import {
     EventDataSet,
     EventDataSetFromJSON,
     EventDataSetToJSON,
+    PointFeaturePropsFeature,
+    PointFeaturePropsFeatureFromJSON,
+    PointFeaturePropsFeatureToJSON,
     TimeSeriesDataWithProps,
     TimeSeriesDataWithPropsFromJSON,
     TimeSeriesDataWithPropsToJSON,
@@ -138,6 +141,32 @@ export class DataChannelApi extends runtime.BaseAPI {
      */
     async dataChannelGetLatestTimeSeriesValue(requestParameters: DataChannelGetLatestTimeSeriesValueRequest = {}, initOverrides?: RequestInit): Promise<TimeSeriesDataWithProps> {
         const response = await this.dataChannelGetLatestTimeSeriesValueRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Search for time series given a data channel internalId
+     */
+    async dataChannelGetVesselPositionsRaw(initOverrides?: RequestInit): Promise<runtime.ApiResponse<Array<PointFeaturePropsFeature>>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/data-channel/time-series/position/latest`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(PointFeaturePropsFeatureFromJSON));
+    }
+
+    /**
+     * Search for time series given a data channel internalId
+     */
+    async dataChannelGetVesselPositions(initOverrides?: RequestInit): Promise<Array<PointFeaturePropsFeature>> {
+        const response = await this.dataChannelGetVesselPositionsRaw(initOverrides);
         return await response.value();
     }
 

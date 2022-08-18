@@ -49,6 +49,12 @@ export interface AdditionalTimeSeriesProperties {
      * @memberof AdditionalTimeSeriesProperties
      */
     name?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof AdditionalTimeSeriesProperties
+     */
+    vesselId?: string | null;
 }
 
 export function AdditionalTimeSeriesPropertiesFromJSON(json: any): AdditionalTimeSeriesProperties {
@@ -66,6 +72,7 @@ export function AdditionalTimeSeriesPropertiesFromJSONTyped(json: any, ignoreDis
         'rangeHigh': !exists(json, 'rangeHigh') ? undefined : json['rangeHigh'],
         'rangeLow': !exists(json, 'rangeLow') ? undefined : json['rangeLow'],
         'name': !exists(json, 'name') ? undefined : json['name'],
+        'vesselId': !exists(json, 'vesselId') ? undefined : json['vesselId'],
     };
 }
 
@@ -83,6 +90,7 @@ export function AdditionalTimeSeriesPropertiesToJSON(value?: AdditionalTimeSerie
         'rangeHigh': value.rangeHigh,
         'rangeLow': value.rangeLow,
         'name': value.name,
+        'vesselId': value.vesselId,
     };
 }
 

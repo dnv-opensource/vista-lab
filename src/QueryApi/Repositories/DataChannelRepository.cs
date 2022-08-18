@@ -1,28 +1,30 @@
 using Common;
+using GeoJSON.Text.Feature;
+using GeoJSON.Text.Geometry;
 using QueryApi.Models;
 using System.Globalization;
 using System.Text.Json;
+using Vista.SDK;
 using Vista.SDK.Transport.Json.DataChannel;
 using Vista.SDK.Transport.Json.TimeSeriesData;
 
 namespace QueryApi.Repository;
 
-public sealed class DataChannelRepository
+public sealed partial class DataChannelRepository
 {
     private readonly ILogger<DataChannelRepository> _logger;
     private readonly QuestDbClient _client;
 
-    public sealed record AdditionalTimeSeriesProperties(
-        string? UnitSymbol,
-        string? QuantityName,
-        float? RangeHigh,
-        float? RangeLow,
-        string? Name
-    );
-
     public sealed record TimeSeriesDataWithProps(
         EventDataSet? EventData,
         AdditionalTimeSeriesProperties? AdditionalProps
+    );
+
+    public sealed record VesselPosition(
+        string VesselId,
+        double Latitude,
+        double Longitude,
+        DateTimeOffset Timestamp
     );
 
     public DataChannelRepository(QuestDbClient client, ILogger<DataChannelRepository> logger)
@@ -256,56 +258,6 @@ public sealed class DataChannelRepository
             .ToArray();
     }
 
-    private static IEnumerable<EventDataSet> ToTimeSeries(DbResponse response)
-    {
-        var timeSeriesData = new List<EventDataSet>();
-        for (int i = 0; i < response.Count; i++)
-        {
-            var timeSeries = new EventDataSet(
-                response.GetValue(i, nameof(TimeSeriesEntity.DataChannelId)).GetStringNonNull(),
-                response.GetValue(i, nameof(TimeSeriesEntity.Quality)).GetString(),
-                response.GetValue(i, nameof(TimeSeriesEntity.Timestamp)).GetDateTimeOffset(),
-                response.GetValue(i, nameof(TimeSeriesEntity.Value)).GetString() ?? "N/A"
-            );
-
-            timeSeriesData.Add(timeSeries);
-        }
-
-        return timeSeriesData;
-    }
-
-    private static IEnumerable<AdditionalTimeSeriesProperties> ToAdditionalTimeSeriesProps(
-        DbResponse response
-    )
-    {
-        var props = new List<AdditionalTimeSeriesProperties>();
-        for (int i = 0; i < response.Count; i++)
-        {
-            float? rangeHigh = response
-                .GetValue(i, nameof(DataChannelEntity.Range_High))
-                .TryGetDouble(out var rh)
-              ? (float)rh
-              : null;
-            float? rangeLow = response
-                .GetValue(i, nameof(DataChannelEntity.Range_Low))
-                .TryGetDouble(out var rl)
-              ? (float)rl
-              : null;
-
-            var additionalProps = new AdditionalTimeSeriesProperties(
-                response.GetValue(i, nameof(DataChannelEntity.Unit_UnitSymbol)).GetString(),
-                response.GetValue(i, nameof(DataChannelEntity.Unit_QuantityName)).GetString(),
-                rangeHigh,
-                rangeLow,
-                response.GetValue(i, nameof(DataChannelEntity.Name)).GetString()
-            );
-
-            props.Add(additionalProps);
-        }
-
-        return props;
-    }
-
     public async Task<IEnumerable<EventDataSet>> GetTimeSeriesByInternalId(
         Guid internalId,
         CancellationToken cancellationToken
@@ -354,5 +306,53 @@ public sealed class DataChannelRepository
         var additionalProps = ToAdditionalTimeSeriesProps(response).FirstOrDefault();
 
         return new TimeSeriesDataWithProps(eventData, additionalProps);
+    }
+
+    public async Task<IEnumerable<Feature<Point, FeatureProps>>> GetLatestVesselPositions(
+        CancellationToken cancellationToken
+    )
+    {
+        var latLocalId = LocalIdBuilder.TryParse(
+            "/dnv-v2/vis-3-4a/710.1/F211.1/meta/qty-latitude",
+            out var latBuilder
+        )
+          ? latBuilder
+          : null;
+        var lngLocalId = LocalIdBuilder.TryParse(
+            "/dnv-v2/vis-3-4a/710.1/F211.1/meta/qty-longitude",
+            out var lnbBuilder
+        )
+          ? lnbBuilder
+          : null;
+
+        if (latLocalId is null || lngLocalId is null)
+            throw new Exception("Failed to parse localIds");
+
+        var query =
+            @$"
+            SELECT lat.Value as latitude, lng.Value as longitude, lat.Timestamp, lat.VesselId
+            FROM 
+                (
+                SELECT Value, Timestamp, VesselId, DataChannelId
+                FROM 'TimeSeries'
+                WHERE DataChannelId  = '{latLocalId}'
+                LATEST ON Timestamp PARTITION BY VesselId
+            ) lat
+            INNER JOIN 
+            (
+                SELECT Value, Timestamp, VesselId, DataChannelId
+                FROM 'TimeSeries'
+                WHERE DataChannelId  = '{lngLocalId}'
+                LATEST ON Timestamp PARTITION BY VesselId
+            ) lng
+            ON lng.VesselId = lat.VesselId
+
+        ";
+
+        var response = await _client.Query(query, cancellationToken);
+
+        var geoJson = ToGeoJsonFeatures(response);
+
+        return geoJson.ToArray();
     }
 }
