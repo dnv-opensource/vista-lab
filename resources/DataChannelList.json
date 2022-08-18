@@ -36352,43 +36352,13 @@
                             "Restriction": null
                         },
                         "Range": {
-                            "High": "100",
-                            "Low": "0"
+                            "High": "40",
+                            "Low": "25"
                         },
                         "Unit": null,
                         "QualityCoding": null,
                         "AlertPriority": null,
                         "Name": "Navigation data/Position | latitude",
-                        "Remarks": null
-                    }
-                },
-                {
-                    "DataChannelID": {
-                        "LocalID": "/dnv-v2/vis-3-4a/710.1/F211.1/meta/qty-longitude",
-                        "ShortID": "e97dec8e-4ea8-5527-aef5-2f897855c2cd",
-                        "NameObject": null
-                    },
-                    "Property": {
-                        "DataChannelType": {
-                            "Type": "Inst",
-                            "UpdateCycle": "1",
-                            "CalculationPeriod": null
-                        },
-                        "Format": {
-                            "Type": "Decimal",
-                            "Restriction": null
-                        },
-                        "Range": {
-                            "High": "100",
-                            "Low": "0"
-                        },
-                        "Unit": {
-                            "UnitSymbol": "%",
-                            "QuantityName": "longitude"
-                        },
-                        "QualityCoding": null,
-                        "AlertPriority": null,
-                        "Name": "Navigation data/Position | % longitude",
                         "Remarks": null
                     }
                 },
@@ -38539,60 +38509,6 @@
                 },
                 {
                     "DataChannelID": {
-                        "LocalID": "/dnv-v2/vis-3-4a/710.1/F211.1/meta/qty-latitude",
-                        "ShortID": "25e3b152-6581-5a19-aec3-83b6ca8f14a5",
-                        "NameObject": null
-                    },
-                    "Property": {
-                        "DataChannelType": {
-                            "Type": "Inst",
-                            "UpdateCycle": "1",
-                            "CalculationPeriod": null
-                        },
-                        "Format": {
-                            "Type": "Decimal",
-                            "Restriction": null
-                        },
-                        "Range": {
-                            "High": "10",
-                            "Low": "-10"
-                        },
-                        "Unit": null,
-                        "QualityCoding": null,
-                        "AlertPriority": null,
-                        "Name": "Navigation data/Position | latitude",
-                        "Remarks": null
-                    }
-                },
-                {
-                    "DataChannelID": {
-                        "LocalID": "/dnv-v2/vis-3-4a/710.1/F211.1/meta/qty-longitude",
-                        "ShortID": "60acc81e-19ce-5b8e-be0f-93d22735821d",
-                        "NameObject": null
-                    },
-                    "Property": {
-                        "DataChannelType": {
-                            "Type": "Inst",
-                            "UpdateCycle": "1",
-                            "CalculationPeriod": null
-                        },
-                        "Format": {
-                            "Type": "Decimal",
-                            "Restriction": null
-                        },
-                        "Range": {
-                            "High": "100",
-                            "Low": "-50"
-                        },
-                        "Unit": null,
-                        "QualityCoding": null,
-                        "AlertPriority": null,
-                        "Name": "Navigation data/Position | longitude",
-                        "Remarks": null
-                    }
-                },
-                {
-                    "DataChannelID": {
                         "LocalID": "/dnv-v2/vis-3-4a/711/N33/meta/qty-identifier/detail-quality",
                         "ShortID": "71dfac41-b980-5fef-ab42-648e14d835ff",
                         "NameObject": null
@@ -38743,8 +38659,8 @@
                             "Restriction": null
                         },
                         "Range": {
-                            "High": "3",
-                            "Low": "-3"
+                            "High": "10",
+                            "Low": "-80"
                         },
                         "Unit": null,
                         "QualityCoding": null,

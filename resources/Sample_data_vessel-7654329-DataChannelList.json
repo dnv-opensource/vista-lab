@@ -1,911 +1,917 @@
 {
-  "Package": {
-    "Header": {
-      "ShipID": "IMO7654329",
-      "DataChannelListID": {
-        "ID": "export-IMO7654329",
-        "Version": "1",
-        "TimeStamp": "2022-06-22T06:33:58.373+00:00"
-      },
-      "VersionInformation": {
-        "NamingRule": "dnv",
-        "NamingSchemeVersion": "v2",
-        "ReferenceURL": "https://vista.dnv.com/docs"
-      },
-      "Author": "DNV",
-      "DateCreated": "2022-06-16T12:26:31.257+00:00"
-    },
-    "DataChannelList": {
-      "DataChannel": [
-        {
-          "DataChannelID": {
-            "LocalID": "/dnv-v2/vis-3-4a/710.1/F211.1/meta/qty-latitude",
-            "ShortID": "9d392d8e-e397-5d2a-84c2-97e947a9c767",
-            "NameObject": null
-          },
-          "Property": {
-            "DataChannelType": {
-              "Type": "Inst",
-              "UpdateCycle": "1",
-              "CalculationPeriod": null
+    "Package": {
+        "Header": {
+            "ShipID": "IMO7654329",
+            "DataChannelListID": {
+                "ID": "export-IMO7654329",
+                "Version": "1",
+                "TimeStamp": "2022-06-22T06:33:58.373+00:00"
             },
-            "Format": {
-              "Type": "Decimal",
-              "Restriction": null
+            "VersionInformation": {
+                "NamingRule": "dnv",
+                "NamingSchemeVersion": "v2",
+                "ReferenceURL": "https://vista.dnv.com/docs"
             },
-            "Range": null,
-            "Unit": null,
-            "QualityCoding": null,
-            "AlertPriority": null,
-            "Name": "Navigation data/Position | latitude",
-            "Remarks": null
-          }
+            "Author": "DNV",
+            "DateCreated": "2022-06-16T12:26:31.257+00:00"
         },
-        {
-          "DataChannelID": {
-            "LocalID": "/dnv-v2/vis-3-4a/710.1/F211.1/meta/qty-longitude",
-            "ShortID": "18acc4c5-fa8d-5eba-8d5d-72625b74f59e",
-            "NameObject": null
-          },
-          "Property": {
-            "DataChannelType": {
-              "Type": "Inst",
-              "UpdateCycle": "1",
-              "CalculationPeriod": null
-            },
-            "Format": {
-              "Type": "Decimal",
-              "Restriction": null
-            },
-            "Range": null,
-            "Unit": null,
-            "QualityCoding": null,
-            "AlertPriority": null,
-            "Name": "Navigation data/Position | longitude",
-            "Remarks": null
-          }
-        },
-        {
-          "DataChannelID": {
-            "LocalID": "/dnv-v2/vis-3-4a/411.1/C101/meta/qty-power",
-            "ShortID": "adbba9be-ec14-55ae-baa3-7e9882af692a",
-            "NameObject": null
-          },
-          "Property": {
-            "DataChannelType": {
-              "Type": "Inst",
-              "UpdateCycle": "1",
-              "CalculationPeriod": null
-            },
-            "Format": {
-              "Type": "Decimal",
-              "Restriction": null
-            },
-            "Range": null,
-            "Unit": null,
-            "QualityCoding": null,
-            "AlertPriority": null,
-            "Name": "Propulsion engine | power",
-            "Remarks": null
-          }
-        },
-        {
-          "DataChannelID": {
-            "LocalID": "/dnv-v2/vis-3-4a/411.1/C101/meta/qty-rotational.frequency",
-            "ShortID": "8ac6275a-f4df-585e-8222-6767f2efa963",
-            "NameObject": null
-          },
-          "Property": {
-            "DataChannelType": {
-              "Type": "Inst",
-              "UpdateCycle": "1",
-              "CalculationPeriod": null
-            },
-            "Format": {
-              "Type": "Decimal",
-              "Restriction": null
-            },
-            "Range": null,
-            "Unit": null,
-            "QualityCoding": null,
-            "AlertPriority": null,
-            "Name": "Propulsion engine | rotational.frequency",
-            "Remarks": null
-          }
-        },
-        {
-          "DataChannelID": {
-            "LocalID": "/dnv-v2/vis-3-4a/620.1/M201.32/sec/411.1/C101/meta/qty-mass.flow.rate",
-            "ShortID": "f3c386a2-5925-5fa5-9701-d198c8a3f294",
-            "NameObject": null
-          },
-          "Property": {
-            "DataChannelType": {
-              "Type": "Inst",
-              "UpdateCycle": "1",
-              "CalculationPeriod": null
-            },
-            "Format": {
-              "Type": "Decimal",
-              "Restriction": null
-            },
-            "Range": null,
-            "Unit": null,
-            "QualityCoding": null,
-            "AlertPriority": null,
-            "Name": "Fuel data/Amount consumed | Propulsion engine | mass.flow.rate",
-            "Remarks": null
-          }
-        },
-        {
-          "DataChannelID": {
-            "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.662i-1/S130/meta/state-running.state",
-            "ShortID": "1382f18f-776b-5bfb-b56e-5431f24d8d5b",
-            "NameObject": null
-          },
-          "Property": {
-            "DataChannelType": {
-              "Type": "Inst",
-              "UpdateCycle": "1",
-              "CalculationPeriod": null
-            },
-            "Format": {
-              "Type": "Decimal",
-              "Restriction": null
-            },
-            "Range": null,
-            "Unit": null,
-            "QualityCoding": null,
-            "AlertPriority": null,
-            "Name": "Propulsion engine/Combustion air blower",
-            "Remarks": null
-          }
-        },
-        {
-          "DataChannelID": {
-            "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.65/S210/sec/411.1/C101.31-1/meta/qty-temperature/cnt-exhaust.gas",
-            "ShortID": "88ca0e59-dff1-5112-9c8e-6355b939b812",
-            "NameObject": null
-          },
-          "Property": {
-            "DataChannelType": {
-              "Type": "Inst",
-              "UpdateCycle": "1",
-              "CalculationPeriod": null
-            },
-            "Format": {
-              "Type": "Decimal",
-              "Restriction": null
-            },
-            "Range": null,
-            "Unit": null,
-            "QualityCoding": null,
-            "AlertPriority": null,
-            "Name": "Propulsion engine/Exhaust system | Propulsion engine | temperature exhaust.gas",
-            "Remarks": null
-          }
-        },
-        {
-          "DataChannelID": {
-            "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.65/S210/sec/411.1/C101.31-2/meta/qty-temperature/cnt-exhaust.gas",
-            "ShortID": "f1d19822-fa3d-5d8f-8e53-4f1817cfeded",
-            "NameObject": null
-          },
-          "Property": {
-            "DataChannelType": {
-              "Type": "Inst",
-              "UpdateCycle": "1",
-              "CalculationPeriod": null
-            },
-            "Format": {
-              "Type": "Decimal",
-              "Restriction": null
-            },
-            "Range": null,
-            "Unit": null,
-            "QualityCoding": null,
-            "AlertPriority": null,
-            "Name": "Propulsion engine/Exhaust system | Propulsion engine | temperature exhaust.gas",
-            "Remarks": null
-          }
-        },
-        {
-          "DataChannelID": {
-            "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.65/S210/sec/411.1/C101.31-3/meta/qty-temperature/cnt-exhaust.gas",
-            "ShortID": "af98b0ea-1a5e-5c47-b8ca-fc2f62b896c7",
-            "NameObject": null
-          },
-          "Property": {
-            "DataChannelType": {
-              "Type": "Inst",
-              "UpdateCycle": "1",
-              "CalculationPeriod": null
-            },
-            "Format": {
-              "Type": "Decimal",
-              "Restriction": null
-            },
-            "Range": null,
-            "Unit": null,
-            "QualityCoding": null,
-            "AlertPriority": null,
-            "Name": "Propulsion engine/Exhaust system | Propulsion engine | temperature exhaust.gas",
-            "Remarks": null
-          }
-        },
-        {
-          "DataChannelID": {
-            "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.65/S210/sec/411.1/C101.31-4/meta/qty-temperature/cnt-exhaust.gas",
-            "ShortID": "ada9707a-b215-5f5a-9c5c-b0bc4f825f8e",
-            "NameObject": null
-          },
-          "Property": {
-            "DataChannelType": {
-              "Type": "Inst",
-              "UpdateCycle": "1",
-              "CalculationPeriod": null
-            },
-            "Format": {
-              "Type": "Decimal",
-              "Restriction": null
-            },
-            "Range": null,
-            "Unit": null,
-            "QualityCoding": null,
-            "AlertPriority": null,
-            "Name": "Propulsion engine/Exhaust system | Propulsion engine | temperature exhaust.gas",
-            "Remarks": null
-          }
-        },
-        {
-          "DataChannelID": {
-            "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.65/S210/sec/411.1/C101.31-5/meta/qty-temperature/cnt-exhaust.gas",
-            "ShortID": "96b80f36-cc31-5c4a-b8c6-46e98b5b7d43",
-            "NameObject": null
-          },
-          "Property": {
-            "DataChannelType": {
-              "Type": "Inst",
-              "UpdateCycle": "1",
-              "CalculationPeriod": null
-            },
-            "Format": {
-              "Type": "Decimal",
-              "Restriction": null
-            },
-            "Range": null,
-            "Unit": null,
-            "QualityCoding": null,
-            "AlertPriority": null,
-            "Name": "Propulsion engine/Exhaust system | Propulsion engine | temperature exhaust.gas",
-            "Remarks": null
-          }
-        },
-        {
-          "DataChannelID": {
-            "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.65/S210/sec/411.1/C101.31-6/meta/qty-temperature/cnt-exhaust.gas",
-            "ShortID": "7d9235ad-db8b-501b-ace5-268c5329346c",
-            "NameObject": null
-          },
-          "Property": {
-            "DataChannelType": {
-              "Type": "Inst",
-              "UpdateCycle": "1",
-              "CalculationPeriod": null
-            },
-            "Format": {
-              "Type": "Decimal",
-              "Restriction": null
-            },
-            "Range": null,
-            "Unit": null,
-            "QualityCoding": null,
-            "AlertPriority": null,
-            "Name": "Propulsion engine/Exhaust system | Propulsion engine | temperature exhaust.gas",
-            "Remarks": null
-          }
-        },
-        {
-          "DataChannelID": {
-            "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.65/S210/sec/411.1/C101.31-7/meta/qty-temperature/cnt-exhaust.gas",
-            "ShortID": "88654b47-a91f-5cdb-ada1-b69fbd13121c",
-            "NameObject": null
-          },
-          "Property": {
-            "DataChannelType": {
-              "Type": "Inst",
-              "UpdateCycle": "1",
-              "CalculationPeriod": null
-            },
-            "Format": {
-              "Type": "Decimal",
-              "Restriction": null
-            },
-            "Range": null,
-            "Unit": null,
-            "QualityCoding": null,
-            "AlertPriority": null,
-            "Name": "Propulsion engine/Exhaust system | Propulsion engine | temperature exhaust.gas",
-            "Remarks": null
-          }
-        },
-        {
-          "DataChannelID": {
-            "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.66/sec/411.1/C101.31/meta/qty-temperature/cnt-scavenge.air/calc-mean.across.sensors",
-            "ShortID": "0ab67f05-55f8-5d7f-88ed-45b2262bd02e",
-            "NameObject": null
-          },
-          "Property": {
-            "DataChannelType": {
-              "Type": "Inst",
-              "UpdateCycle": "1",
-              "CalculationPeriod": null
-            },
-            "Format": {
-              "Type": "Decimal",
-              "Restriction": null
-            },
-            "Range": null,
-            "Unit": null,
-            "QualityCoding": null,
-            "AlertPriority": null,
-            "Name": "Propulsion engine | Propulsion engine | temperature scavenge.air",
-            "Remarks": null
-          }
-        },
-        {
-          "DataChannelID": {
-            "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.66/sec/411.1/C101.31-1/meta/qty-temperature/cnt-scavenge.air",
-            "ShortID": "ab1c4b21-7403-5e7d-a918-118643829f60",
-            "NameObject": null
-          },
-          "Property": {
-            "DataChannelType": {
-              "Type": "Inst",
-              "UpdateCycle": "1",
-              "CalculationPeriod": null
-            },
-            "Format": {
-              "Type": "Decimal",
-              "Restriction": null
-            },
-            "Range": null,
-            "Unit": null,
-            "QualityCoding": null,
-            "AlertPriority": null,
-            "Name": "Propulsion engine | Propulsion engine | temperature scavenge.air",
-            "Remarks": null
-          }
-        },
-        {
-          "DataChannelID": {
-            "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.66/sec/411.1/C101.31-2/meta/qty-temperature/cnt-scavenge.air",
-            "ShortID": "80a1248a-2f9f-5451-8c30-03540737e3ea",
-            "NameObject": null
-          },
-          "Property": {
-            "DataChannelType": {
-              "Type": "Inst",
-              "UpdateCycle": "1",
-              "CalculationPeriod": null
-            },
-            "Format": {
-              "Type": "Decimal",
-              "Restriction": null
-            },
-            "Range": null,
-            "Unit": null,
-            "QualityCoding": null,
-            "AlertPriority": null,
-            "Name": "Propulsion engine | Propulsion engine | temperature scavenge.air",
-            "Remarks": null
-          }
-        },
-        {
-          "DataChannelID": {
-            "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.66/sec/411.1/C101.31-3/meta/qty-temperature/cnt-scavenge.air",
-            "ShortID": "ad6d08b9-e208-57a0-a360-fd5a762d2ea9",
-            "NameObject": null
-          },
-          "Property": {
-            "DataChannelType": {
-              "Type": "Inst",
-              "UpdateCycle": "1",
-              "CalculationPeriod": null
-            },
-            "Format": {
-              "Type": "Decimal",
-              "Restriction": null
-            },
-            "Range": null,
-            "Unit": null,
-            "QualityCoding": null,
-            "AlertPriority": null,
-            "Name": "Propulsion engine | Propulsion engine | temperature scavenge.air",
-            "Remarks": null
-          }
-        },
-        {
-          "DataChannelID": {
-            "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.66/sec/411.1/C101.31-4/meta/qty-temperature/cnt-scavenge.air",
-            "ShortID": "9106e020-b424-5251-8e0e-94b305e9641b",
-            "NameObject": null
-          },
-          "Property": {
-            "DataChannelType": {
-              "Type": "Inst",
-              "UpdateCycle": "1",
-              "CalculationPeriod": null
-            },
-            "Format": {
-              "Type": "Decimal",
-              "Restriction": null
-            },
-            "Range": null,
-            "Unit": null,
-            "QualityCoding": null,
-            "AlertPriority": null,
-            "Name": "Propulsion engine | Propulsion engine | temperature scavenge.air",
-            "Remarks": null
-          }
-        },
-        {
-          "DataChannelID": {
-            "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.66/sec/411.1/C101.31-5/meta/qty-temperature/cnt-scavenge.air",
-            "ShortID": "f73be216-33ce-5196-8ab0-ac1b2b868dc1",
-            "NameObject": null
-          },
-          "Property": {
-            "DataChannelType": {
-              "Type": "Inst",
-              "UpdateCycle": "1",
-              "CalculationPeriod": null
-            },
-            "Format": {
-              "Type": "Decimal",
-              "Restriction": null
-            },
-            "Range": null,
-            "Unit": null,
-            "QualityCoding": null,
-            "AlertPriority": null,
-            "Name": "Propulsion engine | Propulsion engine | temperature scavenge.air",
-            "Remarks": null
-          }
-        },
-        {
-          "DataChannelID": {
-            "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.66/sec/411.1/C101.31-6/meta/qty-temperature/cnt-scavenge.air",
-            "ShortID": "9821ced0-e3bc-5fdc-bc0c-f8e7fd28a03d",
-            "NameObject": null
-          },
-          "Property": {
-            "DataChannelType": {
-              "Type": "Inst",
-              "UpdateCycle": "1",
-              "CalculationPeriod": null
-            },
-            "Format": {
-              "Type": "Decimal",
-              "Restriction": null
-            },
-            "Range": null,
-            "Unit": null,
-            "QualityCoding": null,
-            "AlertPriority": null,
-            "Name": "Propulsion engine | Propulsion engine | temperature scavenge.air",
-            "Remarks": null
-          }
-        },
-        {
-          "DataChannelID": {
-            "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.66/sec/411.1/C101.31-7/meta/qty-temperature/cnt-scavenge.air",
-            "ShortID": "b97ee998-2050-5fc9-a1af-39e633481e6f",
-            "NameObject": null
-          },
-          "Property": {
-            "DataChannelType": {
-              "Type": "Inst",
-              "UpdateCycle": "1",
-              "CalculationPeriod": null
-            },
-            "Format": {
-              "Type": "Decimal",
-              "Restriction": null
-            },
-            "Range": null,
-            "Unit": null,
-            "QualityCoding": null,
-            "AlertPriority": null,
-            "Name": "Propulsion engine | Propulsion engine | temperature scavenge.air",
-            "Remarks": null
-          }
-        },
-        {
-          "DataChannelID": {
-            "LocalID": "/dnv-v2/vis-3-4a/940.1/F221.6/meta/qty-temperature",
-            "ShortID": "93a85958-3d9a-5b50-bdc9-76be3d80492a",
-            "NameObject": null
-          },
-          "Property": {
-            "DataChannelType": {
-              "Type": "Inst",
-              "UpdateCycle": "1",
-              "CalculationPeriod": null
-            },
-            "Format": {
-              "Type": "Decimal",
-              "Restriction": null
-            },
-            "Range": null,
-            "Unit": null,
-            "QualityCoding": null,
-            "AlertPriority": null,
-            "Name": "Environmental data/Sea water | temperature",
-            "Remarks": null
-          }
-        },
-        {
-          "DataChannelID": {
-            "LocalID": "/dnv-v2/vis-3-4a/406i/H233/meta/qty-temperature",
-            "ShortID": "03a5f454-09da-5aed-8daa-7290aab21cf3",
-            "NameObject": null
-          },
-          "Property": {
-            "DataChannelType": {
-              "Type": "Inst",
-              "UpdateCycle": "1",
-              "CalculationPeriod": null
-            },
-            "Format": {
-              "Type": "Decimal",
-              "Restriction": null
-            },
-            "Range": null,
-            "Unit": null,
-            "QualityCoding": null,
-            "AlertPriority": null,
-            "Name": "Engine room | temperature",
-            "Remarks": null
-          }
-        },
-        {
-          "DataChannelID": {
-            "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.63/S206/sec/411.1/C101.31-1/meta/qty-temperature/cnt-fresh.cooling.water/pos-outlet/detail-jacket",
-            "ShortID": "10fa5f08-7f15-5e85-a9b9-0ec34fdfbb25",
-            "NameObject": null
-          },
-          "Property": {
-            "DataChannelType": {
-              "Type": "Inst",
-              "UpdateCycle": "1",
-              "CalculationPeriod": null
-            },
-            "Format": {
-              "Type": "Decimal",
-              "Restriction": null
-            },
-            "Range": null,
-            "Unit": null,
-            "QualityCoding": null,
-            "AlertPriority": null,
-            "Name": "Propulsion engine/Cooling system | Propulsion engine | temperature fresh.cooling.water",
-            "Remarks": null
-          }
-        },
-        {
-          "DataChannelID": {
-            "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.63/S206/sec/411.1-0/C101.31-2/meta/qty-temperature/cnt-fresh.cooling.water/pos-outlet/detail-jacket",
-            "ShortID": "546b217a-0ea7-5d2b-bc2a-33126d4ed30a",
-            "NameObject": null
-          },
-          "Property": {
-            "DataChannelType": {
-              "Type": "Inst",
-              "UpdateCycle": "1",
-              "CalculationPeriod": null
-            },
-            "Format": {
-              "Type": "Decimal",
-              "Restriction": null
-            },
-            "Range": null,
-            "Unit": null,
-            "QualityCoding": null,
-            "AlertPriority": null,
-            "Name": "Propulsion engine/Cooling system | Propulsion engine | temperature fresh.cooling.water",
-            "Remarks": null
-          }
-        },
-        {
-          "DataChannelID": {
-            "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.63/S206/sec/411.1-3/C101.31-1/meta/qty-temperature/cnt-fresh.cooling.water/pos-outlet/detail-jacket",
-            "ShortID": "a092ac3f-89de-5b46-9231-b191b496b82e",
-            "NameObject": null
-          },
-          "Property": {
-            "DataChannelType": {
-              "Type": "Inst",
-              "UpdateCycle": "1",
-              "CalculationPeriod": null
-            },
-            "Format": {
-              "Type": "Decimal",
-              "Restriction": null
-            },
-            "Range": null,
-            "Unit": null,
-            "QualityCoding": null,
-            "AlertPriority": null,
-            "Name": "Propulsion engine/Cooling system | Propulsion engine | temperature fresh.cooling.water",
-            "Remarks": null
-          }
-        },
-        {
-          "DataChannelID": {
-            "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.63/S206/sec/411.1/C101.31-4/meta/qty-temperature/cnt-fresh.cooling.water/pos-outlet/detail-jacket",
-            "ShortID": "2a22d458-2ac2-56f2-86ee-01b4c753800a",
-            "NameObject": null
-          },
-          "Property": {
-            "DataChannelType": {
-              "Type": "Inst",
-              "UpdateCycle": "1",
-              "CalculationPeriod": null
-            },
-            "Format": {
-              "Type": "Decimal",
-              "Restriction": null
-            },
-            "Range": null,
-            "Unit": null,
-            "QualityCoding": null,
-            "AlertPriority": null,
-            "Name": "Propulsion engine/Cooling system | Propulsion engine | temperature fresh.cooling.water",
-            "Remarks": null
-          }
-        },
-        {
-          "DataChannelID": {
-            "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.63/S206/sec/411.1/C101.31-5/meta/qty-temperature/cnt-fresh.cooling.water/pos-outlet/detail-jacket",
-            "ShortID": "85cc1394-4e9d-5b1b-bbac-28315ee45279",
-            "NameObject": null
-          },
-          "Property": {
-            "DataChannelType": {
-              "Type": "Inst",
-              "UpdateCycle": "1",
-              "CalculationPeriod": null
-            },
-            "Format": {
-              "Type": "Decimal",
-              "Restriction": null
-            },
-            "Range": null,
-            "Unit": null,
-            "QualityCoding": null,
-            "AlertPriority": null,
-            "Name": "Propulsion engine/Cooling system | Propulsion engine | temperature fresh.cooling.water",
-            "Remarks": null
-          }
-        },
-        {
-          "DataChannelID": {
-            "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.63/S206/sec/411.1/C101.31-6/meta/qty-temperature/cnt-fresh.cooling.water/pos-outlet/detail-jacket",
-            "ShortID": "de4d5194-212c-5f07-9a02-c819b286f165",
-            "NameObject": null
-          },
-          "Property": {
-            "DataChannelType": {
-              "Type": "Inst",
-              "UpdateCycle": "1",
-              "CalculationPeriod": null
-            },
-            "Format": {
-              "Type": "Decimal",
-              "Restriction": null
-            },
-            "Range": null,
-            "Unit": null,
-            "QualityCoding": null,
-            "AlertPriority": null,
-            "Name": "Propulsion engine/Cooling system | Propulsion engine | temperature fresh.cooling.water",
-            "Remarks": null
-          }
-        },
-        {
-          "DataChannelID": {
-            "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.63/S206/sec/411.1/C101.31-7/meta/qty-temperature/cnt-fresh.cooling.water/pos-outlet/detail-jacket",
-            "ShortID": "fed584f9-4e87-5cd5-924b-680137838aa5",
-            "NameObject": null
-          },
-          "Property": {
-            "DataChannelType": {
-              "Type": "Inst",
-              "UpdateCycle": "1",
-              "CalculationPeriod": null
-            },
-            "Format": {
-              "Type": "Decimal",
-              "Restriction": null
-            },
-            "Range": null,
-            "Unit": null,
-            "QualityCoding": null,
-            "AlertPriority": null,
-            "Name": "Propulsion engine/Cooling system | Propulsion engine | temperature fresh.cooling.water",
-            "Remarks": null
-          }
-        },
-        {
-          "DataChannelID": {
-            "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.63/S206/sec/411.1/C101.32-1/meta/qty-temperature/pos-outlet",
-            "ShortID": "9e22d570-fa67-55f6-9bf0-bf926b8bb33a",
-            "NameObject": null
-          },
-          "Property": {
-            "DataChannelType": {
-              "Type": "Inst",
-              "UpdateCycle": "1",
-              "CalculationPeriod": null
-            },
-            "Format": {
-              "Type": "Decimal",
-              "Restriction": null
-            },
-            "Range": null,
-            "Unit": null,
-            "QualityCoding": null,
-            "AlertPriority": null,
-            "Name": "Propulsion engine/Cooling system | Propulsion engine | temperature",
-            "Remarks": null
-          }
-        },
-        {
-          "DataChannelID": {
-            "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.63/S206/sec/411.1/C101.32-2/meta/qty-temperature/pos-outlet",
-            "ShortID": "0c89f299-017c-5618-87be-ab12a174d410",
-            "NameObject": null
-          },
-          "Property": {
-            "DataChannelType": {
-              "Type": "Inst",
-              "UpdateCycle": "1",
-              "CalculationPeriod": null
-            },
-            "Format": {
-              "Type": "Decimal",
-              "Restriction": null
-            },
-            "Range": null,
-            "Unit": null,
-            "QualityCoding": null,
-            "AlertPriority": null,
-            "Name": "Propulsion engine/Cooling system | Propulsion engine | temperature",
-            "Remarks": null
-          }
-        },
-        {
-          "DataChannelID": {
-            "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.63/S206/sec/411.1/C101.32-3/meta/qty-temperature/pos-outlet",
-            "ShortID": "3ec547cc-a85c-50b9-8d14-ce8f07de30e7",
-            "NameObject": null
-          },
-          "Property": {
-            "DataChannelType": {
-              "Type": "Inst",
-              "UpdateCycle": "1",
-              "CalculationPeriod": null
-            },
-            "Format": {
-              "Type": "Decimal",
-              "Restriction": null
-            },
-            "Range": null,
-            "Unit": null,
-            "QualityCoding": null,
-            "AlertPriority": null,
-            "Name": "Propulsion engine/Cooling system | Propulsion engine | temperature",
-            "Remarks": null
-          }
-        },
-        {
-          "DataChannelID": {
-            "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.63/S206/sec/411.1/C101.32-4/meta/qty-temperature/pos-outlet",
-            "ShortID": "ac739544-4e13-52c3-af5c-94573d2a1d28",
-            "NameObject": null
-          },
-          "Property": {
-            "DataChannelType": {
-              "Type": "Inst",
-              "UpdateCycle": "1",
-              "CalculationPeriod": null
-            },
-            "Format": {
-              "Type": "Decimal",
-              "Restriction": null
-            },
-            "Range": null,
-            "Unit": null,
-            "QualityCoding": null,
-            "AlertPriority": null,
-            "Name": "Propulsion engine/Cooling system | Propulsion engine | temperature",
-            "Remarks": null
-          }
-        },
-        {
-          "DataChannelID": {
-            "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.63/S206/sec/411.1/C101.32-5/meta/qty-temperature/pos-outlet",
-            "ShortID": "56730add-63c5-5edb-8766-1b3253841b9b",
-            "NameObject": null
-          },
-          "Property": {
-            "DataChannelType": {
-              "Type": "Inst",
-              "UpdateCycle": "1",
-              "CalculationPeriod": null
-            },
-            "Format": {
-              "Type": "Decimal",
-              "Restriction": null
-            },
-            "Range": null,
-            "Unit": null,
-            "QualityCoding": null,
-            "AlertPriority": null,
-            "Name": "Propulsion engine/Cooling system | Propulsion engine | temperature",
-            "Remarks": null
-          }
-        },
-        {
-          "DataChannelID": {
-            "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.63/S206/sec/411.1/C101.32-6/meta/qty-temperature/pos-outlet",
-            "ShortID": "89838df2-41e5-52a8-9722-44dbf06dc89f",
-            "NameObject": null
-          },
-          "Property": {
-            "DataChannelType": {
-              "Type": "Inst",
-              "UpdateCycle": "1",
-              "CalculationPeriod": null
-            },
-            "Format": {
-              "Type": "Decimal",
-              "Restriction": null
-            },
-            "Range": null,
-            "Unit": null,
-            "QualityCoding": null,
-            "AlertPriority": null,
-            "Name": "Propulsion engine/Cooling system | Propulsion engine | temperature",
-            "Remarks": null
-          }
-        },
-        {
-          "DataChannelID": {
-            "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.63/S206/sec/411.1/C101.32-7/meta/qty-temperature/pos-outlet",
-            "ShortID": "0109f171-faed-55b9-a8eb-abc0490ea52c",
-            "NameObject": null
-          },
-          "Property": {
-            "DataChannelType": {
-              "Type": "Inst",
-              "UpdateCycle": "1",
-              "CalculationPeriod": null
-            },
-            "Format": {
-              "Type": "Decimal",
-              "Restriction": null
-            },
-            "Range": null,
-            "Unit": null,
-            "QualityCoding": null,
-            "AlertPriority": null,
-            "Name": "Propulsion engine/Cooling system | Propulsion engine | temperature",
-            "Remarks": null
-          }
+        "DataChannelList": {
+            "DataChannel": [
+                {
+                    "DataChannelID": {
+                        "LocalID": "/dnv-v2/vis-3-4a/710.1/F211.1/meta/qty-latitude",
+                        "ShortID": "9d392d8e-e397-5d2a-84c2-97e947a9c767",
+                        "NameObject": null
+                    },
+                    "Property": {
+                        "DataChannelType": {
+                            "Type": "Inst",
+                            "UpdateCycle": "1",
+                            "CalculationPeriod": null
+                        },
+                        "Format": {
+                            "Type": "Decimal",
+                            "Restriction": null
+                        },
+                        "Range": {
+                            "High": "40",
+                            "Low": "25"
+                        },
+                        "Unit": null,
+                        "QualityCoding": null,
+                        "AlertPriority": null,
+                        "Name": "Navigation data/Position | latitude",
+                        "Remarks": null
+                    }
+                },
+                {
+                    "DataChannelID": {
+                        "LocalID": "/dnv-v2/vis-3-4a/710.1/F211.1/meta/qty-longitude",
+                        "ShortID": "18acc4c5-fa8d-5eba-8d5d-72625b74f59e",
+                        "NameObject": null
+                    },
+                    "Property": {
+                        "DataChannelType": {
+                            "Type": "Inst",
+                            "UpdateCycle": "1",
+                            "CalculationPeriod": null
+                        },
+                        "Format": {
+                            "Type": "Decimal",
+                            "Restriction": null
+                        },
+                        "Range": {
+                            "High": "10",
+                            "Low": "-80"
+                        },
+                        "Unit": null,
+                        "QualityCoding": null,
+                        "AlertPriority": null,
+                        "Name": "Navigation data/Position | longitude",
+                        "Remarks": null
+                    }
+                },
+                {
+                    "DataChannelID": {
+                        "LocalID": "/dnv-v2/vis-3-4a/411.1/C101/meta/qty-power",
+                        "ShortID": "adbba9be-ec14-55ae-baa3-7e9882af692a",
+                        "NameObject": null
+                    },
+                    "Property": {
+                        "DataChannelType": {
+                            "Type": "Inst",
+                            "UpdateCycle": "1",
+                            "CalculationPeriod": null
+                        },
+                        "Format": {
+                            "Type": "Decimal",
+                            "Restriction": null
+                        },
+                        "Range": null,
+                        "Unit": null,
+                        "QualityCoding": null,
+                        "AlertPriority": null,
+                        "Name": "Propulsion engine | power",
+                        "Remarks": null
+                    }
+                },
+                {
+                    "DataChannelID": {
+                        "LocalID": "/dnv-v2/vis-3-4a/411.1/C101/meta/qty-rotational.frequency",
+                        "ShortID": "8ac6275a-f4df-585e-8222-6767f2efa963",
+                        "NameObject": null
+                    },
+                    "Property": {
+                        "DataChannelType": {
+                            "Type": "Inst",
+                            "UpdateCycle": "1",
+                            "CalculationPeriod": null
+                        },
+                        "Format": {
+                            "Type": "Decimal",
+                            "Restriction": null
+                        },
+                        "Range": null,
+                        "Unit": null,
+                        "QualityCoding": null,
+                        "AlertPriority": null,
+                        "Name": "Propulsion engine | rotational.frequency",
+                        "Remarks": null
+                    }
+                },
+                {
+                    "DataChannelID": {
+                        "LocalID": "/dnv-v2/vis-3-4a/620.1/M201.32/sec/411.1/C101/meta/qty-mass.flow.rate",
+                        "ShortID": "f3c386a2-5925-5fa5-9701-d198c8a3f294",
+                        "NameObject": null
+                    },
+                    "Property": {
+                        "DataChannelType": {
+                            "Type": "Inst",
+                            "UpdateCycle": "1",
+                            "CalculationPeriod": null
+                        },
+                        "Format": {
+                            "Type": "Decimal",
+                            "Restriction": null
+                        },
+                        "Range": null,
+                        "Unit": null,
+                        "QualityCoding": null,
+                        "AlertPriority": null,
+                        "Name": "Fuel data/Amount consumed | Propulsion engine | mass.flow.rate",
+                        "Remarks": null
+                    }
+                },
+                {
+                    "DataChannelID": {
+                        "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.662i-1/S130/meta/state-running.state",
+                        "ShortID": "1382f18f-776b-5bfb-b56e-5431f24d8d5b",
+                        "NameObject": null
+                    },
+                    "Property": {
+                        "DataChannelType": {
+                            "Type": "Inst",
+                            "UpdateCycle": "1",
+                            "CalculationPeriod": null
+                        },
+                        "Format": {
+                            "Type": "Decimal",
+                            "Restriction": null
+                        },
+                        "Range": null,
+                        "Unit": null,
+                        "QualityCoding": null,
+                        "AlertPriority": null,
+                        "Name": "Propulsion engine/Combustion air blower",
+                        "Remarks": null
+                    }
+                },
+                {
+                    "DataChannelID": {
+                        "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.65/S210/sec/411.1/C101.31-1/meta/qty-temperature/cnt-exhaust.gas",
+                        "ShortID": "88ca0e59-dff1-5112-9c8e-6355b939b812",
+                        "NameObject": null
+                    },
+                    "Property": {
+                        "DataChannelType": {
+                            "Type": "Inst",
+                            "UpdateCycle": "1",
+                            "CalculationPeriod": null
+                        },
+                        "Format": {
+                            "Type": "Decimal",
+                            "Restriction": null
+                        },
+                        "Range": null,
+                        "Unit": null,
+                        "QualityCoding": null,
+                        "AlertPriority": null,
+                        "Name": "Propulsion engine/Exhaust system | Propulsion engine | temperature exhaust.gas",
+                        "Remarks": null
+                    }
+                },
+                {
+                    "DataChannelID": {
+                        "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.65/S210/sec/411.1/C101.31-2/meta/qty-temperature/cnt-exhaust.gas",
+                        "ShortID": "f1d19822-fa3d-5d8f-8e53-4f1817cfeded",
+                        "NameObject": null
+                    },
+                    "Property": {
+                        "DataChannelType": {
+                            "Type": "Inst",
+                            "UpdateCycle": "1",
+                            "CalculationPeriod": null
+                        },
+                        "Format": {
+                            "Type": "Decimal",
+                            "Restriction": null
+                        },
+                        "Range": null,
+                        "Unit": null,
+                        "QualityCoding": null,
+                        "AlertPriority": null,
+                        "Name": "Propulsion engine/Exhaust system | Propulsion engine | temperature exhaust.gas",
+                        "Remarks": null
+                    }
+                },
+                {
+                    "DataChannelID": {
+                        "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.65/S210/sec/411.1/C101.31-3/meta/qty-temperature/cnt-exhaust.gas",
+                        "ShortID": "af98b0ea-1a5e-5c47-b8ca-fc2f62b896c7",
+                        "NameObject": null
+                    },
+                    "Property": {
+                        "DataChannelType": {
+                            "Type": "Inst",
+                            "UpdateCycle": "1",
+                            "CalculationPeriod": null
+                        },
+                        "Format": {
+                            "Type": "Decimal",
+                            "Restriction": null
+                        },
+                        "Range": null,
+                        "Unit": null,
+                        "QualityCoding": null,
+                        "AlertPriority": null,
+                        "Name": "Propulsion engine/Exhaust system | Propulsion engine | temperature exhaust.gas",
+                        "Remarks": null
+                    }
+                },
+                {
+                    "DataChannelID": {
+                        "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.65/S210/sec/411.1/C101.31-4/meta/qty-temperature/cnt-exhaust.gas",
+                        "ShortID": "ada9707a-b215-5f5a-9c5c-b0bc4f825f8e",
+                        "NameObject": null
+                    },
+                    "Property": {
+                        "DataChannelType": {
+                            "Type": "Inst",
+                            "UpdateCycle": "1",
+                            "CalculationPeriod": null
+                        },
+                        "Format": {
+                            "Type": "Decimal",
+                            "Restriction": null
+                        },
+                        "Range": null,
+                        "Unit": null,
+                        "QualityCoding": null,
+                        "AlertPriority": null,
+                        "Name": "Propulsion engine/Exhaust system | Propulsion engine | temperature exhaust.gas",
+                        "Remarks": null
+                    }
+                },
+                {
+                    "DataChannelID": {
+                        "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.65/S210/sec/411.1/C101.31-5/meta/qty-temperature/cnt-exhaust.gas",
+                        "ShortID": "96b80f36-cc31-5c4a-b8c6-46e98b5b7d43",
+                        "NameObject": null
+                    },
+                    "Property": {
+                        "DataChannelType": {
+                            "Type": "Inst",
+                            "UpdateCycle": "1",
+                            "CalculationPeriod": null
+                        },
+                        "Format": {
+                            "Type": "Decimal",
+                            "Restriction": null
+                        },
+                        "Range": null,
+                        "Unit": null,
+                        "QualityCoding": null,
+                        "AlertPriority": null,
+                        "Name": "Propulsion engine/Exhaust system | Propulsion engine | temperature exhaust.gas",
+                        "Remarks": null
+                    }
+                },
+                {
+                    "DataChannelID": {
+                        "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.65/S210/sec/411.1/C101.31-6/meta/qty-temperature/cnt-exhaust.gas",
+                        "ShortID": "7d9235ad-db8b-501b-ace5-268c5329346c",
+                        "NameObject": null
+                    },
+                    "Property": {
+                        "DataChannelType": {
+                            "Type": "Inst",
+                            "UpdateCycle": "1",
+                            "CalculationPeriod": null
+                        },
+                        "Format": {
+                            "Type": "Decimal",
+                            "Restriction": null
+                        },
+                        "Range": null,
+                        "Unit": null,
+                        "QualityCoding": null,
+                        "AlertPriority": null,
+                        "Name": "Propulsion engine/Exhaust system | Propulsion engine | temperature exhaust.gas",
+                        "Remarks": null
+                    }
+                },
+                {
+                    "DataChannelID": {
+                        "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.65/S210/sec/411.1/C101.31-7/meta/qty-temperature/cnt-exhaust.gas",
+                        "ShortID": "88654b47-a91f-5cdb-ada1-b69fbd13121c",
+                        "NameObject": null
+                    },
+                    "Property": {
+                        "DataChannelType": {
+                            "Type": "Inst",
+                            "UpdateCycle": "1",
+                            "CalculationPeriod": null
+                        },
+                        "Format": {
+                            "Type": "Decimal",
+                            "Restriction": null
+                        },
+                        "Range": null,
+                        "Unit": null,
+                        "QualityCoding": null,
+                        "AlertPriority": null,
+                        "Name": "Propulsion engine/Exhaust system | Propulsion engine | temperature exhaust.gas",
+                        "Remarks": null
+                    }
+                },
+                {
+                    "DataChannelID": {
+                        "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.66/sec/411.1/C101.31/meta/qty-temperature/cnt-scavenge.air/calc-mean.across.sensors",
+                        "ShortID": "0ab67f05-55f8-5d7f-88ed-45b2262bd02e",
+                        "NameObject": null
+                    },
+                    "Property": {
+                        "DataChannelType": {
+                            "Type": "Inst",
+                            "UpdateCycle": "1",
+                            "CalculationPeriod": null
+                        },
+                        "Format": {
+                            "Type": "Decimal",
+                            "Restriction": null
+                        },
+                        "Range": null,
+                        "Unit": null,
+                        "QualityCoding": null,
+                        "AlertPriority": null,
+                        "Name": "Propulsion engine | Propulsion engine | temperature scavenge.air",
+                        "Remarks": null
+                    }
+                },
+                {
+                    "DataChannelID": {
+                        "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.66/sec/411.1/C101.31-1/meta/qty-temperature/cnt-scavenge.air",
+                        "ShortID": "ab1c4b21-7403-5e7d-a918-118643829f60",
+                        "NameObject": null
+                    },
+                    "Property": {
+                        "DataChannelType": {
+                            "Type": "Inst",
+                            "UpdateCycle": "1",
+                            "CalculationPeriod": null
+                        },
+                        "Format": {
+                            "Type": "Decimal",
+                            "Restriction": null
+                        },
+                        "Range": null,
+                        "Unit": null,
+                        "QualityCoding": null,
+                        "AlertPriority": null,
+                        "Name": "Propulsion engine | Propulsion engine | temperature scavenge.air",
+                        "Remarks": null
+                    }
+                },
+                {
+                    "DataChannelID": {
+                        "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.66/sec/411.1/C101.31-2/meta/qty-temperature/cnt-scavenge.air",
+                        "ShortID": "80a1248a-2f9f-5451-8c30-03540737e3ea",
+                        "NameObject": null
+                    },
+                    "Property": {
+                        "DataChannelType": {
+                            "Type": "Inst",
+                            "UpdateCycle": "1",
+                            "CalculationPeriod": null
+                        },
+                        "Format": {
+                            "Type": "Decimal",
+                            "Restriction": null
+                        },
+                        "Range": null,
+                        "Unit": null,
+                        "QualityCoding": null,
+                        "AlertPriority": null,
+                        "Name": "Propulsion engine | Propulsion engine | temperature scavenge.air",
+                        "Remarks": null
+                    }
+                },
+                {
+                    "DataChannelID": {
+                        "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.66/sec/411.1/C101.31-3/meta/qty-temperature/cnt-scavenge.air",
+                        "ShortID": "ad6d08b9-e208-57a0-a360-fd5a762d2ea9",
+                        "NameObject": null
+                    },
+                    "Property": {
+                        "DataChannelType": {
+                            "Type": "Inst",
+                            "UpdateCycle": "1",
+                            "CalculationPeriod": null
+                        },
+                        "Format": {
+                            "Type": "Decimal",
+                            "Restriction": null
+                        },
+                        "Range": null,
+                        "Unit": null,
+                        "QualityCoding": null,
+                        "AlertPriority": null,
+                        "Name": "Propulsion engine | Propulsion engine | temperature scavenge.air",
+                        "Remarks": null
+                    }
+                },
+                {
+                    "DataChannelID": {
+                        "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.66/sec/411.1/C101.31-4/meta/qty-temperature/cnt-scavenge.air",
+                        "ShortID": "9106e020-b424-5251-8e0e-94b305e9641b",
+                        "NameObject": null
+                    },
+                    "Property": {
+                        "DataChannelType": {
+                            "Type": "Inst",
+                            "UpdateCycle": "1",
+                            "CalculationPeriod": null
+                        },
+                        "Format": {
+                            "Type": "Decimal",
+                            "Restriction": null
+                        },
+                        "Range": null,
+                        "Unit": null,
+                        "QualityCoding": null,
+                        "AlertPriority": null,
+                        "Name": "Propulsion engine | Propulsion engine | temperature scavenge.air",
+                        "Remarks": null
+                    }
+                },
+                {
+                    "DataChannelID": {
+                        "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.66/sec/411.1/C101.31-5/meta/qty-temperature/cnt-scavenge.air",
+                        "ShortID": "f73be216-33ce-5196-8ab0-ac1b2b868dc1",
+                        "NameObject": null
+                    },
+                    "Property": {
+                        "DataChannelType": {
+                            "Type": "Inst",
+                            "UpdateCycle": "1",
+                            "CalculationPeriod": null
+                        },
+                        "Format": {
+                            "Type": "Decimal",
+                            "Restriction": null
+                        },
+                        "Range": null,
+                        "Unit": null,
+                        "QualityCoding": null,
+                        "AlertPriority": null,
+                        "Name": "Propulsion engine | Propulsion engine | temperature scavenge.air",
+                        "Remarks": null
+                    }
+                },
+                {
+                    "DataChannelID": {
+                        "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.66/sec/411.1/C101.31-6/meta/qty-temperature/cnt-scavenge.air",
+                        "ShortID": "9821ced0-e3bc-5fdc-bc0c-f8e7fd28a03d",
+                        "NameObject": null
+                    },
+                    "Property": {
+                        "DataChannelType": {
+                            "Type": "Inst",
+                            "UpdateCycle": "1",
+                            "CalculationPeriod": null
+                        },
+                        "Format": {
+                            "Type": "Decimal",
+                            "Restriction": null
+                        },
+                        "Range": null,
+                        "Unit": null,
+                        "QualityCoding": null,
+                        "AlertPriority": null,
+                        "Name": "Propulsion engine | Propulsion engine | temperature scavenge.air",
+                        "Remarks": null
+                    }
+                },
+                {
+                    "DataChannelID": {
+                        "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.66/sec/411.1/C101.31-7/meta/qty-temperature/cnt-scavenge.air",
+                        "ShortID": "b97ee998-2050-5fc9-a1af-39e633481e6f",
+                        "NameObject": null
+                    },
+                    "Property": {
+                        "DataChannelType": {
+                            "Type": "Inst",
+                            "UpdateCycle": "1",
+                            "CalculationPeriod": null
+                        },
+                        "Format": {
+                            "Type": "Decimal",
+                            "Restriction": null
+                        },
+                        "Range": null,
+                        "Unit": null,
+                        "QualityCoding": null,
+                        "AlertPriority": null,
+                        "Name": "Propulsion engine | Propulsion engine | temperature scavenge.air",
+                        "Remarks": null
+                    }
+                },
+                {
+                    "DataChannelID": {
+                        "LocalID": "/dnv-v2/vis-3-4a/940.1/F221.6/meta/qty-temperature",
+                        "ShortID": "93a85958-3d9a-5b50-bdc9-76be3d80492a",
+                        "NameObject": null
+                    },
+                    "Property": {
+                        "DataChannelType": {
+                            "Type": "Inst",
+                            "UpdateCycle": "1",
+                            "CalculationPeriod": null
+                        },
+                        "Format": {
+                            "Type": "Decimal",
+                            "Restriction": null
+                        },
+                        "Range": null,
+                        "Unit": null,
+                        "QualityCoding": null,
+                        "AlertPriority": null,
+                        "Name": "Environmental data/Sea water | temperature",
+                        "Remarks": null
+                    }
+                },
+                {
+                    "DataChannelID": {
+                        "LocalID": "/dnv-v2/vis-3-4a/406i/H233/meta/qty-temperature",
+                        "ShortID": "03a5f454-09da-5aed-8daa-7290aab21cf3",
+                        "NameObject": null
+                    },
+                    "Property": {
+                        "DataChannelType": {
+                            "Type": "Inst",
+                            "UpdateCycle": "1",
+                            "CalculationPeriod": null
+                        },
+                        "Format": {
+                            "Type": "Decimal",
+                            "Restriction": null
+                        },
+                        "Range": null,
+                        "Unit": null,
+                        "QualityCoding": null,
+                        "AlertPriority": null,
+                        "Name": "Engine room | temperature",
+                        "Remarks": null
+                    }
+                },
+                {
+                    "DataChannelID": {
+                        "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.63/S206/sec/411.1/C101.31-1/meta/qty-temperature/cnt-fresh.cooling.water/pos-outlet/detail-jacket",
+                        "ShortID": "10fa5f08-7f15-5e85-a9b9-0ec34fdfbb25",
+                        "NameObject": null
+                    },
+                    "Property": {
+                        "DataChannelType": {
+                            "Type": "Inst",
+                            "UpdateCycle": "1",
+                            "CalculationPeriod": null
+                        },
+                        "Format": {
+                            "Type": "Decimal",
+                            "Restriction": null
+                        },
+                        "Range": null,
+                        "Unit": null,
+                        "QualityCoding": null,
+                        "AlertPriority": null,
+                        "Name": "Propulsion engine/Cooling system | Propulsion engine | temperature fresh.cooling.water",
+                        "Remarks": null
+                    }
+                },
+                {
+                    "DataChannelID": {
+                        "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.63/S206/sec/411.1-0/C101.31-2/meta/qty-temperature/cnt-fresh.cooling.water/pos-outlet/detail-jacket",
+                        "ShortID": "546b217a-0ea7-5d2b-bc2a-33126d4ed30a",
+                        "NameObject": null
+                    },
+                    "Property": {
+                        "DataChannelType": {
+                            "Type": "Inst",
+                            "UpdateCycle": "1",
+                            "CalculationPeriod": null
+                        },
+                        "Format": {
+                            "Type": "Decimal",
+                            "Restriction": null
+                        },
+                        "Range": null,
+                        "Unit": null,
+                        "QualityCoding": null,
+                        "AlertPriority": null,
+                        "Name": "Propulsion engine/Cooling system | Propulsion engine | temperature fresh.cooling.water",
+                        "Remarks": null
+                    }
+                },
+                {
+                    "DataChannelID": {
+                        "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.63/S206/sec/411.1-3/C101.31-1/meta/qty-temperature/cnt-fresh.cooling.water/pos-outlet/detail-jacket",
+                        "ShortID": "a092ac3f-89de-5b46-9231-b191b496b82e",
+                        "NameObject": null
+                    },
+                    "Property": {
+                        "DataChannelType": {
+                            "Type": "Inst",
+                            "UpdateCycle": "1",
+                            "CalculationPeriod": null
+                        },
+                        "Format": {
+                            "Type": "Decimal",
+                            "Restriction": null
+                        },
+                        "Range": null,
+                        "Unit": null,
+                        "QualityCoding": null,
+                        "AlertPriority": null,
+                        "Name": "Propulsion engine/Cooling system | Propulsion engine | temperature fresh.cooling.water",
+                        "Remarks": null
+                    }
+                },
+                {
+                    "DataChannelID": {
+                        "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.63/S206/sec/411.1/C101.31-4/meta/qty-temperature/cnt-fresh.cooling.water/pos-outlet/detail-jacket",
+                        "ShortID": "2a22d458-2ac2-56f2-86ee-01b4c753800a",
+                        "NameObject": null
+                    },
+                    "Property": {
+                        "DataChannelType": {
+                            "Type": "Inst",
+                            "UpdateCycle": "1",
+                            "CalculationPeriod": null
+                        },
+                        "Format": {
+                            "Type": "Decimal",
+                            "Restriction": null
+                        },
+                        "Range": null,
+                        "Unit": null,
+                        "QualityCoding": null,
+                        "AlertPriority": null,
+                        "Name": "Propulsion engine/Cooling system | Propulsion engine | temperature fresh.cooling.water",
+                        "Remarks": null
+                    }
+                },
+                {
+                    "DataChannelID": {
+                        "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.63/S206/sec/411.1/C101.31-5/meta/qty-temperature/cnt-fresh.cooling.water/pos-outlet/detail-jacket",
+                        "ShortID": "85cc1394-4e9d-5b1b-bbac-28315ee45279",
+                        "NameObject": null
+                    },
+                    "Property": {
+                        "DataChannelType": {
+                            "Type": "Inst",
+                            "UpdateCycle": "1",
+                            "CalculationPeriod": null
+                        },
+                        "Format": {
+                            "Type": "Decimal",
+                            "Restriction": null
+                        },
+                        "Range": null,
+                        "Unit": null,
+                        "QualityCoding": null,
+                        "AlertPriority": null,
+                        "Name": "Propulsion engine/Cooling system | Propulsion engine | temperature fresh.cooling.water",
+                        "Remarks": null
+                    }
+                },
+                {
+                    "DataChannelID": {
+                        "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.63/S206/sec/411.1/C101.31-6/meta/qty-temperature/cnt-fresh.cooling.water/pos-outlet/detail-jacket",
+                        "ShortID": "de4d5194-212c-5f07-9a02-c819b286f165",
+                        "NameObject": null
+                    },
+                    "Property": {
+                        "DataChannelType": {
+                            "Type": "Inst",
+                            "UpdateCycle": "1",
+                            "CalculationPeriod": null
+                        },
+                        "Format": {
+                            "Type": "Decimal",
+                            "Restriction": null
+                        },
+                        "Range": null,
+                        "Unit": null,
+                        "QualityCoding": null,
+                        "AlertPriority": null,
+                        "Name": "Propulsion engine/Cooling system | Propulsion engine | temperature fresh.cooling.water",
+                        "Remarks": null
+                    }
+                },
+                {
+                    "DataChannelID": {
+                        "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.63/S206/sec/411.1/C101.31-7/meta/qty-temperature/cnt-fresh.cooling.water/pos-outlet/detail-jacket",
+                        "ShortID": "fed584f9-4e87-5cd5-924b-680137838aa5",
+                        "NameObject": null
+                    },
+                    "Property": {
+                        "DataChannelType": {
+                            "Type": "Inst",
+                            "UpdateCycle": "1",
+                            "CalculationPeriod": null
+                        },
+                        "Format": {
+                            "Type": "Decimal",
+                            "Restriction": null
+                        },
+                        "Range": null,
+                        "Unit": null,
+                        "QualityCoding": null,
+                        "AlertPriority": null,
+                        "Name": "Propulsion engine/Cooling system | Propulsion engine | temperature fresh.cooling.water",
+                        "Remarks": null
+                    }
+                },
+                {
+                    "DataChannelID": {
+                        "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.63/S206/sec/411.1/C101.32-1/meta/qty-temperature/pos-outlet",
+                        "ShortID": "9e22d570-fa67-55f6-9bf0-bf926b8bb33a",
+                        "NameObject": null
+                    },
+                    "Property": {
+                        "DataChannelType": {
+                            "Type": "Inst",
+                            "UpdateCycle": "1",
+                            "CalculationPeriod": null
+                        },
+                        "Format": {
+                            "Type": "Decimal",
+                            "Restriction": null
+                        },
+                        "Range": null,
+                        "Unit": null,
+                        "QualityCoding": null,
+                        "AlertPriority": null,
+                        "Name": "Propulsion engine/Cooling system | Propulsion engine | temperature",
+                        "Remarks": null
+                    }
+                },
+                {
+                    "DataChannelID": {
+                        "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.63/S206/sec/411.1/C101.32-2/meta/qty-temperature/pos-outlet",
+                        "ShortID": "0c89f299-017c-5618-87be-ab12a174d410",
+                        "NameObject": null
+                    },
+                    "Property": {
+                        "DataChannelType": {
+                            "Type": "Inst",
+                            "UpdateCycle": "1",
+                            "CalculationPeriod": null
+                        },
+                        "Format": {
+                            "Type": "Decimal",
+                            "Restriction": null
+                        },
+                        "Range": null,
+                        "Unit": null,
+                        "QualityCoding": null,
+                        "AlertPriority": null,
+                        "Name": "Propulsion engine/Cooling system | Propulsion engine | temperature",
+                        "Remarks": null
+                    }
+                },
+                {
+                    "DataChannelID": {
+                        "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.63/S206/sec/411.1/C101.32-3/meta/qty-temperature/pos-outlet",
+                        "ShortID": "3ec547cc-a85c-50b9-8d14-ce8f07de30e7",
+                        "NameObject": null
+                    },
+                    "Property": {
+                        "DataChannelType": {
+                            "Type": "Inst",
+                            "UpdateCycle": "1",
+                            "CalculationPeriod": null
+                        },
+                        "Format": {
+                            "Type": "Decimal",
+                            "Restriction": null
+                        },
+                        "Range": null,
+                        "Unit": null,
+                        "QualityCoding": null,
+                        "AlertPriority": null,
+                        "Name": "Propulsion engine/Cooling system | Propulsion engine | temperature",
+                        "Remarks": null
+                    }
+                },
+                {
+                    "DataChannelID": {
+                        "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.63/S206/sec/411.1/C101.32-4/meta/qty-temperature/pos-outlet",
+                        "ShortID": "ac739544-4e13-52c3-af5c-94573d2a1d28",
+                        "NameObject": null
+                    },
+                    "Property": {
+                        "DataChannelType": {
+                            "Type": "Inst",
+                            "UpdateCycle": "1",
+                            "CalculationPeriod": null
+                        },
+                        "Format": {
+                            "Type": "Decimal",
+                            "Restriction": null
+                        },
+                        "Range": null,
+                        "Unit": null,
+                        "QualityCoding": null,
+                        "AlertPriority": null,
+                        "Name": "Propulsion engine/Cooling system | Propulsion engine | temperature",
+                        "Remarks": null
+                    }
+                },
+                {
+                    "DataChannelID": {
+                        "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.63/S206/sec/411.1/C101.32-5/meta/qty-temperature/pos-outlet",
+                        "ShortID": "56730add-63c5-5edb-8766-1b3253841b9b",
+                        "NameObject": null
+                    },
+                    "Property": {
+                        "DataChannelType": {
+                            "Type": "Inst",
+                            "UpdateCycle": "1",
+                            "CalculationPeriod": null
+                        },
+                        "Format": {
+                            "Type": "Decimal",
+                            "Restriction": null
+                        },
+                        "Range": null,
+                        "Unit": null,
+                        "QualityCoding": null,
+                        "AlertPriority": null,
+                        "Name": "Propulsion engine/Cooling system | Propulsion engine | temperature",
+                        "Remarks": null
+                    }
+                },
+                {
+                    "DataChannelID": {
+                        "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.63/S206/sec/411.1/C101.32-6/meta/qty-temperature/pos-outlet",
+                        "ShortID": "89838df2-41e5-52a8-9722-44dbf06dc89f",
+                        "NameObject": null
+                    },
+                    "Property": {
+                        "DataChannelType": {
+                            "Type": "Inst",
+                            "UpdateCycle": "1",
+                            "CalculationPeriod": null
+                        },
+                        "Format": {
+                            "Type": "Decimal",
+                            "Restriction": null
+                        },
+                        "Range": null,
+                        "Unit": null,
+                        "QualityCoding": null,
+                        "AlertPriority": null,
+                        "Name": "Propulsion engine/Cooling system | Propulsion engine | temperature",
+                        "Remarks": null
+                    }
+                },
+                {
+                    "DataChannelID": {
+                        "LocalID": "/dnv-v2/vis-3-4a/411.1/C101.63/S206/sec/411.1/C101.32-7/meta/qty-temperature/pos-outlet",
+                        "ShortID": "0109f171-faed-55b9-a8eb-abc0490ea52c",
+                        "NameObject": null
+                    },
+                    "Property": {
+                        "DataChannelType": {
+                            "Type": "Inst",
+                            "UpdateCycle": "1",
+                            "CalculationPeriod": null
+                        },
+                        "Format": {
+                            "Type": "Decimal",
+                            "Restriction": null
+                        },
+                        "Range": null,
+                        "Unit": null,
+                        "QualityCoding": null,
+                        "AlertPriority": null,
+                        "Name": "Propulsion engine/Cooling system | Propulsion engine | temperature",
+                        "Remarks": null
+                    }
+                }
+            ]
         }
-      ]
     }
-  }
 }

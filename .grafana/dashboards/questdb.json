@@ -25,10 +25,151 @@
     "editable": true,
     "fiscalYearStartMonth": 0,
     "graphTooltip": 0,
-    "id": 1,
     "links": [],
     "liveNow": false,
     "panels": [
+        {
+            "datasource": {
+                "type": "postgres",
+                "uid": "P996140E50C057FC6"
+            },
+            "description": "",
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "custom": {
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        }
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 0,
+                "y": 0
+            },
+            "id": 4,
+            "options": {
+                "basemap": {
+                    "config": {},
+                    "name": "Layer 0",
+                    "type": "default"
+                },
+                "controls": {
+                    "mouseWheelZoom": true,
+                    "showAttribution": true,
+                    "showDebug": false,
+                    "showScale": false,
+                    "showZoom": true
+                },
+                "layers": [
+                    {
+                        "config": {
+                            "showLegend": true,
+                            "style": {
+                                "color": {
+                                    "fixed": "dark-green"
+                                },
+                                "opacity": 0.4,
+                                "rotation": {
+                                    "fixed": 0,
+                                    "max": 360,
+                                    "min": -360,
+                                    "mode": "mod"
+                                },
+                                "size": {
+                                    "fixed": 5,
+                                    "max": 15,
+                                    "min": 2
+                                },
+                                "symbol": {
+                                    "fixed": "img/icons/marker/circle.svg",
+                                    "mode": "fixed"
+                                },
+                                "textConfig": {
+                                    "fontSize": 12,
+                                    "offsetX": 0,
+                                    "offsetY": 0,
+                                    "textAlign": "center",
+                                    "textBaseline": "middle"
+                                }
+                            }
+                        },
+                        "location": {
+                            "latitude": "latitude",
+                            "longitude": "longitude",
+                            "mode": "coords"
+                        },
+                        "name": "Layer 1",
+                        "tooltip": true,
+                        "type": "markers"
+                    }
+                ],
+                "tooltip": {
+                    "mode": "details"
+                },
+                "view": {
+                    "id": "zero",
+                    "lat": 0,
+                    "lon": 0,
+                    "zoom": 1
+                }
+            },
+            "pluginVersion": "9.0.7",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "postgres",
+                        "uid": "P996140E50C057FC6"
+                    },
+                    "format": "time_series",
+                    "group": [],
+                    "metricColumn": "none",
+                    "rawQuery": true,
+                    "rawSql": "SELECT \r\n  cast(lat.Value as double) as latitude, \r\n  cast(lng.Value as double) as longitude, \r\n  lat.VesselId,\r\n  lat.Timestamp as time\r\nFROM \r\n    (\r\n    SELECT Value, Timestamp, VesselId, DataChannelId\r\n    FROM 'TimeSeries'\r\n    WHERE DataChannelId  = '/dnv-v2/vis-3-4a/710.1/F211.1/meta/qty-latitude'\r\n) lat\r\nINNER JOIN \r\n(\r\n    SELECT Value, Timestamp, VesselId, DataChannelId\r\n    FROM 'TimeSeries'\r\n    WHERE DataChannelId  = '/dnv-v2/vis-3-4a/710.1/F211.1/meta/qty-longitude'\r\n) lng\r\nON lng.VesselId = lat.VesselId\r\nAND lng.Timestamp = lat.Timestamp\r\nWHERE $__timeFilter(lat.TimeStamp)",
+                    "refId": "latitude",
+                    "select": [
+                        [
+                            {
+                                "params": ["value"],
+                                "type": "column"
+                            }
+                        ]
+                    ],
+                    "timeColumn": "time",
+                    "where": [
+                        {
+                            "name": "$__timeFilter",
+                            "params": [],
+                            "type": "macro"
+                        }
+                    ]
+                }
+            ],
+            "title": "Geo",
+            "type": "geomap"
+        },
         {
             "datasource": {
                 "type": "postgres",
@@ -88,7 +229,7 @@
                 "h": 8,
                 "w": 12,
                 "x": 0,
-                "y": 0
+                "y": 8
             },
             "id": 2,
             "interval": "10s",
@@ -103,6 +244,7 @@
                     "sort": "none"
                 }
             },
+            "pluginVersion": "9.0.7",
             "targets": [
                 {
                     "datasource": {
@@ -111,6 +253,7 @@
                     },
                     "format": "time_series",
                     "group": [],
+                    "hide": false,
                     "metricColumn": "none",
                     "rawQuery": true,
                     "rawSql": "SELECT \nt.Timestamp AS time,\navg(CAST(t.value as double)) as average_temperature_lube_oil_inlet\nFROM TimeSeries as t\nINNER JOIN (\nSELECT InternalId, LocalId FROM 'DataChannel' d\n  WHERE d.LocalId_Quantity LIKE '%temperature%'\n  AND d.LocalId_Content = 'lubricating.oil'\n  AND d.LocalId LIKE '%411.1/C101%'\n  AND d.LocalId_Position = 'inlet'\n) d\nON d.LocalId = t.DataChannelId\nWHERE $__timeFilter(t.TimeStamp)\nSAMPLE BY $__interval",
@@ -180,6 +323,6 @@
     "timezone": "",
     "title": "QuestDb",
     "uid": "u7zyoFi4k",
-    "version": 1,
+    "version": 2,
     "weekStart": ""
 }

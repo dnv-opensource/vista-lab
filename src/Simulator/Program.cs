@@ -244,52 +244,59 @@ public class Simulator : IHostedService
                 return true;
             }
 
+            data = (range.Low, range.High, 0.05, false);
+            return true;
+
+            /* CASE SPECIFICS */
+
             // Important that spesific cases are checked first
-            (bool Condition, double NoiseFactor)[] generationCases = new[]
-            {
-                (
-                    localId.Quantity == "pressure"
-                        && localId.Content == "lubricating.oil"
-                        && localId.State == "low"
-                        && localId.Position == "inlet",
-                    0.05
-                ),
-                (
-                    localId.Quantity == "level"
-                        && localId.Content == "diesel.oil"
-                        && localId.State == "high",
-                    0.05
-                ),
-                (
-                    localId.Quantity == "temperature"
-                        && localId.Content == "exhaust.gas"
-                        && localId.Calculation == "deviation",
-                    0.05
-                ),
-                (
-                    localId.Quantity == "pressure"
-                        && localId.Content == "lubricating.oil"
-                        && localId.Position == "inlet",
-                    0.05
-                ),
-                (localId.Quantity == "angle" && localId.Type == "request", 0.05),
-                (localId.Quantity == "temperature", 0.05),
-                (localId.Command == "shut.down", 0.05),
-                (localId.Quantity == "frequency", 0.05),
-                (localId.Quantity == "rotational.frequency", 0.05),
-                (localId.Quantity == "wind.speed.vs.vessel", 0.05),
-            };
+            //(bool Condition, double NoiseFactor)[] generationCases = new[]
+            //{
+            //    (
+            //        localId.Quantity == "pressure"
+            //            && localId.Content == "lubricating.oil"
+            //            && localId.State == "low"
+            //            && localId.Position == "inlet",
+            //        0.05
+            //    ),
+            //    (
+            //        localId.Quantity == "level"
+            //            && localId.Content == "diesel.oil"
+            //            && localId.State == "high",
+            //        0.05
+            //    ),
+            //    (
+            //        localId.Quantity == "temperature"
+            //            && localId.Content == "exhaust.gas"
+            //            && localId.Calculation == "deviation",
+            //        0.05
+            //    ),
+            //    (
+            //        localId.Quantity == "pressure"
+            //            && localId.Content == "lubricating.oil"
+            //            && localId.Position == "inlet",
+            //        0.05
+            //    ),
+            //    (localId.Quantity == "angle" && localId.Type == "request", 0.05),
+            //    (localId.Quantity == "temperature", 0.05),
+            //    (localId.Command == "shut.down", 0.05),
+            //    (localId.Quantity == "frequency", 0.05),
+            //    (localId.Quantity == "rotational.frequency", 0.05),
+            //    (localId.Quantity == "wind.speed.vs.vessel", 0.05),
+            //};
 
-            foreach (var generationCase in generationCases)
-            {
-                if (generationCase.Condition)
-                {
-                    data = (range.Low, range.High, generationCase.NoiseFactor, false);
-                    return true;
-                }
-            }
+            //foreach (var generationCase in generationCases)
+            //{
+            //    if (generationCase.Condition)
+            //    {
+            //        data = (range.Low, range.High, generationCase.NoiseFactor, false);
+            //        return true;
+            //    }
+            //}
 
-            return false;
+
+
+            //return false;
         }
 
         bool TryGetRange(
