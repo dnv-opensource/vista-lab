@@ -4,8 +4,6 @@ using Vista.SDK.Transport.Json.TimeSeriesData;
 using QueryApi.Models;
 using QueryApi.Repository;
 using System.ComponentModel;
-using GeoJSON.Text.Geometry;
-using GeoJSON.Text.Feature;
 using static QueryApi.Repository.DataChannelRepository;
 
 namespace QueryApi.Controllers;
@@ -14,6 +12,12 @@ namespace QueryApi.Controllers;
 public sealed class DataChannelController : ControllerBase
 {
     private readonly DataChannelRepository _dataChannelRepository;
+
+    public sealed record Coordinates(double Latitude, double Longitude);
+
+    public sealed record Geometry(string Type, Coordinates Coordinates);
+
+    public sealed record Feature(Geometry Geometry, FeatureProps Properties, string Type);
 
     public sealed record TimeSeriesRequestDto(
         [property: DefaultValue(
@@ -99,11 +103,24 @@ public sealed class DataChannelController : ControllerBase
     /// <param name="cancellationToken"></param>
     [HttpGet]
     [Route("api/data-channel/time-series/position/latest")]
-    public async Task<ActionResult<IEnumerable<Feature<Point, FeatureProps>>>> GetVesselPositions(
+    public async Task<ActionResult<IEnumerable<Feature>>> GetVesselPositions(
         CancellationToken cancellationToken
     )
     {
         var result = await _dataChannelRepository.GetLatestVesselPositions(cancellationToken);
-        return Ok(result);
+
+        var features = result.Select(
+            r =>
+            {
+                var coordinates = new Coordinates(
+                    r.Geometry.Coordinates.Latitude,
+                    r.Geometry.Coordinates.Longitude
+                );
+                var geometry = new Geometry("Point", coordinates);
+                return new Feature(geometry, r.Properties, "Feature");
+            }
+        );
+
+        return Ok(features);
     }
 }

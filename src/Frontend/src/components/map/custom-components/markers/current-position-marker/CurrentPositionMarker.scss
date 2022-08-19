@@ -1,0 +1,32 @@
+.current-position-marker {
+  $size: 2em;
+  height: $size;
+  width: $size;
+  border-radius: 50%;
+  background-color: #074dff48;
+  border: #074dff74 0.5px solid;
+  transform: translate(-50%, -50%);
+  box-shadow: #60c9e9 2px 2px 40px 0px;
+
+  $inner-size: calc(#{$size} * 0.2);
+  padding: $inner-size;
+
+  .inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    border-radius: 50%;
+
+    &::after {
+      content: '';
+      display: inline-block;
+
+      width: 100%;
+      height: 100%;
+
+      clip-path: circle(40%);
+      background-color: #2ba7d9;
+    }
+  }
+}

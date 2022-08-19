@@ -1,8 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
 export * from './AdditionalTimeSeriesProperties';
-export * from './CRSType';
 export * from './ConfigurationReference';
+export * from './Coordinates';
 export * from './DataChannel';
 export * from './DataChannelFilter';
 export * from './DataChannelID';
@@ -10,16 +10,13 @@ export * from './DataChannelList';
 export * from './DataChannelListPackage';
 export * from './DataChannelType';
 export * from './EventDataSet';
+export * from './Feature';
 export * from './FeatureProps';
 export * from './Format';
-export * from './GeoJSONObjectType';
+export * from './Geometry';
 export * from './Header';
-export * from './ICRSObject';
-export * from './IPosition';
 export * from './NameObject';
 export * from './Package';
-export * from './Point';
-export * from './PointFeaturePropsFeature';
 export * from './Property';
 export * from './Range';
 export * from './Restriction';

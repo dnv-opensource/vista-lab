@@ -233,7 +233,7 @@
         "tags": [
           "DataChannel"
         ],
-        "summary": "Search for time series given a data channel internalId",
+        "summary": "Retreives the latest vessel positions",
         "operationId": "DataChannelGetVesselPositions",
         "responses": {
           "200": {
@@ -243,7 +243,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/PointFeaturePropsFeature"
+                    "$ref": "#/components/schemas/Feature"
                   }
                 }
               },
@@ -251,7 +251,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/PointFeaturePropsFeature"
+                    "$ref": "#/components/schemas/Feature"
                   }
                 }
               },
@@ -259,7 +259,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/PointFeaturePropsFeature"
+                    "$ref": "#/components/schemas/Feature"
                   }
                 }
               }
@@ -391,14 +391,19 @@
         },
         "additionalProperties": false
       },
-      "CRSType": {
-        "enum": [
-          0,
-          1,
-          2
-        ],
-        "type": "integer",
-        "format": "int32"
+      "Coordinates": {
+        "type": "object",
+        "properties": {
+          "latitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
       },
       "DataChannel": {
         "type": "object",
@@ -522,6 +527,21 @@
         },
         "additionalProperties": false
       },
+      "Feature": {
+        "type": "object",
+        "properties": {
+          "geometry": {
+            "$ref": "#/components/schemas/Geometry"
+          },
+          "properties": {
+            "$ref": "#/components/schemas/FeatureProps"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
       "FeatureProps": {
         "type": "object",
         "properties": {
@@ -547,20 +567,17 @@
         },
         "additionalProperties": false
       },
-      "GeoJSONObjectType": {
-        "enum": [
-          0,
-          1,
-          2,
-          3,
-          4,
-          5,
-          6,
-          7,
-          8
-        ],
-        "type": "integer",
-        "format": "int32"
+      "Geometry": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "coordinates": {
+            "$ref": "#/components/schemas/Coordinates"
+          }
+        },
+        "additionalProperties": false
       },
       "Header": {
         "type": "object",
@@ -586,37 +603,6 @@
         },
         "additionalProperties": { }
       },
-      "ICRSObject": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "$ref": "#/components/schemas/CRSType"
-          }
-        },
-        "additionalProperties": false
-      },
-      "IPosition": {
-        "type": "object",
-        "properties": {
-          "altitude": {
-            "type": "number",
-            "format": "double",
-            "nullable": true,
-            "readOnly": true
-          },
-          "latitude": {
-            "type": "number",
-            "format": "double",
-            "readOnly": true
-          },
-          "longitude": {
-            "type": "number",
-            "format": "double",
-            "readOnly": true
-          }
-        },
-        "additionalProperties": false
-      },
       "NameObject": {
         "type": "object",
         "properties": {
@@ -634,59 +620,6 @@
           },
           "DataChannelList": {
             "$ref": "#/components/schemas/DataChannelList"
-          }
-        },
-        "additionalProperties": false
-      },
-      "Point": {
-        "type": "object",
-        "properties": {
-          "bbox": {
-            "type": "array",
-            "items": {
-              "type": "number",
-              "format": "double"
-            },
-            "nullable": true
-          },
-          "crs": {
-            "$ref": "#/components/schemas/ICRSObject"
-          },
-          "type": {
-            "$ref": "#/components/schemas/GeoJSONObjectType"
-          },
-          "coordinates": {
-            "$ref": "#/components/schemas/IPosition"
-          }
-        },
-        "additionalProperties": false
-      },
-      "PointFeaturePropsFeature": {
-        "type": "object",
-        "properties": {
-          "bbox": {
-            "type": "array",
-            "items": {
-              "type": "number",
-              "format": "double"
-            },
-            "nullable": true
-          },
-          "crs": {
-            "$ref": "#/components/schemas/ICRSObject"
-          },
-          "type": {
-            "$ref": "#/components/schemas/GeoJSONObjectType"
-          },
-          "id": {
-            "type": "string",
-            "nullable": true
-          },
-          "geometry": {
-            "$ref": "#/components/schemas/Point"
-          },
-          "properties": {
-            "$ref": "#/components/schemas/FeatureProps"
           }
         },
         "additionalProperties": false

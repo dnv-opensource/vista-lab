@@ -43,22 +43,19 @@ partial class DataChannelRepository
         var props = new List<AdditionalTimeSeriesProperties>();
         for (int i = 0; i < response.Count; i++)
         {
-            float? rangeHigh = response
+            var rangeHigh = response
                 .GetValue(i, nameof(DataChannelEntity.Range_High))
-                .TryGetDouble(out var rh)
-              ? (float)rh
-              : null;
-            float? rangeLow = response
+                .GetDoubleOrNull();
+
+            var rangeLow = response
                 .GetValue(i, nameof(DataChannelEntity.Range_Low))
-                .TryGetDouble(out var rl)
-              ? (float)rl
-              : null;
+                .GetDoubleOrNull();
 
             var additionalProps = new AdditionalTimeSeriesProperties(
                 response.GetValue(i, nameof(DataChannelEntity.Unit_UnitSymbol)).GetString(),
                 response.GetValue(i, nameof(DataChannelEntity.Unit_QuantityName)).GetString(),
-                rangeHigh,
-                rangeLow,
+                (float?)rangeHigh,
+                (float?)rangeLow,
                 response.GetValue(i, nameof(DataChannelEntity.Name)).GetString(),
                 response.GetValue(i, nameof(DataChannelEntity.VesselId)).GetString()
             );

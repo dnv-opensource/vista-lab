@@ -13,42 +13,42 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import {
-    CRSType,
-    CRSTypeFromJSON,
-    CRSTypeFromJSONTyped,
-    CRSTypeToJSON,
-} from './CRSType';
-
 /**
  * 
  * @export
- * @interface ICRSObject
+ * @interface Coordinates
  */
-export interface ICRSObject {
+export interface Coordinates {
     /**
      * 
-     * @type {CRSType}
-     * @memberof ICRSObject
+     * @type {number}
+     * @memberof Coordinates
      */
-    type?: CRSType;
+    latitude?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Coordinates
+     */
+    longitude?: number;
 }
 
-export function ICRSObjectFromJSON(json: any): ICRSObject {
-    return ICRSObjectFromJSONTyped(json, false);
+export function CoordinatesFromJSON(json: any): Coordinates {
+    return CoordinatesFromJSONTyped(json, false);
 }
 
-export function ICRSObjectFromJSONTyped(json: any, ignoreDiscriminator: boolean): ICRSObject {
+export function CoordinatesFromJSONTyped(json: any, ignoreDiscriminator: boolean): Coordinates {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
-        'type': !exists(json, 'type') ? undefined : CRSTypeFromJSON(json['type']),
+        'latitude': !exists(json, 'latitude') ? undefined : json['latitude'],
+        'longitude': !exists(json, 'longitude') ? undefined : json['longitude'],
     };
 }
 
-export function ICRSObjectToJSON(value?: ICRSObject | null): any {
+export function CoordinatesToJSON(value?: Coordinates | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -57,7 +57,8 @@ export function ICRSObjectToJSON(value?: ICRSObject | null): any {
     }
     return {
         
-        'type': CRSTypeToJSON(value.type),
+        'latitude': value.latitude,
+        'longitude': value.longitude,
     };
 }
 

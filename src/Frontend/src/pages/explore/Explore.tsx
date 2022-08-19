@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Outlet, useSearchParams } from 'react-router-dom';
+import MapContainer from '../../components/explore/map/MapContainer';
 import SearchBar from '../../components/explore/search-bar/SearchBar';
 import { useExploreContext } from '../../context/ExploreContext';
 import { isNullOrWhitespace } from '../../util/string';
@@ -32,6 +33,7 @@ const Explore: React.FC = () => {
   return (
     <div className={'vista-explore'}>
       <SearchBar text={queryParam} onSubmit={handleSearchSubmit} loading={loading} />
+      <MapContainer />
       <Outlet />
     </div>
   );
