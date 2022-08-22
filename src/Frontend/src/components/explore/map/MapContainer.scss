@@ -1,9 +1,38 @@
-.vista-map-container {
+@import 'src/styles/global';
+
+.vista-map-wrapper {
   position: absolute;
   bottom: 4%;
   left: 4%;
-  width: 16em;
-  height: 11em;
+
   border-radius: 0.5em;
   overflow: hidden;
+
+  &.collapsed {
+    box-shadow: $intense-drop-shadow;
+  }
+
+  svg {
+    &:focus {
+      outline: unset;
+    }
+  }
+
+  .visible-map-container {
+    position: relative;
+    width: 16em;
+    height: 11em;
+
+    .collapse-map-icon {
+      position: absolute;
+      z-index: 100000;
+      right: 0.3em;
+      top: 0.3em;
+    }
+  }
+
+  .collapsed-map-container {
+    background-color: white;
+    padding: 0.5em;
+  }
 }

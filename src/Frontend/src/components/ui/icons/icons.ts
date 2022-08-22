@@ -11,8 +11,10 @@ import {
   faFilter,
   faHashtag,
   faMagnifyingGlass,
+  faMap,
   faMapMarker,
   faMicrochip,
+  faMinus,
   faRss,
   fas,
   faShip,
@@ -20,6 +22,7 @@ import {
   faStream,
   faTag,
   faTimes,
+  faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
@@ -43,7 +46,10 @@ library.add(
   faBars,
   faStream,
   faMicrochip,
-  faCrosshairs
+  faCrosshairs,
+  faMap,
+  faMinus,
+  faXmark
 );
 
 // Make sure these correspond with FontAwsome v6.1 icon names
@@ -66,6 +72,9 @@ export enum IconName {
   Bars = 'bars',
   Stream = 'stream',
   Crosshairs = 'crosshairs',
+  Map = 'map',
+  Minus = 'minus',
+  XMark = 'xmark',
 }
 
 export enum IconVariant {
