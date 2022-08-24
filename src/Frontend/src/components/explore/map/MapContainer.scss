@@ -1,4 +1,5 @@
 @import 'src/styles/global';
+@import 'src/styles/colors';
 
 .vista-map-wrapper {
   position: absolute;
@@ -34,5 +35,11 @@
   .collapsed-map-container {
     background-color: white;
     padding: 0.5em;
+    cursor: pointer;
+
+    &:hover {
+      background-color: $dark-blue;
+      color: $white;
+    }
   }
 }

@@ -63,8 +63,8 @@ const MapContainer: React.FC = () => {
           <Map featureCollection={features} />
         </div>
       ) : (
-        <div className={'collapsed-map-container'}>
-          {<Icon icon={IconName.Map} onClick={() => setVisible(true)} />}
+        <div className={'collapsed-map-container'} onClick={() => setVisible(true)}>
+          {<Icon icon={IconName.Map} />}
         </div>
       )}
     </div>,
