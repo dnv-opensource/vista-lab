@@ -5,8 +5,7 @@ import { IconName } from '../icons/icons';
 import Text from './Text';
 import './Text.scss';
 
-interface Props {
-  className?: string;
+interface Props extends React.HTMLAttributes<HTMLDivElement> {
   iconClassName?: string;
   iconLast?: boolean;
   icon: IconName;
@@ -18,6 +17,7 @@ const TextWithIcon: React.FC<React.PropsWithChildren<Props>> = ({
   icon,
   iconClassName,
   className,
+  ...restProps
 }) => {
   const renderIcon = useCallback(() => {
     const childComp = <Text>{children}</Text>;
@@ -39,7 +39,11 @@ const TextWithIcon: React.FC<React.PropsWithChildren<Props>> = ({
     }
   }, [iconLast, children, icon, iconClassName]);
 
-  return <div className={clsx('ui-text-with-icon-wrapper', className)}>{renderIcon()}</div>;
+  return (
+    <div {...restProps} className={clsx('ui-text-with-icon-wrapper', className)}>
+      {renderIcon()}
+    </div>
+  );
 };
 
 export default TextWithIcon;

@@ -1,0 +1,11 @@
+@import 'src/styles/colors';
+@import 'src/styles/global';
+.ui-dropdown {
+  position: absolute;
+  background-color: $white;
+  border-radius: 0.2em;
+  overflow: hidden;
+
+  box-shadow: $intense-drop-shadow;
+  border: $drop-shadow-border;
+}

@@ -1,20 +1,21 @@
 import clsx from 'clsx';
 import React, { useRef } from 'react';
 import { IconName, IconVariant } from './icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon, FontAwesomeIconProps } from '@fortawesome/react-fontawesome';
 import './Icon.scss';
 
-interface Props {
+interface Props extends FontAwesomeIconProps {
   icon: IconName;
   variant?: IconVariant;
   className?: string;
   onClick?: React.MouseEventHandler<SVGSVGElement>;
 }
 
-const Icon: React.FC<Props> = ({ icon, variant = IconVariant.Solid, className, onClick }) => {
+const Icon: React.FC<Props> = ({ icon, variant = IconVariant.Solid, className, onClick, ...restProps }) => {
   const iconRef = useRef<SVGSVGElement>(null);
   return (
     <FontAwesomeIcon
+      {...restProps}
       id="ui-icon-component"
       ref={iconRef}
       className={clsx('ui-icon', onClick && 'clickable', className)}

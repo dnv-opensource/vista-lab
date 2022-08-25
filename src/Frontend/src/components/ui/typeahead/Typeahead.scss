@@ -1,0 +1,29 @@
+@import 'src/styles/colors';
+
+.ui-typeahead-options {
+  font-size: 0.8em;
+
+  .ui-typeahead-option {
+    cursor: pointer;
+    display: flex;
+    padding: 0.5em 0.8em;
+
+    &:hover {
+      background-color: $bg-grey;
+    }
+
+    & > * {
+      word-wrap: break-word;
+    }
+
+    .ui-typeahead-name {
+      color: $grey;
+      flex: 0.3;
+    }
+
+    .ui-typeahead-value {
+      word-break: break-all;
+      flex: 0.8;
+    }
+  }
+}

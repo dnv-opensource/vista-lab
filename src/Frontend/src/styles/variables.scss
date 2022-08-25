@@ -31,3 +31,20 @@
   -webkit-user-select: none;
   -ms-user-select: none;
 }
+
+@mixin withResponsiveHeightToWidthScale($relativeHeight: 100%) {
+  position: relative;
+  &::before {
+    content: '';
+    display: block;
+    padding-bottom: $relativeHeight;
+  }
+
+  & > * {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+}

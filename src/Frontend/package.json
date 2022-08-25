@@ -12,6 +12,7 @@
     "@types/react-dom": "^18.0.6",
     "clsx": "^1.2.1",
     "leaflet": "^1.8.0",
+    "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-leaflet": "^4.0.1",
@@ -53,7 +54,8 @@
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@openapitools/openapi-generator-cli": "^2.5.1",
     "@types/leaflet": "^1.7.11",
+    "@types/lodash": "^4.14.184",
     "babel-plugin-macros": "^3.1.0",
-    "dnv-vista-sdk": "^0.0.1-preview-80"
+    "dnv-vista-sdk": "^0.0.1-preview-87"
   }
 }
