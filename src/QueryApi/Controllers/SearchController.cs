@@ -50,14 +50,14 @@ public sealed class SearchController : ControllerBase
 
     public enum SearchScope
     {
-        All,
-        Equipment,
-        Consequence
+        Any,
+        PrimaryItem,
+        SecondaryItem
     }
 
     public sealed record SearchRequestDto(
         [property: DefaultValue("Main engine")] string? Phrase,
-        [property: DefaultValue(SearchScope.All)] SearchScope? Scope
+        [property: DefaultValue(SearchScope.Any)] SearchScope? Scope
     );
 
     /// <summary>
@@ -90,13 +90,13 @@ public sealed class SearchController : ControllerBase
         {
             switch (body.Scope)
             {
-                case SearchScope.Equipment:
+                case SearchScope.PrimaryItem:
                     filter.PrimaryItem = searchApiResultDto.Hits!
                         .Select(h => h.Document!.LocalId_PrimaryItem!)
                         .Where(p => p is not null)
                         .ToArray();
                     break;
-                case SearchScope.Consequence:
+                case SearchScope.SecondaryItem:
                     filter.SecondaryItem = searchApiResultDto.Hits!
                         .Select(h => h.Document!.LocalId_SecondaryItem!)
                         .Where(p => p is not null)

@@ -25,7 +25,11 @@ const Explore: React.FC = () => {
 
   const handleSearchSubmit = useCallback(
     (value: string) => {
-      setSearchParam(!isNullOrWhitespace(value) ? [['query', value]] : []);
+      if (!isNullOrWhitespace(value)) {
+        const current = new URLSearchParams(window.location.search);
+        current.set('query', value);
+        setSearchParam(current);
+      }
     },
     [setSearchParam]
   );

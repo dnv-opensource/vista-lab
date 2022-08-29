@@ -8,7 +8,8 @@ import {
   VIS,
   VisVersion,
 } from 'dnv-vista-sdk';
-import React, { createContext, useCallback, useState } from 'react';
+import React, { createContext, useCallback, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { VistaLabApi } from '../apiConfig';
 import { DataChannelListPackage } from '../client/models/DataChannelListPackage';
 import { VesselMode } from '../pages/explore/vessel/Vessel';
@@ -22,7 +23,7 @@ export type ExploreContextType = {
   getUniversalIdsFromGmodPath: (path: GmodPath) => UniversalId[];
   universalIds: UniversalId[] | undefined;
   mode: VesselMode;
-  setMode: React.Dispatch<React.SetStateAction<VesselMode>>;
+  setMode: (value: VesselMode) => void;
 };
 
 type ExploreContextProviderProps = React.PropsWithChildren<{}>;
@@ -33,7 +34,13 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
   const [universalIds, setUniversalIds] = useState<UniversalId[]>();
   const { visVersion } = useVISContext();
   const [dataChannelListPackages, setDataChannelListPackages] = useState<DataChannelListPackage[]>();
-  const [mode, setMode] = useState<VesselMode>(VesselMode.All);
+  const [searchParams, setSearchParam] = useSearchParams();
+  const mode: VesselMode = useMemo(() => searchParams.get('mode') as VesselMode | null ?? VesselMode.Any, [searchParams]);
+  const setMode = useCallback((value: VesselMode) => {
+    const current = new URLSearchParams(window.location.search);
+    current.set('mode', value);
+    setSearchParam(current);
+  }, [setSearchParam]);
 
   const fetchFilteredDataChannels = useCallback(
     async (query?: string) => {
@@ -41,9 +48,15 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
 
       if (clientVersion === -1) throw new Error('ExploreContext: Invalid VisVersion');
 
+      const scope = {
+        [VesselMode.Any]: 0,
+        [VesselMode.PrimaryItem]: 1,
+        [VesselMode.SecondaryItem]: 2,
+      }[mode];
+
       const request = {
         visVersion: clientVersion,
-        searchRequestDto: { scope: +mode, phrase: query ?? '' },
+        searchRequestDto: { scope: scope, phrase: query ?? '' },
       };
       const response = await VistaLabApi.SearchApi.searchSearch(request);
 
@@ -74,16 +87,30 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
           .build()
       );
 
-      universalIds && setUniversalIds(universalIds);
+      let pmod: Pmod | undefined = undefined;
+      if (universalIds) {
+        setUniversalIds(universalIds);
+        if (mode === VesselMode.Any) {
+          pmod = Pmod.createFromLocalIds(
+              visVersion,
+              universalIds.map(u => u.localId)
+          );
+        }
+        else  {
+          const paths = mode === VesselMode.PrimaryItem ?
+            universalIds.map(i => i.localId.primaryItem as GmodPath) :
+            universalIds.filter(i => i.localId.secondaryItem).map(i => i.localId.secondaryItem as GmodPath);
+
+          pmod = Pmod.createFromPaths(visVersion, paths);
+        }
+      }
+
       return (
         universalIds &&
-        Pmod.createFromLocalIds(
-          visVersion,
-          universalIds.map(u => u.localId)
-        )
+        pmod
       );
     },
-    [dataChannelListPackages, visVersion]
+    [dataChannelListPackages, visVersion, mode]
   );
 
   const getUniversalIdsFromGmodPath = useCallback(
@@ -93,10 +120,10 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
           const localId = universalId.localId;
           const items: (GmodPath | undefined)[] = [];
           switch (mode) {
-            case VesselMode.Equipment:
+            case VesselMode.PrimaryItem:
               items.push(localId.primaryItem);
               break;
-            case VesselMode.Consequence:
+            case VesselMode.SecondaryItem:
               items.push(localId.secondaryItem);
               break;
             default:

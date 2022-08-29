@@ -20,9 +20,9 @@ export type Vessel = {
 };
 
 export enum VesselMode {
-  All = 0,
-  Equipment = 1,
-  Consequence = 2,
+  Any = 'Any',
+  PrimaryItem = 'Primary item',
+  SecondaryItem = 'Secondary item',
 }
 
 const VesselComp: React.FC = () => {
@@ -40,7 +40,7 @@ const VesselComp: React.FC = () => {
   }, [vesselId, getVmodForVessel, setLoading, setVmod]);
 
   useEffect(() => {
-    return () => setMode(VesselMode.All);
+    return () => setMode(VesselMode.Any);
   }, [setMode]);
 
   return (
@@ -59,12 +59,11 @@ const VesselComp: React.FC = () => {
         <RadioSelection
           className={'mode-selection'}
           options={Object.entries(VesselMode)
-            .filter(([k, _]) => isNaN(+k))
-            .map(([key, index]) => ({ index: +index, label: key }))}
+            .map((k, i) => ({ index: i, label: k[1] }))}
           onChange={option => {
-            setMode(option.index);
+            setMode(option.label as VesselMode);
           }}
-          selectedOption={{ index: mode, label: VesselMode[mode] }}
+          selectedOption={{ index: Object.values(VesselMode).indexOf(mode), label: mode }}
         />
         {loading ? <Loader /> : vmod ? <GmodViewer pmod={vmod} /> : <span>No available nodes</span>}
       </ScrollableField>
