@@ -9,7 +9,7 @@ export enum ButtonType {
   Danger = 'danger',
 }
 
-export interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'type'> {
   type?: ButtonType;
 }
 

@@ -1,0 +1,55 @@
+@import 'src/styles/colors';
+@import 'src/styles/variables';
+@import 'src/styles/global';
+.panel-nav-bar {
+  color: $placeholder-grey;
+
+  .back {
+    cursor: pointer;
+    display: flex;
+    gap: 0 5px;
+    align-items: center;
+  }
+}
+
+.vista-panel-container-grid {
+  height: 100%;
+  width: 100%;
+
+  display: grid;
+
+  grid-template:
+    'dc dc sel sel sel' 1fr
+    'gr gr gr gr gr' 1fr / 1fr 1fr 1fr 1fr 1fr;
+  gap: 0.4em;
+
+  .item {
+    border-radius: 0.2em;
+    background-color: $white;
+    border: $drop-shadow-border;
+    box-shadow: $drop-shadow;
+
+    &:not(.panel-result-graph-wrapper) {
+      padding: 0.6em;
+    }
+  }
+
+  .available-data-channels {
+    overflow-y: hidden;
+    grid-area: dc;
+  }
+
+  .panel-result-graph-wrapper {
+    grid-area: gr;
+    .panel-graph {
+      height: 95%;
+      width: 100%;
+    }
+    // @include withResponsiveHeightToWidthScale(45%);
+  }
+
+  .query-selection {
+    overflow-y: hidden;
+    grid-area: sel;
+  }
+}

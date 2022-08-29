@@ -1,0 +1,6 @@
+.panels-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(20em, 1fr));
+  gap: 1em;
+  padding: 1em 0;
+}

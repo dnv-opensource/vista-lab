@@ -11,7 +11,7 @@ export type TypeaheadOption<T> = {
   option: T;
 };
 
-interface Props<T> extends InputProps {
+export interface TypeaheadProps<T> extends InputProps {
   options: T[];
   formatter: (option: T) => TypeaheadOption<T>;
   onSelectedOption: (option: T) => void;
@@ -27,7 +27,7 @@ const Typeahead = <T,>({
   className,
   optionsClassName,
   ...inputProps
-}: Props<T>) => {
+}: TypeaheadProps<T>) => {
   const inputRef = useRef<HTMLDivElement>(null);
   const [showOptions, setShowOptions] = useState(false);
   const [value, setInputValue] = useState<InputTypes>('');
@@ -37,6 +37,14 @@ const Typeahead = <T,>({
       onChange ? onChange(e) : setInputValue(e?.currentTarget.value || '');
     },
     [onChange, setInputValue]
+  );
+
+  const onOptionSelection = useCallback(
+    (option: T) => {
+      setShowOptions(false);
+      onSelectedOption(option);
+    },
+    [onSelectedOption]
   );
 
   useEffect(() => {
@@ -73,12 +81,16 @@ const Typeahead = <T,>({
           setOpen={setShowOptions}
           fitAnchor
         >
-          {filteredOptions.map(o => (
-            <div key={o.value} className={'ui-typeahead-option'} onClick={() => onSelectedOption(o.option)}>
-              {showNames && <p className={'ui-typeahead-name'}>{o.name}</p>}
-              <p className={'ui-typeahead-value'}>{o.value}</p>
-            </div>
-          ))}
+          {filteredOptions.length > 0 ? (
+            filteredOptions.map(o => (
+              <div key={o.value} className={'ui-typeahead-option'} onClick={() => onOptionSelection(o.option)}>
+                {showNames && <p className={'ui-typeahead-name'}>{o.name}</p>}
+                <p className={'ui-typeahead-value'}>{o.value}</p>
+              </div>
+            ))
+          ) : (
+            <p className={'no-options-available'}>No available options</p>
+          )}
         </Dropdown>
       )}
     </>

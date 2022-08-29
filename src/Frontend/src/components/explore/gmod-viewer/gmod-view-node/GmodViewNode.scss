@@ -45,6 +45,10 @@
     .data-channels {
       padding-bottom: 0.1em;
       animation: slidein 0.2s ease;
+
+      .data-channel-card-wrapper {
+        position: relative;
+      }
     }
 
     @keyframes slidein {

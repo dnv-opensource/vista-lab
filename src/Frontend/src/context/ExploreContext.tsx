@@ -1,4 +1,13 @@
-import { GmodPath, LocalId, Pmod, VIS, VisVersion } from 'dnv-vista-sdk';
+import {
+  GmodPath,
+  ImoNumber,
+  LocalIdBuilder,
+  Pmod,
+  UniversalId,
+  UniversalIdBuilder,
+  VIS,
+  VisVersion,
+} from 'dnv-vista-sdk';
 import React, { createContext, useCallback, useState } from 'react';
 import { VistaLabApi } from '../apiConfig';
 import { DataChannelListPackage } from '../client/models/DataChannelListPackage';
@@ -9,9 +18,9 @@ export type ExploreContextType = {
   dataChannelListPackages?: DataChannelListPackage[];
   setDataChannelListPackages: React.Dispatch<React.SetStateAction<DataChannelListPackage[] | undefined>>;
   fetchFilteredDataChannels: (query?: string) => Promise<DataChannelListPackage[]>;
-  getVmodForVessel: (vesselId?: string) => Promise<Pmod | undefined>;
-  getLocalIdsFromGmodPath: (path: GmodPath) => LocalId[];
-  localIds: LocalId[] | undefined;
+  getVmodForVessel: (vesselId: string) => Promise<Pmod | undefined>;
+  getUniversalIdsFromGmodPath: (path: GmodPath) => UniversalId[];
+  universalIds: UniversalId[] | undefined;
   mode: VesselMode;
   setMode: React.Dispatch<React.SetStateAction<VesselMode>>;
 };
@@ -21,7 +30,7 @@ type ExploreContextProviderProps = React.PropsWithChildren<{}>;
 const ExploreContext = createContext<ExploreContextType | undefined>(undefined);
 
 const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
-  const [localIds, setLocalIds] = useState<LocalId[]>();
+  const [universalIds, setUniversalIds] = useState<UniversalId[]>();
   const { visVersion } = useVISContext();
   const [dataChannelListPackages, setDataChannelListPackages] = useState<DataChannelListPackage[]>();
   const [mode, setMode] = useState<VesselMode>(VesselMode.All);
@@ -44,7 +53,11 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
   );
 
   const getVmodForVessel = useCallback(
-    async (vesselId?: string): Promise<Pmod | undefined> => {
+    async (vesselId: string): Promise<Pmod | undefined> => {
+      const vesselImoNr = +(/\d+/.exec(vesselId)?.[0] ?? '');
+      if (isNaN(vesselImoNr)) throw new Error('Invalid vesselId');
+      const imo = new ImoNumber(vesselImoNr);
+
       const dclp = dataChannelListPackages?.find(dclp => dclp._package?.header?.shipID === vesselId)?._package;
       if (!dclp) return;
 
@@ -54,20 +67,30 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
       const gmod = await VIS.instance.getGmod(visVersion);
       const codebooks = await VIS.instance.getCodebooks(visVersion);
 
-      const localIds = dclp.dataChannelList?.dataChannel?.map(dc =>
-        LocalId.parse(dc.dataChannelID?.localID!, gmod, codebooks)
+      const universalIds = dclp.dataChannelList?.dataChannel?.map(dc =>
+        UniversalIdBuilder.create(visVersion)
+          .withLocalId(LocalIdBuilder.parse(dc.dataChannelID?.localID!, gmod, codebooks))
+          .withImoNumber(imo)
+          .build()
       );
 
-      localIds && setLocalIds(localIds);
-      return localIds && Pmod.createFromLocalIds(visVersion, localIds);
+      universalIds && setUniversalIds(universalIds);
+      return (
+        universalIds &&
+        Pmod.createFromLocalIds(
+          visVersion,
+          universalIds.map(u => u.localId)
+        )
+      );
     },
     [dataChannelListPackages, visVersion]
   );
 
-  const getLocalIdsFromGmodPath = useCallback(
-    (path: GmodPath): LocalId[] => {
+  const getUniversalIdsFromGmodPath = useCallback(
+    (path: GmodPath): UniversalId[] => {
       return (
-        localIds?.filter(localId => {
+        universalIds?.filter(universalId => {
+          const localId = universalId.localId;
           const items: (GmodPath | undefined)[] = [];
           switch (mode) {
             case VesselMode.Equipment:
@@ -87,7 +110,7 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
         }) ?? []
       );
     },
-    [localIds, mode]
+    [universalIds, mode]
   );
 
   return (
@@ -97,8 +120,8 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
         setDataChannelListPackages,
         fetchFilteredDataChannels,
         getVmodForVessel,
-        getLocalIdsFromGmodPath,
-        localIds,
+        getUniversalIdsFromGmodPath,
+        universalIds,
         mode,
         setMode,
       }}

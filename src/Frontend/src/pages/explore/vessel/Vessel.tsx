@@ -32,6 +32,7 @@ const VesselComp: React.FC = () => {
   const [vmod, setVmod] = useState<Pmod>();
 
   useEffect(() => {
+    if (!vesselId) return;
     setLoading(true);
     getVmodForVessel(vesselId)
       .then(setVmod)

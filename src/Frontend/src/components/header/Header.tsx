@@ -4,7 +4,6 @@ import { Link, NavLink } from 'react-router-dom';
 import { routesList } from '../../pages/Routes';
 import clsx from 'clsx';
 import TextWithIcon from '../ui/text/TextWithIcon';
-import { IconName } from '../ui/icons/icons';
 
 const Header: React.FC = () => {
   return (
@@ -17,7 +16,7 @@ const Header: React.FC = () => {
             to={route.path}
             className={({ isActive }) => clsx('route', isActive && 'active-route')}
           >
-            <TextWithIcon icon={IconName.Search} iconClassName="route-icon">
+            <TextWithIcon icon={route.icon} iconClassName="route-icon">
               {route.title}
             </TextWithIcon>
           </NavLink>

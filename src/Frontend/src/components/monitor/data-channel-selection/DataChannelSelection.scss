@@ -1,0 +1,44 @@
+@import 'src/styles/global';
+@import 'src/styles/colors';
+
+.data-channel-selection {
+  margin-top: 0.5em;
+  .data-channel-card-wrapper {
+    font-size: 0.7em;
+  }
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.3em;
+  height: 90%;
+
+  .dc-id-card {
+    font-size: 0.8em;
+    padding: 0.3em 0.6em;
+    border-radius: 0.1em;
+    box-shadow: $drop-shadow;
+    border: $drop-shadow-border;
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5em;
+
+    .dc-items-wrapper {
+      flex: 0.3;
+      word-break: break-word;
+    }
+
+    .dc-metadata-wrapper {
+      flex: 0.7;
+      .metadata-tag {
+        display: flex;
+        justify-content: space-between;
+
+        gap: 0.2em;
+        .meta-tag {
+          font-size: 0.7em;
+          color: $grey;
+        }
+      }
+    }
+  }
+}

@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Icon from '../icons/Icon';
 import { IconName } from '../icons/icons';
 import Loader from '../loader/Loader';
@@ -9,13 +9,28 @@ export type InputTypes = string | number | undefined;
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   icon?: IconName;
+  iconLast?: boolean;
   value?: InputTypes;
   loadingResult?: boolean;
   onChange?: (e?: React.ChangeEvent<HTMLInputElement>) => void;
+  hideClearIcon?: boolean;
 }
 
 const Input = React.forwardRef<HTMLDivElement, InputProps>(
-  ({ icon, className, value: inputValue, onChange: onInputChange, loadingResult = false, ...restProps }, ref) => {
+  (
+    {
+      icon,
+      className,
+      value: inputValue,
+      onChange: onInputChange,
+      loadingResult = false,
+      iconLast,
+      hideClearIcon = false,
+      ...restProps
+    },
+    ref
+  ) => {
+    const inputRef = useRef<HTMLInputElement>(null);
     const [value, setValue] = useState<InputTypes>();
 
     useEffect(() => {
@@ -36,19 +51,32 @@ const Input = React.forwardRef<HTMLDivElement, InputProps>(
 
     const isEmpty = useMemo(() => value === undefined || (typeof value === 'string' && value.length === 0), [value]);
 
+    const iconComp = icon && (
+      <Icon
+        icon={icon}
+        className="input-icon"
+        onClick={() => {
+          inputRef?.current?.focus();
+        }}
+      />
+    );
+
     return (
       <div className={clsx('ui-input', isEmpty && 'empty', className)} ref={ref}>
-        {icon && <Icon icon={icon} className="input-icon" />}
-        <input value={value ?? ''} onChange={onChange} {...restProps} />
+        {!iconLast && iconComp}
+        <input {...restProps} ref={inputRef} value={value ?? ''} onChange={onChange} />
         {!loadingResult ? (
-          <Icon
-            icon={IconName.Times}
-            className={clsx('cancel-icon', isEmpty && 'empty')}
-            onClick={() => onChange(undefined)}
-          />
+          !hideClearIcon && (
+            <Icon
+              icon={IconName.Times}
+              className={clsx('cancel-icon', isEmpty && 'empty')}
+              onClick={() => onChange(undefined)}
+            />
+          )
         ) : (
           <Loader />
         )}
+        {iconLast && iconComp}
       </div>
     );
   }

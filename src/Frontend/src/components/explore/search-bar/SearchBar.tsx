@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { ReactComponent as VistaBrandmark } from '../../../assets/Vista_Brandmark_COLOUR.svg';
 import { IconName } from '../../ui/icons/icons';
 import Input from '../../ui/input/Input';
 import './SearchBar.scss';
@@ -19,7 +18,6 @@ const SearchBar: React.FC<Props> = ({ text, onSubmit, loading }) => {
 
   return (
     <div className={'search-bar'}>
-      <VistaBrandmark className="vista-brandmark" />
       <form
         className={'input-form'}
         onSubmit={e => {

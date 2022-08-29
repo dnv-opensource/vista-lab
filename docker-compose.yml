@@ -150,5 +150,6 @@ services:
             password: admin
             QDB_PG_PASSWORD: "Password1"
             QDB_PG_USER: "sa"
+            GF_SECURITY_ALLOW_EMBEDDING: "true"
 volumes:
     grafana-storage:

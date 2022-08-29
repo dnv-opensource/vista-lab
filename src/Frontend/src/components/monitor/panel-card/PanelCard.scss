@@ -1,0 +1,128 @@
+@import 'src/styles/global';
+@import 'src/styles/colors';
+
+// Card
+.panel-card {
+  position: relative;
+  box-shadow: $drop-shadow;
+  border-radius: 0.2em;
+  height: fit-content;
+
+  background-color: white;
+
+  .panel-header {
+    border-radius: 0.2em 0.2em 0 0;
+    font-size: 0.9em;
+    padding: 0.4em 0;
+    cursor: pointer;
+    background-color: $placeholder-grey;
+
+    display: flex;
+    gap: 0.3em;
+    align-items: center;
+    justify-content: center;
+
+    .panel-dropdown-icon {
+      font-size: 0.7em;
+    }
+  }
+
+  .panel-content-wrapper {
+    position: relative;
+    &::before {
+      content: '';
+      display: block;
+      padding-bottom: 55%;
+    }
+
+    .panel-content {
+      top: 0;
+      left: 0;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .empty-subtitle {
+        margin: 0.5em;
+      }
+      .explore-link {
+        margin-top: 0.4em;
+        padding: 0.2em 1em;
+        background-color: $teal;
+        border: $drop-shadow-border;
+        box-shadow: $drop-shadow;
+        border-radius: 2em;
+
+        &:hover {
+          opacity: 0.8;
+        }
+      }
+
+      iframe {
+        pointer-events: none;
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+}
+
+// Panel dropdown
+.panel-card-dropdown {
+  font-size: 0.7em;
+  transform: translate(-50%);
+
+  .panel-dropdown-item {
+    padding: 0.7em 1.5em;
+
+    cursor: pointer;
+
+    &:hover {
+      background-color: $grey;
+    }
+  }
+
+  & > :first-child {
+    padding-top: 0.5em;
+  }
+  & > :last-child {
+    padding-bottom: 0.5em;
+  }
+}
+
+// Modal
+.modal-content-wrapper {
+  font-size: 0.8em;
+  margin: 2em 0;
+}
+.modal-submit-button-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.4em;
+
+  font-size: 0.8em;
+
+  .modal-submit-button {
+    cursor: pointer;
+    padding: 0.4em 0.8em;
+    border-radius: 0.15em;
+    border: $drop-shadow-border;
+    color: $white;
+
+    &.cancel {
+      background: $grey;
+    }
+
+    &.submit {
+      background: $red;
+    }
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}

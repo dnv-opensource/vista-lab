@@ -4,6 +4,7 @@ import React, { useMemo, useState } from 'react';
 import { useExploreContext } from '../../../../context/ExploreContext';
 import Icon from '../../../ui/icons/Icon';
 import { IconName } from '../../../ui/icons/icons';
+import AddToPanelButton from '../../add-to-panel-button/AddToPanelButton';
 import DataChannelCard from '../../data-channel-card/DataChannelCard';
 import './GmodViewNode.scss';
 
@@ -26,9 +27,9 @@ const GmodViewNode: React.FC<Props> = ({ node, mergedChild, skippedParent, paren
   );
 
   const [expanded, setExpanded] = useState(false);
-  const { getLocalIdsFromGmodPath } = useExploreContext();
+  const { getUniversalIdsFromGmodPath: getLocalIdsFromGmodPath } = useExploreContext();
 
-  const localIds = useMemo(() => {
+  const universalIds = useMemo(() => {
     return getLocalIdsFromGmodPath(path);
   }, [path, getLocalIdsFromGmodPath]);
 
@@ -49,7 +50,7 @@ const GmodViewNode: React.FC<Props> = ({ node, mergedChild, skippedParent, paren
 
   return (
     <div className={'gmod-view-node-container'}>
-      {localIds.length > 0 && (
+      {universalIds.length > 0 && (
         <Icon
           className={'expand-data-channel-icon'}
           icon={expanded ? IconName.Stream : IconName.Bars}
@@ -79,8 +80,11 @@ const GmodViewNode: React.FC<Props> = ({ node, mergedChild, skippedParent, paren
       <div className={'data-channels-container'}>
         {expanded && (
           <div className={'data-channels'}>
-            {localIds.map((localId, index) => (
-              <DataChannelCard key={localId.toString() + index} path={path} localId={localId} />
+            {universalIds.map((universalId, index) => (
+              <div key={index} className={'data-channel-card-wrapper'}>
+                <DataChannelCard universalId={universalId} />
+                <AddToPanelButton universalId={universalId} />
+              </div>
             ))}
           </div>
         )}

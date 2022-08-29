@@ -1,0 +1,65 @@
+@import 'src/styles/colors';
+@import 'src/styles/variables';
+
+.query-card {
+  .query-card-header {
+    padding: 0.1em 0.5em;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    border-radius: 0.1em;
+
+    background-color: $placeholder-grey;
+    color: $bg-grey;
+
+    .query-card-collapser {
+      @include without-text-mark;
+      width: 0.8em;
+      font-size: 0.8em;
+      height: 0.8em;
+      cursor: pointer;
+    }
+
+    .query-card-title {
+      color: $bg-grey;
+      background-color: inherit;
+      border: unset;
+      box-shadow: unset;
+      font-weight: 600;
+    }
+
+    .query-card-action-buttons {
+      flex: 1;
+      display: flex;
+      justify-content: flex-end;
+      font-size: 0.6em;
+
+      color: $bg-grey;
+    }
+  }
+
+  .query-generation-container {
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3em;
+
+    .query-generation-selector {
+      display: flex;
+      gap: 0.3em;
+    }
+
+    .query-generation-param {
+      flex: 0.9;
+    }
+
+    .query-generation-operator {
+      font-size: 0.7em;
+      flex: 0.1;
+    }
+    .query-generation-submit {
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+}

@@ -1,0 +1,12 @@
+.query-generator-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.query-generator-queries {
+  height: 90%;
+  margin-top: 0.5em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3em;
+}

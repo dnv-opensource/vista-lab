@@ -22,7 +22,17 @@
     flex-direction: column;
     max-width: 1280px;
     height: 95%;
-    margin: 0 25%;
+    margin: 0 20%;
+
+    @media screen and (max-width: 720px) {
+      margin: 0 10%;
+    }
     padding: 0.5em 0;
+
+    .children-container {
+      position: relative;
+      height: 100%;
+      width: 100%;
+    }
   }
 }
