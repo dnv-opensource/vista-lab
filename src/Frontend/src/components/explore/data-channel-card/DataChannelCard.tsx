@@ -24,9 +24,7 @@ const DataChannelCard: React.FC<Props> = ({ universalId }) => {
     if (localId) {
       setLoading(true);
 
-      VistaLabApi.DataChannelApi.dataChannelGetLatestTimeSeriesValue({
-        timeSeriesRequestDto: { localId: localId.toString() },
-      })
+      VistaLabApi.dataChannelGetLatestTimeSeriesValue({ localId: localId.toString() })
         .then(res => {
           if (res.eventData) {
             setLatestEventData(res);
@@ -48,11 +46,11 @@ const DataChannelCard: React.FC<Props> = ({ universalId }) => {
       !latestEventData ||
       !latestEventData.eventData ||
       !latestEventData.additionalProps ||
-      !latestEventData.eventData.value
+      !latestEventData.eventData.Value
     )
       return { status: StatusVariant.Warning, info: 'Missing recorded data' };
 
-    const { value } = latestEventData.eventData;
+    const { Value: value } = latestEventData.eventData;
     const { rangeHigh, rangeLow } = latestEventData.additionalProps;
 
     if (rangeHigh && !isNaN(+value)) {
@@ -90,7 +88,7 @@ const DataChannelCard: React.FC<Props> = ({ universalId }) => {
             <Loader />
           ) : (
             <>
-              <span className={'timeseries-data'}>{latestEventData?.eventData?.value ?? 'No recorded data'}</span>
+              <span className={'timeseries-data'}>{latestEventData?.eventData?.Value ?? 'No recorded data'}</span>
               <span className={'timeseries-data'}>{latestEventData?.additionalProps?.unitSymbol}</span>
             </>
           )}

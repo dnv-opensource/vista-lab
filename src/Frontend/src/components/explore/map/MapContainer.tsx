@@ -3,8 +3,7 @@ import { Feature as GeoJSONFeature, FeatureCollection, Geometry, Point } from 'g
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { VistaLabApi } from '../../../apiConfig';
-import { FeatureProps } from '../../../client';
-import { Feature } from '../../../client/models/Feature';
+import { Feature, FeatureProps } from '../../../client';
 import { useExploreContext } from '../../../context/ExploreContext';
 import Map from '../../map/Map';
 import Icon from '../../ui/icons/Icon';
@@ -22,7 +21,7 @@ const MapContainer: React.FC = () => {
     if (!dataChannelListPackages || dataChannelListPackages.length === 0) return;
 
     const getVesselPositions = async () => {
-      const features = await VistaLabApi.DataChannelApi.dataChannelGetVesselPositions();
+      const features = await VistaLabApi.dataChannelGetVesselPositions();
 
       const toGeoJsonFeatures = (feat: Feature): GeoJSONFeature<Point, FeatureProps> => {
         if (

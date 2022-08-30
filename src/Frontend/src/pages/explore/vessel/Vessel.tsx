@@ -1,6 +1,6 @@
 import { Pmod } from 'dnv-vista-sdk';
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import GmodViewer from '../../../components/explore/gmod-viewer/GmodViewer';
 import ResultBar from '../../../components/shared/result-bar/ResultBar';
 import Icon from '../../../components/ui/icons/Icon';
@@ -39,14 +39,10 @@ const VesselComp: React.FC = () => {
       .finally(() => setLoading(false));
   }, [vesselId, getVmodForVessel, setLoading, setVmod]);
 
-  useEffect(() => {
-    return () => setMode(VesselMode.Any);
-  }, [setMode]);
-
   return (
     <>
       <ResultBar className={'vessel-result-bar'}>
-        <LinkWithQuery className={'back'} to={'/explore'} queryKey="query">
+        <LinkWithQuery className={'back'} to={'/explore'} queryKey={["query", "mode"]}>
           <Icon icon={IconName.LeftArrow} />
           {vesselId}
         </LinkWithQuery>
