@@ -14,6 +14,7 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   loadingResult?: boolean;
   onChange?: (e?: React.ChangeEvent<HTMLInputElement>) => void;
   hideClearIcon?: boolean;
+  label?: string;
 }
 
 const Input = React.forwardRef<HTMLDivElement, InputProps>(
@@ -26,6 +27,7 @@ const Input = React.forwardRef<HTMLDivElement, InputProps>(
       loadingResult = false,
       iconLast,
       hideClearIcon = false,
+      label,
       ...restProps
     },
     ref
@@ -62,22 +64,29 @@ const Input = React.forwardRef<HTMLDivElement, InputProps>(
     );
 
     return (
-      <div className={clsx('ui-input', isEmpty && 'empty', className)} ref={ref}>
-        {!iconLast && iconComp}
-        <input {...restProps} ref={inputRef} value={value ?? ''} onChange={onChange} />
-        {!loadingResult ? (
-          !hideClearIcon && (
-            <Icon
-              icon={IconName.Times}
-              className={clsx('cancel-icon', isEmpty && 'empty')}
-              onClick={() => onChange(undefined)}
-            />
-          )
-        ) : (
-          <Loader />
+      <>
+        {label && (
+          <label htmlFor="ui-input" className={'ui-input-label'}>
+            {label}
+          </label>
         )}
-        {iconLast && iconComp}
-      </div>
+        <div id="ui-input" className={clsx('ui-input', isEmpty && 'empty', className)} ref={ref}>
+          {!iconLast && iconComp}
+          <input {...restProps} ref={inputRef} value={value ?? ''} onChange={onChange} />
+          {!loadingResult ? (
+            !hideClearIcon && (
+              <Icon
+                icon={IconName.Times}
+                className={clsx('cancel-icon', isEmpty && 'empty')}
+                onClick={() => onChange(undefined)}
+              />
+            )
+          ) : (
+            <Loader />
+          )}
+          {iconLast && iconComp}
+        </div>
+      </>
     );
   }
 );

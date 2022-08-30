@@ -9,6 +9,8 @@ import ScrollableField from '../../../components/ui/scrollable-field/ScrollableF
 import { usePanelContext } from '../../../context/PanelContext';
 import './Panel.scss';
 
+export const QueryResults = React.lazy(() => import('../../../components/monitor/query-results/QueryResults'));
+
 const Panel: React.FC = () => {
   const navigate = useNavigate();
   const { panelId } = useParams();
@@ -26,19 +28,8 @@ const Panel: React.FC = () => {
         </Link>
       </ResultBar>
       <ScrollableField className={'vista-panel-container-grid'}>
-        <div className={'panel-result-graph-wrapper item'}>
-          {
-            // eslint-disable-next-line jsx-a11y/iframe-has-title
-            <iframe
-              className={'panel-graph'}
-              src="http://localhost:3000/d-solo/AixRzyZ4z/home?orgId=1&tab=transform&theme=light&panelId=2"
-              frameBorder="0"
-            ></iframe>
-          }
-        </div>
-        <div className={'available-data-channels item'}>
-          {panel!.dataChannelIds.length > 0 ? <DataChannelSelection panel={panel!} /> : <p>Explore</p>}
-        </div>
+        <div className={'panel-result-graph-wrapper item'}>{panel && <QueryResults panel={panel} />}</div>
+        <div className={'available-data-channels item'}>{panel && <DataChannelSelection panel={panel} />}</div>
         <div className={'query-selection item'}>
           <QueryGenerator panel={panel!} />
         </div>

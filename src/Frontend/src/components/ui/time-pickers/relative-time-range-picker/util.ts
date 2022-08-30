@@ -1,5 +1,6 @@
 import { RangeValidation, RelativeTimeRange, TimeOption } from './types';
 
+// eslint-disable-next-line
 const regex = /^now$|^now\-(\d{1,10})([wdhms])$/;
 
 export const mapOptionToRelativeTimeRange = (option: TimeOption): RelativeTimeRange | undefined => {

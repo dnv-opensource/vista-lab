@@ -48,18 +48,6 @@
       .empty-subtitle {
         margin: 0.5em;
       }
-      .explore-link {
-        margin-top: 0.4em;
-        padding: 0.2em 1em;
-        background-color: $teal;
-        border: $drop-shadow-border;
-        box-shadow: $drop-shadow;
-        border-radius: 2em;
-
-        &:hover {
-          opacity: 0.8;
-        }
-      }
 
       iframe {
         pointer-events: none;

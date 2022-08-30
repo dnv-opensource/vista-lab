@@ -2,6 +2,7 @@ import { UniversalId, UniversalIdBuilder } from 'dnv-vista-sdk';
 import _ from 'lodash';
 import React, { createContext, useCallback, useMemo } from 'react';
 import { Operator } from '../components/monitor/query-generator/operator-selection/OperatorSelection';
+import { RelativeTimeRange } from '../components/ui/time-pickers/relative-time-range-picker/types';
 import useLocalStorage, { LocalStorageSerializer } from '../hooks/use-localstorage';
 import useToast, { ToastType } from '../hooks/use-toast';
 import { nextChar } from '../util/string';
@@ -30,8 +31,8 @@ export type Query = {
   id: string;
   name: string;
   operator?: Operator;
-  query: string;
   items: (UniversalId | Query)[];
+  range: RelativeTimeRange;
 };
 
 export type Panel = {
@@ -50,7 +51,7 @@ type SerializablePanel = {
   id: string;
 };
 
-const DEFAULT_QUERY: Query = { id: _.uniqueId(), name: 'A', items: [], query: '' };
+const DEFAULT_QUERY: Query = { id: _.uniqueId(), name: 'A', items: [], range: { from: 900, to: 0 } };
 const DEFAULT_PANEL: Panel = { id: 'Default', dataChannelIds: [], queries: [DEFAULT_QUERY] };
 
 const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
@@ -85,7 +86,6 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
             id: q.id,
             name: q.name,
             operator: q.operator,
-            query: q.query,
           }));
 
           const queries = dp.queries.map(q => ({
@@ -199,7 +199,7 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
           return panels;
         }
 
-        const query: Query = { id: _.uniqueId(), name: 'A', items: [], query: '' };
+        const query: Query = { ...DEFAULT_QUERY, id: _.uniqueId() };
         while (panel.queries.some(q => q.name === query.name)) {
           query.name = nextChar(query.name);
         }
@@ -243,10 +243,6 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
     [setPanels]
   );
 
-  const generateQuery = useCallback((query: Query): string => {
-    return '';
-  }, []);
-
   const selectQueryItem = useCallback(
     (panelId: string, queryId: string, item: Query | UniversalId) => {
       setPanels(panels => {
@@ -258,14 +254,13 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
         if (!query) return panels;
 
         query.items = [...query.items, item];
-        query.query = generateQuery(query);
 
         panel.queries = queries;
 
         return newPanels;
       });
     },
-    [setPanels, generateQuery]
+    [setPanels]
   );
 
   const selectQueryOperator = useCallback(
@@ -279,14 +274,13 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
         if (!query) return panels;
 
         query.operator = operator;
-        query.query = generateQuery(query);
 
         panel.queries = queries;
 
         return newPanels;
       });
     },
-    [setPanels, generateQuery]
+    [setPanels]
   );
 
   return (

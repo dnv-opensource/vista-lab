@@ -88,8 +88,12 @@ const DataChannelCard: React.FC<Props> = ({ universalId }) => {
             <Loader />
           ) : (
             <>
-              <span className={'timeseries-data'}>{latestEventData?.eventData?.Value ?? 'No recorded data'}</span>
-              <span className={'timeseries-data'}>{latestEventData?.additionalProps?.unitSymbol}</span>
+              {latestEventData?.eventData?.Value && (
+                <span className={'timeseries-data'}>{latestEventData.eventData.Value}</span>
+              )}
+              {latestEventData?.additionalProps?.unitSymbol && (
+                <span className={'timeseries-data unit'}>{latestEventData.additionalProps.unitSymbol}</span>
+              )}
             </>
           )}
           <Tooltip content={dataChannelStatus.info}>

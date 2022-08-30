@@ -1,6 +1,6 @@
 import { Pmod } from 'dnv-vista-sdk';
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import GmodViewer from '../../../components/explore/gmod-viewer/GmodViewer';
 import ResultBar from '../../../components/shared/result-bar/ResultBar';
 import Icon from '../../../components/ui/icons/Icon';
@@ -42,7 +42,7 @@ const VesselComp: React.FC = () => {
   return (
     <>
       <ResultBar className={'vessel-result-bar'}>
-        <LinkWithQuery className={'back'} to={'/explore'} queryKey={["query", "mode"]}>
+        <LinkWithQuery className={'back'} to={'/explore'} queryKey={['query', 'mode']}>
           <Icon icon={IconName.LeftArrow} />
           {vesselId}
         </LinkWithQuery>
@@ -54,8 +54,7 @@ const VesselComp: React.FC = () => {
       <ScrollableField className={'vmod-container'}>
         <RadioSelection
           className={'mode-selection'}
-          options={Object.entries(VesselMode)
-            .map((k, i) => ({ index: i, label: k[1] }))}
+          options={Object.entries(VesselMode).map((k, i) => ({ index: i, label: k[1] }))}
           onChange={option => {
             setMode(option.label as VesselMode);
           }}

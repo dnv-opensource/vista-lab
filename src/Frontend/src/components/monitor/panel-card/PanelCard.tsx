@@ -1,6 +1,8 @@
 import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Panel, usePanelContext } from '../../../context/PanelContext';
+import { ButtonType } from '../../ui/button/Button';
+import ButtonWithLink from '../../ui/button/ButtonWithLink';
 import Dropdown from '../../ui/dropdown/Dropdown';
 import Icon from '../../ui/icons/Icon';
 import { IconName } from '../../ui/icons/icons';
@@ -11,6 +13,8 @@ import './PanelCard.scss';
 interface Props {
   panel: Panel;
 }
+
+export const QueryResults = React.lazy(() => import('../query-results/QueryResults'));
 
 const PanelCard: React.FC<Props> = ({ panel }) => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -64,16 +68,12 @@ const PanelCard: React.FC<Props> = ({ panel }) => {
           {panel.dataChannelIds.length === 0 ? (
             <>
               <p className={'empty-subtitle'}>No data channels</p>
-              <Link to={'/explore'} className={'explore-link'} role={'button'}>
+              <ButtonWithLink to={'/explore'} role={'button'} type={ButtonType.Subtle}>
                 Explore
-              </Link>
+              </ButtonWithLink>
             </>
           ) : (
-            // eslint-disable-next-line jsx-a11y/iframe-has-title
-            <iframe
-              src="http://localhost:3000/d-solo/u7zyoFi4k/questdb?orgId=1&tab=transform&theme=light&panelId=2"
-              frameBorder="0"
-            ></iframe>
+            <QueryResults panel={panel} />
           )}
         </div>
       </div>

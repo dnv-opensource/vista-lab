@@ -2,12 +2,14 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import {
   faAngleDown,
   faAngleRight,
+  faAngleUp,
   faArrowLeft,
   faArrowRight,
   faBars,
   faCaretDown,
   faCaretUp,
   faChartColumn,
+  faClock,
   faCrosshairs,
   faExpand,
   faExpandAlt,
@@ -63,7 +65,9 @@ library.add(
   faTrash,
   faLink,
   faAngleDown,
-  faAngleRight
+  faAngleRight,
+  faAngleUp,
+  faClock
 );
 
 // Make sure these correspond with FontAwsome v6.1 icon names
@@ -96,6 +100,8 @@ export enum IconName {
   Link = 'link',
   AngleRight = 'angle-right',
   AngleDown = 'angle-down',
+  AngleUp = 'angle-up',
+  Clock = 'clock',
 }
 
 export enum IconVariant {

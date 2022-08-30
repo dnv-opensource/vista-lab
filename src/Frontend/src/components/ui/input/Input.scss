@@ -2,6 +2,10 @@
 @import 'src/styles/variables';
 @import 'src/styles/global';
 
+.ui-input-label {
+  font-size: 0.8em;
+}
+
 .ui-input {
   @include remove-input-style;
   width: 100%;

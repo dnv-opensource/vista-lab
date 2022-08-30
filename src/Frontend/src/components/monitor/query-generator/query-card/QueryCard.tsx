@@ -7,6 +7,7 @@ import Button from '../../../ui/button/Button';
 import Icon from '../../../ui/icons/Icon';
 import { IconName } from '../../../ui/icons/icons';
 import Input from '../../../ui/input/Input';
+import RelativeTimeRangePicker from '../../../ui/time-pickers/relative-time-range-picker/RelativeTimeRangePicker';
 import Typeahead, { TypeaheadOption } from '../../../ui/typeahead/Typeahead';
 import OperatorSelection, { Operator } from '../operator-selection/OperatorSelection';
 import './QueryCard.scss';
@@ -77,15 +78,15 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
         .filter(
           q =>
             !query.items.find(item => {
-              if ('query' in item) return q.id === item.id;
-              return true;
+              if ('operator' in item) return q.id === item.id;
+              return false;
             })
         ),
       ...panel.dataChannelIds.filter(
         dc =>
           !query.items.find(item => {
             if ('localId' in item) return item.equals(dc);
-            return true;
+            return false;
           })
       ),
     ];
@@ -100,6 +101,11 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
           onClick={toggleCollapsed}
         />
         <Input className={'query-card-title'} value={query.name} onChange={onTitleChange} />
+
+        <RelativeTimeRangePicker
+          onChange={range => editQuery(panel.id, { ...query, range })}
+          timeRange={query.range}
+        />
         <div className={'query-card-action-buttons'}>
           <Icon
             role={'button'}
