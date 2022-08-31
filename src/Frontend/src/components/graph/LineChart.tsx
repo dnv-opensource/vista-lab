@@ -10,7 +10,8 @@ import {
   XYChart,
 } from '@visx/xychart';
 import { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import clsx from 'clsx';
+import React, { useMemo, useRef } from 'react';
 import './LineChart.scss';
 
 type Accessors<T> = {
@@ -33,6 +34,7 @@ interface GraphProps<T extends object> {
   type?: ChartType;
   tooltipComponent?: (params: RenderTooltipParams<T> & { accessors: Accessors<T> }) => JSX.Element;
   children?: React.ReactNode;
+  className?: string;
 }
 
 const LineChart = <T extends object>({
@@ -41,11 +43,9 @@ const LineChart = <T extends object>({
   tooltipComponent,
   children,
   type = ChartType.Line,
+  className,
 }: GraphProps<T>) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const [isMounted, setMounted] = useState(false);
-
-  useEffect(() => setMounted(true), []);
 
   const chartComponent = useMemo(() => {
     switch (type) {
@@ -74,32 +74,29 @@ const LineChart = <T extends object>({
   }, [dataset, type, accessors]);
 
   return (
-    <div className={'graph-container'} ref={wrapperRef}>
-      {isMounted && (
-        <XYChart<ScaleConfig<AxisScaleOutput>, ScaleConfig<AxisScaleOutput>, T>
-          height={wrapperRef.current?.clientHeight}
-          xScale={{ type: 'band' }}
-          yScale={{ type: 'linear' }}
-        >
-          {chartComponent}
+    <div className={clsx('graph-container', className)} ref={wrapperRef}>
+      <XYChart<ScaleConfig<AxisScaleOutput>, ScaleConfig<AxisScaleOutput>, T>
+        xScale={{ type: 'band' }}
+        yScale={{ type: 'linear' }}
+      >
+        {chartComponent}
 
-          <Tooltip<T>
-            snapTooltipToDatumX
-            snapTooltipToDatumY
-            showVerticalCrosshair
-            showSeriesGlyphs
-            renderTooltip={({ tooltipData, colorScale, ...restProps }) => (
-              <>
-                <div style={{ color: colorScale?.(tooltipData!.nearestDatum!.key) }}>
-                  {tooltipData?.nearestDatum?.key}
-                </div>
-                {tooltipComponent && tooltipComponent({ tooltipData, colorScale, ...restProps, accessors })}
-              </>
-            )}
-          />
-          {children}
-        </XYChart>
-      )}
+        <Tooltip<T>
+          snapTooltipToDatumX
+          snapTooltipToDatumY
+          showVerticalCrosshair
+          showSeriesGlyphs
+          renderTooltip={({ tooltipData, colorScale, ...restProps }) => (
+            <>
+              <div style={{ color: colorScale?.(tooltipData!.nearestDatum!.key) }}>
+                {tooltipData?.nearestDatum?.key}
+              </div>
+              {tooltipComponent && tooltipComponent({ tooltipData, colorScale, ...restProps, accessors })}
+            </>
+          )}
+        />
+        {children}
+      </XYChart>
     </div>
   );
 };

@@ -73,7 +73,7 @@ const RelativeTimeRangePicker: React.FC<Props> = ({ onChange, timeRange }) => {
   return (
     <div className={'relative-time-range-picker-container'} ref={ref}>
       <div tabIndex={0} className={'relative-time-range-picker-picker-input'} onClick={onOpen}>
-        <Icon icon={IconName.Clock} />
+        <Icon icon={IconName.Clock} className={'time-range-clock-icon'} />
         <span>{timeOption.display}</span>
         <span className={'relative-time-range-picker-caret-icon'}>
           <Icon icon={isOpen ? IconName.AngleUp : IconName.AngleDown} />
@@ -98,17 +98,17 @@ const RelativeTimeRangePicker: React.FC<Props> = ({ onChange, timeRange }) => {
           </ScrollableField>
           <div className={'relative-time-range-picker-right-side'}>
             <p className={'relative-time-range-picker-title'}>Specify time range</p>
+            <label>From</label>
             <Input
               hideClearIcon
-              label="From"
               onClick={event => event.stopPropagation()}
               onBlur={() => setFrom({ ...from, validation: isRangeValid(from.value) })}
               onChange={event => event && setFrom({ ...from, value: event.currentTarget.value })}
               value={from.value}
             />
+            <label>To</label>
             <Input
               hideClearIcon
-              label="to"
               onClick={event => event.stopPropagation()}
               onBlur={() => setTo({ ...to, validation: isRangeValid(to.value) })}
               onChange={event => event && setTo({ ...to, value: event.currentTarget.value })}

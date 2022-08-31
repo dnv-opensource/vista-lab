@@ -1,15 +1,15 @@
 import React, { useMemo } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import DataChannelSelection from '../../../components/monitor/data-channel-selection/DataChannelSelection';
+import IntervalPicker from '../../../components/monitor/panel-pickers/interval-picker/IntervalPicker';
+import TimeRangePicker from '../../../components/monitor/panel-pickers/time-range-picker/TimeRangePicker';
 import QueryGenerator from '../../../components/monitor/query-generator/QueryGenerator';
 import ResultBar from '../../../components/shared/result-bar/ResultBar';
 import Icon from '../../../components/ui/icons/Icon';
 import { IconName } from '../../../components/ui/icons/icons';
-import ScrollableField from '../../../components/ui/scrollable-field/ScrollableField';
 import { usePanelContext } from '../../../context/PanelContext';
 import './Panel.scss';
-
-export const QueryResults = React.lazy(() => import('../../../components/monitor/query-results/QueryResults'));
+const QueryResults = React.lazy(() => import('../../../components/monitor/query-results/QueryResults'));
 
 const Panel: React.FC = () => {
   const navigate = useNavigate();
@@ -26,14 +26,16 @@ const Panel: React.FC = () => {
           <Icon icon={IconName.LeftArrow} />
           {panelId}
         </Link>
+        <div className={'panel-time-pickers'}>
+          <IntervalPicker />
+          <TimeRangePicker />
+        </div>
       </ResultBar>
-      <ScrollableField className={'vista-panel-container-grid'}>
+      <div className={'vista-panel-container-grid'}>
         <div className={'panel-result-graph-wrapper item'}>{panel && <QueryResults panel={panel} />}</div>
         <div className={'available-data-channels item'}>{panel && <DataChannelSelection panel={panel} />}</div>
-        <div className={'query-selection item'}>
-          <QueryGenerator panel={panel!} />
-        </div>
-      </ScrollableField>
+        <div className={'query-selection item'}>{panel && <QueryGenerator panel={panel} />}</div>
+      </div>
     </>
   );
 };

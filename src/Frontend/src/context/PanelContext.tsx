@@ -17,10 +17,15 @@ export type PanelContextType = {
   editQuery: (panelId: string, query: Query) => void;
   setPanels: React.Dispatch<React.SetStateAction<Panel[]>>;
   addPanel: (id: string) => void;
+  editPanel: (panel: Panel) => void;
   deletePanel: (id: string) => void;
   getPanel: (id: string) => Panel;
   selectQueryItem: (panelId: string, queryId: string, item: UniversalId | Query) => void;
   selectQueryOperator: (panelId: string, queryId: string, operator: Operator) => void;
+  timeRange: RelativeTimeRange;
+  setTimeRange: React.Dispatch<React.SetStateAction<RelativeTimeRange>>;
+  interval: string;
+  setInterval: React.Dispatch<React.SetStateAction<string>>;
 };
 
 type PanelContextProviderProps = React.PropsWithChildren<{}>;
@@ -31,30 +36,35 @@ export type Query = {
   id: string;
   name: string;
   operator?: Operator;
-  items: (UniversalId | Query)[];
-  range: RelativeTimeRange;
+  items: (Query | UniversalId)[];
+  query?: string;
 };
 
 export type Panel = {
   queries: Query[];
   dataChannelIds: UniversalId[];
   id: string;
+  timeRange?: RelativeTimeRange;
+  interval?: string;
 };
 
 type SerializableQuery = Omit<Query, 'items'> & {
   items: string[];
 };
 
-type SerializablePanel = {
+type SerializablePanel = Omit<Panel, 'dataChannelIds' | 'queries'> & {
   queries: SerializableQuery[];
   dataChannelIds: string[];
-  id: string;
 };
 
-const DEFAULT_QUERY: Query = { id: _.uniqueId(), name: 'A', items: [], range: { from: 900, to: 0 } };
+const DEFAULT_QUERY: Query = { id: _.uniqueId(), name: 'A', items: [] };
 const DEFAULT_PANEL: Panel = { id: 'Default', dataChannelIds: [], queries: [DEFAULT_QUERY] };
+const DEFAULT_TIME_RANGE: RelativeTimeRange = { from: 900, to: 0 };
+const DEFAULT_INTERVAL: string = '10s';
 
 const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
+  const [interval, setInterval] = useLocalStorage<string>('vista-lab-interval', DEFAULT_INTERVAL);
+  const [timeRange, setTimeRange] = useLocalStorage<RelativeTimeRange>('vista-lab-time-range', DEFAULT_TIME_RANGE);
   const { gmod, codebooks } = useVISContext();
   const { addToast } = useToast();
 
@@ -62,7 +72,7 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
     return {
       serialize: panels => {
         const serializeablePanels: SerializablePanel[] = panels.map(p => ({
-          id: p.id,
+          ...p,
           dataChannelIds: p.dataChannelIds.map(l => l.toString()),
           queries: p.queries.map(q => ({
             ...q,
@@ -100,7 +110,7 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
           })) as Query[];
 
           return {
-            id: dp.id,
+            ...dp,
             queries,
             dataChannelIds: dp.dataChannelIds.map(idStr => UniversalId.parse(idStr, gmod, codebooks)),
           } as Panel;
@@ -135,6 +145,20 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
       });
     },
     [setPanels, addToast]
+  );
+
+  const editPanel = useCallback(
+    (panel: Panel) => {
+      setPanels(prev => {
+        const newPanels = [...prev];
+        const panelIndex = newPanels.findIndex(p => p.id === panel.id);
+        if (panelIndex === -1) return prev;
+
+        newPanels.splice(panelIndex, 1, panel);
+        return newPanels;
+      });
+    },
+    [setPanels]
   );
 
   const deletePanel = useCallback(
@@ -286,9 +310,14 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
   return (
     <PanelContext.Provider
       value={{
+        timeRange,
+        setTimeRange,
+        interval,
+        setInterval,
         addDataChannelToPanel,
         panels,
         addPanel,
+        editPanel,
         deletePanel,
         removeDataChannelFromPanel,
         getPanel,

@@ -2,9 +2,12 @@
 @import 'src/styles/global';
 .ui-dropdown {
   position: absolute;
+  z-index: 10000000000000000000;
   background-color: $white;
   border-radius: 0.2em;
-  overflow: hidden;
+  overflow: auto;
+
+  max-height: 50vh;
 
   box-shadow: $intense-drop-shadow;
   border: $drop-shadow-border;

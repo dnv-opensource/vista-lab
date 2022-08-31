@@ -14,7 +14,6 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   loadingResult?: boolean;
   onChange?: (e?: React.ChangeEvent<HTMLInputElement>) => void;
   hideClearIcon?: boolean;
-  label?: string;
 }
 
 const Input = React.forwardRef<HTMLDivElement, InputProps>(
@@ -27,7 +26,6 @@ const Input = React.forwardRef<HTMLDivElement, InputProps>(
       loadingResult = false,
       iconLast,
       hideClearIcon = false,
-      label,
       ...restProps
     },
     ref
@@ -53,24 +51,18 @@ const Input = React.forwardRef<HTMLDivElement, InputProps>(
 
     const isEmpty = useMemo(() => value === undefined || (typeof value === 'string' && value.length === 0), [value]);
 
-    const iconComp = icon && (
-      <Icon
-        icon={icon}
-        className="input-icon"
-        onClick={() => {
-          inputRef?.current?.focus();
-        }}
-      />
-    );
+    const iconComp = icon && <Icon icon={icon} className="input-icon" />;
 
     return (
       <>
-        {label && (
-          <label htmlFor="ui-input" className={'ui-input-label'}>
-            {label}
-          </label>
-        )}
-        <div id="ui-input" className={clsx('ui-input', isEmpty && 'empty', className)} ref={ref}>
+        <div
+          id="ui-input"
+          className={clsx('ui-input', isEmpty && 'empty', className)}
+          ref={ref}
+          onClick={() => {
+            inputRef?.current?.focus();
+          }}
+        >
           {!iconLast && iconComp}
           <input {...restProps} ref={inputRef} value={value ?? ''} onChange={onChange} />
           {!loadingResult ? (
