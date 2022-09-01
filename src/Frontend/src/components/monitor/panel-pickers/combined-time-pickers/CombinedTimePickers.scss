@@ -1,0 +1,12 @@
+@import 'src/styles/colors';
+@import 'src/styles/global';
+
+.combined-time-pickers {
+  display: flex;
+
+  & > * {
+    background-color: $white;
+    color: $dark-blue;
+    box-shadow: $drop-shadow;
+  }
+}

@@ -73,7 +73,7 @@ const PanelCard: React.FC<Props> = ({ panel }) => {
               </ButtonWithLink>
             </>
           ) : (
-            <QueryResults panel={panel} withoutPickers />
+            <QueryResults panel={panel} />
           )}
         </div>
       </div>

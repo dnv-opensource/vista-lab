@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PanelCard from '../../../components/monitor/panel-card/PanelCard';
+import CombinedTimePickers from '../../../components/monitor/panel-pickers/combined-time-pickers/CombinedTimePickers';
 import { IconName } from '../../../components/ui/icons/icons';
 import Input from '../../../components/ui/input/Input';
 import ScrollableField from '../../../components/ui/scrollable-field/ScrollableField';
@@ -12,21 +13,24 @@ const Panels: React.FC = () => {
 
   return (
     <>
-      <form
-        onSubmit={e => {
-          e.preventDefault();
+      <div className={'panels-header-wrapper'}>
+        <form
+          onSubmit={e => {
+            e.preventDefault();
 
-          addPanel(newPanelValue);
-          setNewPanelValue('');
-        }}
-      >
-        <Input
-          value={newPanelValue}
-          onChange={e => e && setNewPanelValue(e.currentTarget.value)}
-          placeholder="Add new panel"
-          icon={IconName.Plus}
-        />
-      </form>
+            addPanel(newPanelValue);
+            setNewPanelValue('');
+          }}
+        >
+          <Input
+            value={newPanelValue}
+            onChange={e => e && setNewPanelValue(e.currentTarget.value)}
+            placeholder="Add new panel"
+            icon={IconName.Plus}
+          />
+        </form>
+        <CombinedTimePickers className={'combined-time-pickers'} />
+      </div>
       <ScrollableField className={'panels-container'}>
         {panels.map(p => (
           <PanelCard key={p.id} panel={p} />

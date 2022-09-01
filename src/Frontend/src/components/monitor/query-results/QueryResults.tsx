@@ -1,25 +1,16 @@
-import { AnimatedGrid, AnimatedAxis } from '@visx/xychart';
+import { AnimatedAxis, AnimatedGrid } from '@visx/xychart';
 import React from 'react';
 import { Panel } from '../../../context/PanelContext';
 import LineChart from '../../graph/LineChart';
-import IntervalPicker from '../panel-pickers/interval-picker/IntervalPicker';
-import TimeRangePicker from '../panel-pickers/time-range-picker/TimeRangePicker';
 import './QueryResults.scss';
 
 interface Props {
   panel: Panel;
-  withoutPickers?: boolean;
 }
 
-const QueryResults: React.FC<Props> = ({ panel, withoutPickers = false }) => {
+const QueryResults: React.FC<Props> = ({ panel }) => {
   return (
     <>
-      {!withoutPickers && (
-        <div className={'query-result-header'}>
-          <IntervalPicker panel={panel} />
-          <TimeRangePicker panel={panel} />
-        </div>
-      )}
       <LineChart
         className="query-result-graph"
         dataset={panel.queries.map(q => ({
