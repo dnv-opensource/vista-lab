@@ -9,7 +9,9 @@ interface Props {
   pmod: Pmod;
 }
 
-const GmodViewer: React.FC<Props> = ({ pmod }) => {
+const GmodViewer: React.FC<Props> = (
+    { pmod }: Props
+) => {
   const formatNode = useCallback(
     (node: PmodNode, parents: TreeNode<PmodNode>[]) => ({
       parents,

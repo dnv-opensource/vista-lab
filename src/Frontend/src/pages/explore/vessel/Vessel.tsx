@@ -2,6 +2,7 @@ import { Pmod } from 'dnv-vista-sdk';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import GmodViewer from '../../../components/explore/gmod-viewer/GmodViewer';
+import TreeButtons from '../../../components/explore/tree-buttons/TreeButtons';
 import ResultBar from '../../../components/shared/result-bar/ResultBar';
 import Icon from '../../../components/ui/icons/Icon';
 import { IconName } from '../../../components/ui/icons/icons';
@@ -52,14 +53,17 @@ const VesselComp: React.FC = () => {
         </div>
       </ResultBar>
       <ScrollableField className={'vmod-container'}>
-        <RadioSelection
-          className={'mode-selection'}
-          options={Object.entries(VesselMode).map((k, i) => ({ index: i, label: k[1] }))}
-          onChange={option => {
-            setMode(option.label as VesselMode);
-          }}
-          selectedOption={{ index: Object.values(VesselMode).indexOf(mode), label: mode }}
-        />
+        <div className={'header'}>
+            <RadioSelection
+                className={'mode-selection'}
+                options={Object.entries(VesselMode).map((k, i) => ({ index: i, label: k[1] }))}
+                onChange={option => {
+                    setMode(option.label as VesselMode);
+                }}
+                selectedOption={{ index: Object.values(VesselMode).indexOf(mode), label: mode }}
+            />
+            <TreeButtons />
+        </div>
         {loading ? <Loader /> : vmod ? <GmodViewer pmod={vmod} /> : <span>No available nodes</span>}
       </ScrollableField>
     </>

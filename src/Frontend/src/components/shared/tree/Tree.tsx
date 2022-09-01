@@ -1,7 +1,9 @@
 import clsx from 'clsx';
-import React, { useCallback, useImperativeHandle } from 'react';
+import React, { useCallback, useState } from 'react';
+import useBus from 'use-bus';
 import useStateWithPromise from '../../../hooks/use-state-with-promise';
-import TreeViewNode, { generateElementNodeId } from './tree-view-node/TreeViewNode';
+import { BusEvents } from '../events';
+import TreeViewNode from './tree-view-node/TreeViewNode';
 import { TreeNode } from './types';
 
 interface Props<T extends { children: T[]; id: string }> {
@@ -11,48 +13,27 @@ interface Props<T extends { children: T[]; id: string }> {
   formatElement: (node: TreeNode<T>, parents: TreeNode<T>[], children: TreeNode<T>[]) => JSX.Element;
 }
 
-export type TreeRef<T extends { children: T[]; id: string }> = { expandTo: { (id: T[]): void } };
+type AllNodesStatus = 'expanded' | 'collapsed' | null;
 
 function Tree<T extends { children: T[]; id: string }>(
-  { rootNode, formatElement, formatNode, className }: Props<T>,
-  ref: React.ForwardedRef<TreeRef<T>>
+  { rootNode, formatElement, formatNode, className }: Props<T>
 ) {
-  const FOCUS_NODE_CLASSNAME = ' tree-show-focused-node';
   const root = formatNode(rootNode, [], rootNode.children);
   const [expandedNodes, setExpandedNodes] = useStateWithPromise<T[]>([]);
+  const [allNodesStatus, setAllNodesStatus] = useState<AllNodesStatus>(null);
 
-  useImperativeHandle(ref, () => ({
-    expandTo: (path: T[]) => {
-      setExpandedNodes(path.slice(0, path.length - 1)).then(() => {
-        const nodes = [...path];
-        const leafNode = nodes.slice(path.length - 1)[0];
-
-        const elementId = generateElementNodeId(
-          leafNode.id,
-          path.slice(0, path.length - 1).map(p => p.id)
-        );
-
-        const element = document.getElementById(elementId);
-        const parentEl = element?.parentElement;
-        if (element && parentEl) {
-          parentEl.className = parentEl.className + FOCUS_NODE_CLASSNAME;
-
-          setTimeout(() => {
-            if (parentEl) {
-              parentEl.className = parentEl.className.replace(FOCUS_NODE_CLASSNAME, '');
-            }
-          }, 1500);
-
-          element.focus();
-        }
-      });
-    },
-  }));
+  const dispatch = useBus(
+    BusEvents.TreeAllNodesStatus,
+    e => setAllNodesStatus(e.action as AllNodesStatus),
+    [],
+  );
 
   const handleExpanded = useCallback(
     (node: T) => {
       const prev = expandedNodes;
       const foundNodeIndex = prev.findIndex(n => n.id === node.id);
+
+      dispatch({ type: BusEvents.TreeAllNodesStatus, action: null });
 
       if (foundNodeIndex !== -1) {
         const newNodes = [...expandedNodes];
@@ -63,14 +44,19 @@ function Tree<T extends { children: T[]; id: string }>(
 
       setExpandedNodes([...prev, node]);
     },
-    [expandedNodes, setExpandedNodes]
+    [expandedNodes, setExpandedNodes, dispatch]
   );
 
   const isExpanded = useCallback(
     (node: T) => {
+      if (allNodesStatus === 'expanded')
+        return true;
+      else if (allNodesStatus === 'collapsed')
+        return false;
+
       return !!expandedNodes.find(n => n.id === node.id);
     },
-    [expandedNodes]
+    [expandedNodes, allNodesStatus]
   );
 
   return (
@@ -92,4 +78,4 @@ function Tree<T extends { children: T[]; id: string }>(
   );
 }
 
-export default React.forwardRef(Tree);
+export default Tree;

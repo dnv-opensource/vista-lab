@@ -21,8 +21,15 @@
   padding: 1em;
   border-radius: 5px;
 
-  .mode-selection {
-    font-size: 0.8em;
+  .header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 0.5em;
+  }
+
+  .mode-selection {
+    font-size: 0.7em;
   }
 }

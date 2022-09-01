@@ -101,6 +101,8 @@ export enum IconName {
   AngleRight = 'angle-right',
   AngleDown = 'angle-down',
   AngleUp = 'angle-up',
+  AnglesDown = 'angles-down',
+  AnglesUp = 'angles-up',
   Clock = 'clock',
 }
 

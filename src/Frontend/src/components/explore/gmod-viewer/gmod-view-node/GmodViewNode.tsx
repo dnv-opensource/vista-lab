@@ -1,7 +1,9 @@
 import clsx from 'clsx';
-import { GmodNode, GmodPath } from 'dnv-vista-sdk';
+import { GmodNode, GmodPath, UniversalId } from 'dnv-vista-sdk';
 import React, { useMemo, useState } from 'react';
+import useBus from 'use-bus';
 import { useExploreContext } from '../../../../context/ExploreContext';
+import { BusEvents } from '../../../shared/events';
 import Icon from '../../../ui/icons/Icon';
 import { IconName } from '../../../ui/icons/icons';
 import AddToPanelButton from '../../add-to-panel-button/AddToPanelButton';
@@ -20,6 +22,8 @@ interface Props {
   skippedParent?: GmodNode;
 }
 
+type AllDataChannelsStatus = 'expanded' | 'collapsed' | null;
+
 const GmodViewNode: React.FC<Props> = ({ node, mergedChild, skippedParent, parents, path: initPath }) => {
   const path = useMemo(
     () => (mergedChild ? new GmodPath(parents.concat(node), mergedChild) : initPath),
@@ -28,6 +32,20 @@ const GmodViewNode: React.FC<Props> = ({ node, mergedChild, skippedParent, paren
 
   const [expanded, setExpanded] = useState(false);
   const { getUniversalIdsFromGmodPath: getLocalIdsFromGmodPath } = useExploreContext();
+
+  useBus(
+        BusEvents.TreeAllDataChannelsStatus,
+        e => {
+            const next = e.action as AllDataChannelsStatus;
+            if (next === 'expanded' && !expanded) {
+                setExpanded(true);
+            }
+            else if (next === 'collapsed' && expanded) {
+                setExpanded(false);
+            }
+        },
+        [expanded, setExpanded],
+    );
 
   const universalIds = useMemo(() => {
     return getLocalIdsFromGmodPath(path);
