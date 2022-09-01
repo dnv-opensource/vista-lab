@@ -14,7 +14,7 @@ interface Props {
 
 const VesselCard: React.FC<Props> = ({ vessel }) => {
   return (
-    <LinkWithQuery className={'vessel-card'} to={`${vessel.vesselId}`} queryKey="query">
+    <LinkWithQuery className={'vessel-card'} to={`${vessel.vesselId}`} queryKey={["query", "mode"]}>
       <FlipCard
         className="vessel-card-content"
         front={

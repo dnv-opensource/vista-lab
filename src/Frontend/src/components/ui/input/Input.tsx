@@ -51,33 +51,34 @@ const Input = React.forwardRef<HTMLDivElement, InputProps>(
 
     const isEmpty = useMemo(() => value === undefined || (typeof value === 'string' && value.length === 0), [value]);
 
-    const iconComp = icon && (
-      <Icon
-        icon={icon}
-        className="input-icon"
-        onClick={() => {
-          inputRef?.current?.focus();
-        }}
-      />
-    );
+    const iconComp = icon && <Icon icon={icon} className="input-icon" />;
 
     return (
-      <div className={clsx('ui-input', isEmpty && 'empty', className)} ref={ref}>
-        {!iconLast && iconComp}
-        <input {...restProps} ref={inputRef} value={value ?? ''} onChange={onChange} />
-        {!loadingResult ? (
-          !hideClearIcon && (
-            <Icon
-              icon={IconName.Times}
-              className={clsx('cancel-icon', isEmpty && 'empty')}
-              onClick={() => onChange(undefined)}
-            />
-          )
-        ) : (
-          <Loader />
-        )}
-        {iconLast && iconComp}
-      </div>
+      <>
+        <div
+          id="ui-input"
+          className={clsx('ui-input', isEmpty && 'empty', className)}
+          ref={ref}
+          onClick={() => {
+            inputRef?.current?.focus();
+          }}
+        >
+          {!iconLast && iconComp}
+          <input {...restProps} ref={inputRef} value={value ?? ''} onChange={onChange} />
+          {!loadingResult ? (
+            !hideClearIcon && (
+              <Icon
+                icon={IconName.Times}
+                className={clsx('cancel-icon', isEmpty && 'empty')}
+                onClick={() => onChange(undefined)}
+              />
+            )
+          ) : (
+            <Loader />
+          )}
+          {iconLast && iconComp}
+        </div>
+      </>
     );
   }
 );

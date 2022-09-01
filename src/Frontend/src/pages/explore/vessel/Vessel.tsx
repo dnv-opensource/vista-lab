@@ -39,14 +39,10 @@ const VesselComp: React.FC = () => {
       .finally(() => setLoading(false));
   }, [vesselId, getVmodForVessel, setLoading, setVmod]);
 
-  useEffect(() => {
-    return () => setMode(VesselMode.Any);
-  }, [setMode]);
-
   return (
     <>
       <ResultBar className={'vessel-result-bar'}>
-        <LinkWithQuery className={'back'} to={'/explore'} queryKey="query">
+        <LinkWithQuery className={'back'} to={'/explore'} queryKey={['query', 'mode']}>
           <Icon icon={IconName.LeftArrow} />
           {vesselId}
         </LinkWithQuery>
@@ -58,8 +54,7 @@ const VesselComp: React.FC = () => {
       <ScrollableField className={'vmod-container'}>
         <RadioSelection
           className={'mode-selection'}
-          options={Object.entries(VesselMode)
-            .map((k, i) => ({ index: i, label: k[1] }))}
+          options={Object.entries(VesselMode).map((k, i) => ({ index: i, label: k[1] }))}
           onChange={option => {
             setMode(option.label as VesselMode);
           }}

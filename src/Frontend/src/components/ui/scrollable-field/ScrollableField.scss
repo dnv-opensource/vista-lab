@@ -4,3 +4,16 @@
   overflow-y: auto;
   @include scroll-bar;
 }
+
+.relative-scroll-container {
+  flex: 1;
+  position: relative;
+}
+
+.flex-scrollable-field {
+  overflow-y: auto;
+  @include scroll-bar;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+}

@@ -4,6 +4,7 @@ import './Button.scss';
 
 export enum ButtonType {
   Primary = 'primary',
+  Subtle = 'subtle',
   Success = 'success',
   Warning = 'warning',
   Danger = 'danger',

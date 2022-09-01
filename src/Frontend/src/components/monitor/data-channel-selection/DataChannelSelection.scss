@@ -2,7 +2,12 @@
 @import 'src/styles/colors';
 
 .data-channel-selection {
-  margin-top: 0.5em;
+  padding-top: 0.5em;
+
+  a {
+    margin: 0 auto;
+  }
+
   .data-channel-card-wrapper {
     font-size: 0.7em;
   }
@@ -10,7 +15,6 @@
   display: flex;
   flex-direction: column;
   gap: 0.3em;
-  height: 90%;
 
   .dc-id-card {
     font-size: 0.8em;

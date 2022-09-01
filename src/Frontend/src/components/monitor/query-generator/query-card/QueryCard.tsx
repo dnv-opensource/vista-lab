@@ -3,7 +3,6 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { Panel, Query, usePanelContext } from '../../../../context/PanelContext';
 import useToast, { ToastType } from '../../../../hooks/use-toast';
 import { isNullOrWhitespace } from '../../../../util/string';
-import Button from '../../../ui/button/Button';
 import Icon from '../../../ui/icons/Icon';
 import { IconName } from '../../../ui/icons/icons';
 import Input from '../../../ui/input/Input';
@@ -70,6 +69,18 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
     [selectQueryOperator, panel.id, query.id]
   );
 
+  const deleteSelectedItem = useCallback(
+    (item: Query | UniversalId) => {
+      const newQuery = { ...query };
+      const items = [...newQuery.items];
+      const itemIndex = items.findIndex(i => item.toString() === i.toString());
+      if (itemIndex === -1) return;
+      newQuery.items.splice(itemIndex, 1);
+      editQuery(panel.id, newQuery);
+    },
+    [editQuery, panel, query]
+  );
+
   const availableOptions: (Query | UniversalId)[] = useMemo(() => {
     return [
       ...panel.queries
@@ -77,15 +88,15 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
         .filter(
           q =>
             !query.items.find(item => {
-              if ('query' in item) return q.id === item.id;
-              return true;
+              if ('items' in item) return q.id === item.id;
+              return false;
             })
         ),
       ...panel.dataChannelIds.filter(
         dc =>
           !query.items.find(item => {
             if ('localId' in item) return item.equals(dc);
-            return true;
+            return false;
           })
       ),
     ];
@@ -100,6 +111,7 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
           onClick={toggleCollapsed}
         />
         <Input className={'query-card-title'} value={query.name} onChange={onTitleChange} />
+
         <div className={'query-card-action-buttons'}>
           <Icon
             role={'button'}
@@ -130,16 +142,19 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
           </div>
           {query.items.length > 0 &&
             query.items.map(i => {
+              let item = undefined;
               if ('localId' in i) {
-                return <p key={i.toString()}>{i.toString()}</p>;
+                item = <p key={i.toString()}>{i.toString()}</p>;
+              } else {
+                item = <p key={i.id}>{i.name}</p>;
               }
-              return <p key={i.id}>{i.name}</p>;
+              return (
+                <div key={i.toString()} className={'query-generation-selected-item'}>
+                  {item}
+                  <Icon icon={IconName.Minus} onClick={() => deleteSelectedItem(i)} />
+                </div>
+              );
             })}
-          <div className={'query-generation-submit'}>
-            <Button disabled={(query.items.length > 1 && !query.operator) || query.items.length === 0}>
-              Generate
-            </Button>
-          </div>
         </div>
       )}
     </div>

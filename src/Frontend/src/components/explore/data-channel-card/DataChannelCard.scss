@@ -3,7 +3,6 @@
 
 .data-channel-card {
   position: relative;
-  margin: 0.5em 0em 0em 1em;
   padding: 1em;
   box-shadow: $drop-shadow;
   border: $drop-shadow-border;
@@ -21,6 +20,7 @@
     align-items: center;
 
     .vessel-info-placeholder {
+      min-height: 1px;
       flex: 0.8;
     }
     .vessel-info {

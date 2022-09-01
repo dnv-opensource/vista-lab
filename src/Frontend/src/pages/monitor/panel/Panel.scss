@@ -10,6 +10,16 @@
     gap: 0 5px;
     align-items: center;
   }
+
+  .panel-time-pickers {
+    display: flex;
+    gap: 0.3em;
+    font-size: 1.4em;
+    & > * {
+      background-color: $white;
+      color: $dark-blue;
+    }
+  }
 }
 
 .vista-panel-container-grid {
@@ -28,28 +38,21 @@
     background-color: $white;
     border: $drop-shadow-border;
     box-shadow: $drop-shadow;
-
-    &:not(.panel-result-graph-wrapper) {
-      padding: 0.6em;
-    }
+    padding: 0.6em;
+    display: flex;
+    flex-direction: column;
   }
 
   .available-data-channels {
-    overflow-y: hidden;
     grid-area: dc;
   }
 
   .panel-result-graph-wrapper {
+    padding: 0em;
     grid-area: gr;
-    .panel-graph {
-      height: 95%;
-      width: 100%;
-    }
-    // @include withResponsiveHeightToWidthScale(45%);
   }
 
   .query-selection {
-    overflow-y: hidden;
     grid-area: sel;
   }
 }

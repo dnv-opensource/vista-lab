@@ -11,7 +11,7 @@ import {
 import React, { createContext, useCallback, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { VistaLabApi } from '../apiConfig';
-import { DataChannelListPackage } from '../client/models/DataChannelListPackage';
+import { DataChannelListPackage } from '../client';
 import { VesselMode } from '../pages/explore/vessel/Vessel';
 import { useVISContext } from './VISContext';
 
@@ -54,11 +54,7 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
         [VesselMode.SecondaryItem]: 2,
       }[mode];
 
-      const request = {
-        visVersion: clientVersion,
-        searchRequestDto: { scope: scope, phrase: query ?? '' },
-      };
-      const response = await VistaLabApi.SearchApi.searchSearch(request);
+      const response = await VistaLabApi.searchSearch(clientVersion, { scope: scope, phrase: query ?? '' });
 
       return response;
     },
@@ -71,18 +67,18 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
       if (isNaN(vesselImoNr)) throw new Error('Invalid vesselId');
       const imo = new ImoNumber(vesselImoNr);
 
-      const dclp = dataChannelListPackages?.find(dclp => dclp._package?.header?.shipID === vesselId)?._package;
+      const dclp = dataChannelListPackages?.find(dclp => dclp.Package?.Header?.ShipID === vesselId)?.Package;
       if (!dclp) return;
 
-      const dataChannels = dclp?.dataChannelList?.dataChannel;
-      if (!dataChannels || dataChannels.length === 0 || !dclp.header?.dataChannelListID?.version) return;
+      const dataChannels = dclp?.DataChannelList?.DataChannel;
+      if (!dataChannels || dataChannels.length === 0 || !dclp.Header?.DataChannelListID?.Version) return;
 
       const gmod = await VIS.instance.getGmod(visVersion);
       const codebooks = await VIS.instance.getCodebooks(visVersion);
 
-      const universalIds = dclp.dataChannelList?.dataChannel?.map(dc =>
+      const universalIds = dclp.DataChannelList?.DataChannel?.map(dc =>
         UniversalIdBuilder.create(visVersion)
-          .withLocalId(LocalIdBuilder.parse(dc.dataChannelID?.localID!, gmod, codebooks))
+          .withLocalId(LocalIdBuilder.parse(dc.DataChannelID?.LocalID!, gmod, codebooks))
           .withImoNumber(imo)
           .build()
       );

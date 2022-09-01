@@ -1,0 +1,65 @@
+@import 'src/styles/colors';
+@import 'src/styles/global';
+
+.relative-time-range-picker-container {
+  font-size: 0.7em;
+
+  .time-range-clock-icon {
+    color: $grey;
+  }
+
+  .relative-time-range-picker-picker-input {
+    cursor: pointer;
+    white-space: nowrap;
+    display: flex;
+    gap: 0.5em;
+    align-items: center;
+  }
+
+  .relative-time-range-picker-content {
+    position: absolute;
+    z-index: 1000000;
+    display: flex;
+    gap: 0.5em;
+    flex-wrap: nowrap;
+    width: 20em;
+    max-height: 15em;
+    border-radius: 0.2em;
+    box-shadow: $drop-shadow;
+    border: $drop-shadow-border;
+
+    background-color: $white;
+    color: $dark-blue;
+
+    .relative-time-range-picker-title {
+      padding: 0.5em;
+      font-weight: 500;
+    }
+
+    .relative-time-range-picker-left-side {
+      width: 10em;
+      .relative-time-range-picker-time-ranges {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        flex: 1;
+
+        .relative-time-range-picker-option {
+          padding: 0.5em;
+          cursor: pointer;
+
+          &:hover {
+            background-color: $bg-grey;
+          }
+        }
+      }
+    }
+
+    .relative-time-range-picker-right-side {
+      padding: 0.5em;
+      .relative-time-range-picker-title {
+        padding: 0;
+      }
+    }
+  }
+}

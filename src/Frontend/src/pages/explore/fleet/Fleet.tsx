@@ -12,8 +12,8 @@ const FleetGrid: React.FC = () => {
     () =>
       dataChannelListPackages?.map(d => {
         return {
-          vesselId: d._package?.header?.shipID,
-          numDataChannels: d._package?.dataChannelList?.dataChannel?.length,
+          vesselId: d.Package?.Header?.ShipID,
+          numDataChannels: d.Package?.DataChannelList?.DataChannel?.length,
           status: 0,
         };
       }) ?? [],

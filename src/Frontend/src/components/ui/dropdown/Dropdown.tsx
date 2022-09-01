@@ -2,6 +2,7 @@ import clsx from 'clsx';
 import React, { useRef } from 'react';
 import ReactDOM from 'react-dom';
 import useOutsideClick from '../../../hooks/use-outside-click';
+import ScrollableField from '../scrollable-field/ScrollableField';
 import './Dropdown.scss';
 
 interface Props {
@@ -32,7 +33,7 @@ const Dropdown: React.FC<React.PropsWithChildren<Props>> = ({
 
   return ReactDOM.createPortal(
     open && (
-      <div
+      <ScrollableField
         ref={dropdownRef}
         className={clsx('ui-dropdown', className)}
         style={{
@@ -42,7 +43,7 @@ const Dropdown: React.FC<React.PropsWithChildren<Props>> = ({
         }}
       >
         {children}
-      </div>
+      </ScrollableField>
     ),
     document.body
   );

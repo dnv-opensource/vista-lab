@@ -43,8 +43,12 @@
     overflow-y: hidden;
 
     .data-channels {
+      padding: 1em 0;
       padding-bottom: 0.1em;
       animation: slidein 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 0.7em;
 
       .data-channel-card-wrapper {
         position: relative;
