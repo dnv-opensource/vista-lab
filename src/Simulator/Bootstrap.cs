@@ -49,11 +49,25 @@ namespace Simulator
         public static Task BuildAPIControllers(string[] args, string clientId)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddCors(
+                options =>
+                {
+                    options.AddDefaultPolicy(
+                        builder =>
+                        {
+                            builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                        }
+                    );
+                }
+            );
+
             builder.Services.AddScoped<ISimulator, Simulator>();
             builder.Services.AddControllers();
             builder.Services.AddMqttClient(clientId);
 
             var app = builder.Build();
+            app.UseCors();
             app.MapControllers();
             return app.RunAsync();
         }

@@ -1,20 +1,35 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { IconName } from '../../ui/icons/icons';
 import Input from '../../ui/input/Input';
+import Button from '../../ui/button/Button';
 import './SearchBar.scss';
 
 interface Props {
   text?: string;
   loading?: boolean;
   onSubmit: (value: string) => void;
+  onChangeFile: (file: File) => void;
 }
 
-const SearchBar: React.FC<Props> = ({ text, onSubmit, loading }) => {
+const SearchBar: React.FC<Props> = ({ text, onSubmit, onChangeFile, loading }) => {
   const [searchText, setSearchText] = useState<string>();
+  const dataChannelFile = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setSearchText(text);
   }, [text]);
+
+  const handleImportFileClick = () => {
+    dataChannelFile.current?.click();
+  };
+
+  const handleChangeFile = (event?: React.ChangeEvent<HTMLInputElement>) => {
+    if (event && event.target && event.target.files) {
+      event.stopPropagation();
+      event.preventDefault();
+      onChangeFile(event.target.files[0]);
+    }
+  };
 
   return (
     <div className={'search-bar'}>
@@ -38,6 +53,14 @@ const SearchBar: React.FC<Props> = ({ text, onSubmit, loading }) => {
           }}
           loadingResult={loading}
         />
+        <Button onClick={handleImportFileClick}>+</Button>
+        <input
+          type={'file'}
+          id="file"
+          ref={dataChannelFile}
+          onChange={handleChangeFile}
+          style={{ display: 'none' }}
+        ></input>
       </form>
     </div>
   );

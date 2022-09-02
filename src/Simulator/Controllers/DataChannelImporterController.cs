@@ -3,7 +3,6 @@ using Vista.SDK.Transport.Json.DataChannel;
 
 namespace Simulator.Controllers
 {
-    [Route("[controller]")]
     [ApiController]
     public class DataChannelImporterController : ControllerBase
     {
@@ -12,6 +11,7 @@ namespace Simulator.Controllers
         public DataChannelImporterController(ISimulator simulator) => _simulator = simulator;
 
         [HttpPost]
+        [Route("api/data-channel/import-and-simulate")]
         public ActionResult Post(DataChannelListPackage file, CancellationToken cancellationToken)
         {
             _simulator.SimulateDataChannel(file, cancellationToken);
