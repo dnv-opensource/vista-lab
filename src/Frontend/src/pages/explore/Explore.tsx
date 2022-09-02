@@ -7,7 +7,8 @@ import { isNullOrWhitespace } from '../../util/string';
 import './Explore.scss';
 
 const Explore: React.FC = () => {
-  const { setDataChannelListPackages, fetchFilteredDataChannels } = useExploreContext();
+  const { setDataChannelListPackages, fetchFilteredDataChannels, postImportAndSimulateDataChannelFile } =
+    useExploreContext();
   const [searchParams, setSearchParam] = useSearchParams();
   const [loading, setLoading] = useState(false);
   const queryParam = useMemo(() => searchParams.get('query') ?? undefined, [searchParams]);
@@ -36,7 +37,12 @@ const Explore: React.FC = () => {
 
   return (
     <div className={'vista-explore'}>
-      <SearchBar text={queryParam} onSubmit={handleSearchSubmit} loading={loading} />
+      <SearchBar
+        text={queryParam}
+        onSubmit={handleSearchSubmit}
+        loading={loading}
+        onChangeFile={postImportAndSimulateDataChannelFile}
+      />
       <MapContainer />
       <Outlet />
     </div>
