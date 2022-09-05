@@ -141,7 +141,7 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
   );
 
   const postImportAndSimulateDataChannelFile = (file: File) => {
-    fetch('http://localhost:5000/api/data-channel/import-and-simulate', {
+    fetch('http://localhost:5054/api/data-channel/import-and-simulate', {
       method: 'POST',
       body: file,
     });

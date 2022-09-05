@@ -4,6 +4,7 @@
         "Simulator": {
             "commandName": "Project",
             "dotnetRunMessages": true,
+            "applicationUrl": "http://localhost:5054",
             "environmentVariables": {
                 "DOTNET_ENVIRONMENT": "Development",
                 "RUN_BACKGROUND_SERVICE": "false"

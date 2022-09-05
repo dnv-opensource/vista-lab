@@ -72,11 +72,14 @@ services:
             - channel-streamer
         container_name: vista-lab-simulator
         restart: unless-stopped
+        ports:
+            - "5054:5054"
         build:
             context: .
             dockerfile: src/Simulator/Dockerfile
         environment:
             BROKER_SERVER: "vista-lab-broker"
+            RUN_BACKGROUND_SERVICE: "true"
     broker:
         depends_on:
             - questdb

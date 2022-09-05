@@ -19,7 +19,10 @@ WORKDIR "src/Simulator/"
 RUN dotnet build -c Release
 RUN dotnet publish -c Release -o /app/publish --no-restore --no-build
 
-FROM mcr.microsoft.com/dotnet/runtime:6.0
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
+ENV ASPNETCORE_URLS=http://+:5054
+
 WORKDIR /app
+EXPOSE 5054
 COPY --from=build /app/publish ./
 ENTRYPOINT ["dotnet", "Simulator.dll"]
