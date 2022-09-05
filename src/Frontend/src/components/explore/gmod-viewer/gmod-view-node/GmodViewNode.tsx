@@ -1,13 +1,12 @@
 import clsx from 'clsx';
-import { GmodNode, GmodPath, UniversalId } from 'dnv-vista-sdk';
-import React, { useMemo, useState } from 'react';
-import useBus from 'use-bus';
+import { GmodNode, GmodPath } from 'dnv-vista-sdk';
+import React, { useMemo } from 'react';
 import { useExploreContext } from '../../../../context/ExploreContext';
-import { BusEvents } from '../../../shared/events';
 import Icon from '../../../ui/icons/Icon';
 import { IconName } from '../../../ui/icons/icons';
 import AddToPanelButton from '../../add-to-panel-button/AddToPanelButton';
 import DataChannelCard from '../../data-channel-card/DataChannelCard';
+import { GmodViewerNodeExtra } from '../GmodViewer';
 import './GmodViewNode.scss';
 
 export const getBadgeClassNameByNode = (node: GmodNode) => {
@@ -20,32 +19,17 @@ interface Props {
   path: GmodPath;
   mergedChild?: GmodNode;
   skippedParent?: GmodNode;
+  extra: GmodViewerNodeExtra;
 }
 
-type AllDataChannelsStatus = 'expanded' | 'collapsed' | null;
+const GmodViewNode: React.FC<Props> = ({ node, mergedChild, skippedParent, parents, path: initPath, extra }) => {
 
-const GmodViewNode: React.FC<Props> = ({ node, mergedChild, skippedParent, parents, path: initPath }) => {
   const path = useMemo(
     () => (mergedChild ? new GmodPath(parents.concat(node), mergedChild) : initPath),
     [initPath, mergedChild, parents, node]
   );
 
-  const [expanded, setExpanded] = useState(false);
   const { getUniversalIdsFromGmodPath: getLocalIdsFromGmodPath } = useExploreContext();
-
-  useBus(
-        BusEvents.TreeAllDataChannelsStatus,
-        e => {
-            const next = e.action as AllDataChannelsStatus;
-            if (next === 'expanded' && !expanded) {
-                setExpanded(true);
-            }
-            else if (next === 'collapsed' && expanded) {
-                setExpanded(false);
-            }
-        },
-        [expanded, setExpanded],
-    );
 
   const universalIds = useMemo(() => {
     return getLocalIdsFromGmodPath(path);
@@ -66,13 +50,16 @@ const GmodViewNode: React.FC<Props> = ({ node, mergedChild, skippedParent, paren
     return items;
   }, [node, parents, mergedChild, skippedParent]);
 
+  const expanded = extra.isExpanded(node);
+
+
   return (
     <div className={'gmod-view-node-container'}>
       {universalIds.length > 0 && (
         <Icon
           className={'expand-data-channel-icon'}
           icon={expanded ? IconName.Stream : IconName.Bars}
-          onClick={() => setExpanded(prev => (prev ? false : true))}
+          onClick={() => extra.setExpanded(node)}
         />
       )}
       <span className={clsx('gmod-badge')}>

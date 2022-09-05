@@ -1,62 +1,91 @@
 import clsx from 'clsx';
-import React, { useCallback, useState } from 'react';
-import useBus from 'use-bus';
+import React, { useCallback, useMemo, useState } from 'react';
+import useBus, { dispatch } from 'use-bus';
 import useStateWithPromise from '../../../hooks/use-state-with-promise';
-import { BusEvents } from '../events';
+import { BusEvents, TreeAllNodesStatus, TreeAllNodesStatusEvent } from '../events';
 import TreeViewNode from './tree-view-node/TreeViewNode';
 import { TreeNode } from './types';
 
-interface Props<T extends { children: T[]; id: string }> {
+export type TreeNodeType<T> = { children: T[]; id: string };
+
+interface Props<T extends TreeNodeType<T>> {
   className?: string;
   rootNode: T;
   formatNode: (node: T, parents: TreeNode<T>[], children: T[]) => TreeNode<T>;
   formatElement: (node: TreeNode<T>, parents: TreeNode<T>[], children: TreeNode<T>[]) => JSX.Element;
 }
 
-type AllNodesStatus = 'expanded' | 'collapsed' | null;
+function getAllNodes<T extends TreeNodeType<T>>(rootNode: T, nodes: T[]) {
+    nodes.push(rootNode);
 
-function Tree<T extends { children: T[]; id: string }>(
+    if (!rootNode.children.length)
+        return;
+
+    rootNode.children.forEach(c => getAllNodes(c, nodes));
+}
+
+function Tree<T extends TreeNodeType<T>>(
   { rootNode, formatElement, formatNode, className }: Props<T>
 ) {
   const root = formatNode(rootNode, [], rootNode.children);
   const [expandedNodes, setExpandedNodes] = useStateWithPromise<T[]>([]);
-  const [allNodesStatus, setAllNodesStatus] = useState<AllNodesStatus>(null);
+  const [allNodesStatus, setAllNodesStatus] = useState<TreeAllNodesStatus>(null);
 
-  const dispatch = useBus(
+  const allNodes = useMemo(() => {
+    const nodes: T[] = [];
+    getAllNodes(rootNode, nodes);
+    return nodes;
+  }, [rootNode]);
+
+  useBus(
     BusEvents.TreeAllNodesStatus,
-    e => setAllNodesStatus(e.action as AllNodesStatus),
+    e => {
+        const event = e as TreeAllNodesStatusEvent;
+        const newStatus = event.action;
+        setAllNodesStatus(newStatus);
+        if (newStatus === 'expanded') {
+            setExpandedNodes(allNodes);
+        } else if (newStatus === 'collapsed') {
+            setExpandedNodes([]);
+        }
+    },
     [],
   );
 
-  const handleExpanded = useCallback(
+  const setExpanded = useCallback(
     (node: T) => {
       const prev = expandedNodes;
       const foundNodeIndex = prev.findIndex(n => n.id === node.id);
 
-      dispatch({ type: BusEvents.TreeAllNodesStatus, action: null });
-
       if (foundNodeIndex !== -1) {
+        // Already expanded, collapse node
         const newNodes = [...expandedNodes];
         newNodes.splice(foundNodeIndex, 1);
-        setExpandedNodes(newNodes);
-        return;
+        if (newNodes.length === 0)
+            dispatch({ type: BusEvents.TreeAllNodesStatus, action: 'collapsed' });
+        else {
+            if (allNodesStatus !== null)
+                dispatch({ type: BusEvents.TreeAllNodesStatus, action: null });
+            setExpandedNodes(newNodes);
+        }
+      } else {
+        // Collapsed, expand node
+        const newNodes = [...prev, node];
+        if (prev.length + 1 === allNodes.length)
+            dispatch({ type: BusEvents.TreeAllNodesStatus, action: 'expanded' });
+        else {
+            if (allNodesStatus !== null)
+                dispatch({ type: BusEvents.TreeAllNodesStatus, action: null });
+            setExpandedNodes(newNodes);
+        }
       }
-
-      setExpandedNodes([...prev, node]);
     },
-    [expandedNodes, setExpandedNodes, dispatch]
+    [allNodes, expandedNodes, setExpandedNodes, allNodesStatus]
   );
 
   const isExpanded = useCallback(
-    (node: T) => {
-      if (allNodesStatus === 'expanded')
-        return true;
-      else if (allNodesStatus === 'collapsed')
-        return false;
-
-      return !!expandedNodes.find(n => n.id === node.id);
-    },
-    [expandedNodes, allNodesStatus]
+    (node: T) => !!expandedNodes.find(n => n.id === node.id),
+    [expandedNodes]
   );
 
   return (
@@ -70,7 +99,7 @@ function Tree<T extends { children: T[]; id: string }>(
             formatElement={formatElement}
             formatNode={formatNode}
             isExpanded={isExpanded}
-            setExpanded={handleExpanded}
+            setExpanded={setExpanded}
           />
         );
       })}
