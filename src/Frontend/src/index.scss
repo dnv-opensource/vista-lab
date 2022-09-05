@@ -2,8 +2,8 @@
 @import 'src/styles/global';
 
 html {
-  $base-font-size: 24px;
-  font-size: max(min(1.2vw, 64px), $base-font-size);
+  $base-font-size: 18px;
+  font-size: $base-font-size;
 }
 
 body {

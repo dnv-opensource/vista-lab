@@ -37,7 +37,6 @@ export type Query = {
   name: string;
   operator?: Operator;
   items: (Query | UniversalId)[];
-  query?: string;
 };
 
 export type Panel = {

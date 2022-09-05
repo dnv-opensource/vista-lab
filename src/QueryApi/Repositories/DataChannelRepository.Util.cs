@@ -98,4 +98,21 @@ partial class DataChannelRepository
 
         return features;
     }
+
+    public IEnumerable<AggregatedTimeseries> ToAggregatedTimeseries(DbResponse response)
+    {
+        var queryResults = new List<AggregatedTimeseries>();
+
+        for (var i = 0; i < response.Count; i++)
+        {
+            var value = response.GetValue(i, nameof(TimeSeriesEntity.Value)).GetDouble();
+            var timestamp = response
+                .GetValue(i, nameof(TimeSeriesEntity.Timestamp))
+                .GetDateTimeOffset();
+
+            queryResults.Add(new AggregatedTimeseries(value, timestamp));
+        }
+
+        return queryResults;
+    }
 }

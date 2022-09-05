@@ -2,6 +2,7 @@ using Common;
 using GeoJSON.Text.Feature;
 using GeoJSON.Text.Geometry;
 using QueryApi.Models;
+using System.ComponentModel;
 using System.Globalization;
 using System.Text.Json;
 using Vista.SDK;
@@ -9,6 +10,15 @@ using Vista.SDK.Transport.Json.DataChannel;
 using Vista.SDK.Transport.Json.TimeSeriesData;
 
 namespace QueryApi.Repository;
+
+public enum QueryOperator
+{
+    Sum,
+    Subtract,
+    Times,
+    Divide,
+    Average
+}
 
 public sealed partial class DataChannelRepository
 {
@@ -25,6 +35,35 @@ public sealed partial class DataChannelRepository
         double Latitude,
         double Longitude,
         DateTimeOffset Timestamp
+    );
+
+    public sealed record Query(
+        [property: DefaultValue("123abc")] string Id,
+        [property: DefaultValue("Subtract")] string Name,
+        [property: DefaultValue(QueryOperator.Subtract)] QueryOperator Operator,
+        [property: DefaultValue(null)] IEnumerable<Query>? SubQueries,
+        [property: DefaultValue(
+            new string[]
+            {
+                "data.dnv.com/IMO1234567/dnv-v2/vis-3-4a/621.21/S90/sec/411.1/C101/meta/qty-mass/cnt-fuel.oil/pos-outlet",
+                "data.dnv.com/IMO1234567/dnv-v2/vis-3-4a/621.21/S90/sec/411.1/C101/meta/qty-mass/cnt-fuel.oil/pos-inlet"
+            }
+        )]
+            IEnumerable<string>? DataChannelIds
+    );
+
+    public sealed record TimeRange(
+        [property: DefaultValue(900)] long From,
+        [property: DefaultValue(0)] long To,
+        [property: DefaultValue("10s")] string Interval
+    );
+
+    public sealed record AggregatedTimeseries(double Value, DateTimeOffset Timestamp);
+
+    public sealed record AggregatedQueryResult(
+        IEnumerable<AggregatedTimeseries> Timeseries,
+        string Id,
+        string Name
     );
 
     public DataChannelRepository(QuestDbClient client, ILogger<DataChannelRepository> logger)
@@ -354,5 +393,28 @@ public sealed partial class DataChannelRepository
         var geoJson = ToGeoJsonFeatures(response);
 
         return geoJson.ToArray();
+    }
+
+    public async Task<IEnumerable<AggregatedQueryResult>> GetTimeSeriesByQueries(
+        TimeRange timeRange,
+        IEnumerable<Query> queries,
+        CancellationToken cancellationToken
+    )
+    {
+        var now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        var incrementer = 0;
+
+        var queryResults = new List<AggregatedQueryResult>();
+
+        foreach (var query in queries)
+        {
+            var q = SQLGenerator.GenerateQueryTimeseriesSQL(query, timeRange, now, ref incrementer);
+
+            var response = await _client.Query(q, cancellationToken);
+            var timeseries = ToAggregatedTimeseries(response);
+            queryResults.Add(new AggregatedQueryResult(timeseries, query.Id, query.Name));
+        }
+
+        return queryResults;
     }
 }

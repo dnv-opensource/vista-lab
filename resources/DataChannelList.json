@@ -19,6 +19,66 @@
             "DataChannel": [
                 {
                     "DataChannelID": {
+                        "LocalID": "/dnv-v2/vis-3-4a/621.21/S90/sec/411.1/C101/meta/qty-mass/cnt-fuel.oil/pos-outlet",
+                        "ShortID": "ca9279e1-d61c-4141-ada4-ab30a6bbdc0e",
+                        "NameObject": null
+                    },
+                    "Property": {
+                        "DataChannelType": {
+                            "Type": "Inst",
+                            "UpdateCycle": "1",
+                            "CalculationPeriod": null
+                        },
+                        "Format": {
+                            "Type": "Decimal",
+                            "Restriction": null
+                        },
+                        "Range": {
+                            "High": "500",
+                            "Low": "0"
+                        },
+                        "Unit": {
+                            "UnitSymbol": "L",
+                            "QuantityName": "Liter"
+                        },
+                        "QualityCoding": null,
+                        "AlertPriority": null,
+                        "Name": "Fuel oil piping/Mass/Outlet/PropulsionEngine",
+                        "Remarks": null
+                    }
+                },
+                {
+                    "DataChannelID": {
+                        "LocalID": "/dnv-v2/vis-3-4a/621.21/S90/sec/411.1/C101/meta/qty-mass/cnt-fuel.oil/pos-inlet",
+                        "ShortID": "ca9279e1-d61c-3131-ada4-ab30a6bbdc0d",
+                        "NameObject": null
+                    },
+                    "Property": {
+                        "DataChannelType": {
+                            "Type": "Inst",
+                            "UpdateCycle": "1",
+                            "CalculationPeriod": null
+                        },
+                        "Format": {
+                            "Type": "Decimal",
+                            "Restriction": null
+                        },
+                        "Range": {
+                            "High": "100",
+                            "Low": "0"
+                        },
+                        "Unit": {
+                            "UnitSymbol": "L",
+                            "QuantityName": "Liter"
+                        },
+                        "QualityCoding": null,
+                        "AlertPriority": null,
+                        "Name": "Fuel oil piping/Mass/Inlet/PropulsionEngine",
+                        "Remarks": null
+                    }
+                },
+                {
+                    "DataChannelID": {
                         "LocalID": "/dnv-v2/vis-3-4a/411.1-4/C101.31-3/meta/qty-temperature/pos-inlet",
                         "ShortID": "aa9279e1-d61c-5382-ada4-ab30a6bbdc0c",
                         "NameObject": null

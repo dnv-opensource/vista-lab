@@ -265,6 +265,50 @@ export class Client extends AuthorizedApiBase {
     }
 
     /**
+     * Get timeseries by queries
+     * @param body (optional) 
+     * @return Success
+     */
+    dataChannelGetTimeSeriesDataByQueries(body: PanelQueryDto | undefined): Promise<AggregatedQueryResult[]> {
+        let url_ = this.baseUrl + "/api/data-channel/time-series/query";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processDataChannelGetTimeSeriesDataByQueries(_response);
+        });
+    }
+
+    protected processDataChannelGetTimeSeriesDataByQueries(response: Response): Promise<AggregatedQueryResult[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : <AggregatedQueryResult[]>JSON.parse(_responseText, this.jsonParseReviver);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<AggregatedQueryResult[]>(<any>null);
+    }
+
+    /**
      * Search for gmod paths.
      * @param body (optional) 
      * @return Success
@@ -319,6 +363,17 @@ export interface AdditionalTimeSeriesProperties {
     rangeLow: number | undefined;
     name: string | undefined;
     vesselId: string | undefined;
+}
+
+export interface AggregatedQueryResult {
+    timeseries: AggregatedTimeseries[];
+    id: string;
+    name: string;
+}
+
+export interface AggregatedTimeseries {
+    value: number;
+    timestamp: Date;
 }
 
 export interface ConfigurationReference {
@@ -409,6 +464,11 @@ export interface Package {
     DataChannelList: DataChannelList;
 }
 
+export interface PanelQueryDto {
+    timeRange: TimeRange;
+    queries: Query[];
+}
+
 export interface Property {
     DataChannelType: DataChannelType;
     Format: Format;
@@ -418,6 +478,22 @@ export interface Property {
     AlertPriority: string | undefined;
     Name: string | undefined;
     Remarks: string | undefined;
+}
+
+export interface Query {
+    id: string;
+    name: string;
+    operator: QueryOperator;
+    subQueries: Query[] | undefined;
+    dataChannelIds: string[] | undefined;
+}
+
+export enum QueryOperator {
+    _0 = 0,
+    _1 = 1,
+    _2 = 2,
+    _3 = 3,
+    _4 = 4,
 }
 
 export interface Range {
@@ -455,6 +531,12 @@ export enum SearchScope {
     _0 = 0,
     _1 = 1,
     _2 = 2,
+}
+
+export interface TimeRange {
+    from: number;
+    to: number;
+    interval: string;
 }
 
 export interface TimeSeriesDataWithProps {

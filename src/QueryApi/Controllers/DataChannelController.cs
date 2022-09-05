@@ -26,6 +26,8 @@ public sealed class DataChannelController : ControllerBase
             string LocalId
     );
 
+    public sealed record PanelQueryDto(TimeRange TimeRange, IEnumerable<Query> Queries);
+
     public DataChannelController(DataChannelRepository dataChannelRepository)
     {
         _dataChannelRepository = dataChannelRepository;
@@ -122,5 +124,26 @@ public sealed class DataChannelController : ControllerBase
         );
 
         return Ok(features);
+    }
+
+    /// <summary>
+    /// Get timeseries by queries
+    /// </summary>
+    /// <param name="query"></param>
+    /// <param name="cancellationToken"></param>
+    [HttpPost]
+    [Route("api/data-channel/time-series/query")]
+    public async Task<ActionResult<IEnumerable<AggregatedQueryResult>>> GetTimeSeriesDataByQueries(
+        PanelQueryDto query,
+        CancellationToken cancellationToken
+    )
+    {
+        var result = await _dataChannelRepository.GetTimeSeriesByQueries(
+            query.TimeRange,
+            query.Queries,
+            cancellationToken
+        );
+
+        return Ok(result);
     }
 }
