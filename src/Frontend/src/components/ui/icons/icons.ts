@@ -5,6 +5,7 @@ import {
   faAngleUp,
   faArrowLeft,
   faArrowRight,
+  faArrowsLeftRightToLine,
   faBars,
   faCaretDown,
   faCaretUp,
@@ -67,7 +68,8 @@ library.add(
   faAngleDown,
   faAngleRight,
   faAngleUp,
-  faClock
+  faClock,
+  faArrowsLeftRightToLine
 );
 
 // Make sure these correspond with FontAwsome v6.1 icon names
@@ -104,6 +106,7 @@ export enum IconName {
   AnglesDown = 'angles-down',
   AnglesUp = 'angles-up',
   Clock = 'clock',
+  ArrowsLeftRightToLine = 'arrows-left-right-to-line',
 }
 
 export enum IconVariant {

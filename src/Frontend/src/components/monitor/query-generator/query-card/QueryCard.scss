@@ -44,6 +44,14 @@
     flex-direction: column;
     gap: 0.3em;
 
+    .query-generation-selected-item {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      overflow: hidden;
+      word-break: break-all;
+    }
+
     .query-generation-selector {
       display: flex;
       gap: 0.3em;

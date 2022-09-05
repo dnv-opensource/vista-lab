@@ -1,6 +1,25 @@
+@import 'src/styles/colors';
+@import 'src/styles/global';
+
+.panels-header-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.3em;
+
+  & > :first-child {
+    flex: 1;
+  }
+
+  .combined-time-pickers {
+    font-size: 0.8em;
+  }
+}
+
 .panels-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(20em, 1fr));
   gap: 1em;
-  padding: 1em 0;
+
+  padding: 0.6em 0;
 }

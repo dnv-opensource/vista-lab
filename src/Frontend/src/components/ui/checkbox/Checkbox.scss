@@ -1,0 +1,65 @@
+@import 'src/styles/colors';
+@import 'src/styles/global';
+
+.ui-checkbox {
+  $size: 1.5em;
+  height: $size;
+  padding-left: calc(#{$size} + 0.3em);
+
+  position: relative;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+
+  /* Create a custom checkbox */
+  .checkbox {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: $size;
+    width: $size;
+    background-color: $white;
+    border: $drop-shadow-border;
+    box-shadow: $drop-shadow;
+    border-radius: 0.2em;
+  }
+
+  /* On mouse-over, add a grey background color */
+  &:hover input ~ .checkbox {
+    background-color: $bg-grey;
+  }
+
+  /* When the checkbox is checked, add a blue background */
+  input:checked ~ .checkbox {
+    background-color: $dark-blue;
+  }
+
+  /* Create the checkbox/indicator (hidden when not checked) */
+  .checkbox:after {
+    content: '';
+    position: absolute;
+    display: none;
+  }
+
+  /* Show the checkbox when checked */
+  input:checked ~ .checkbox:after {
+    display: block;
+  }
+
+  .checkbox:after {
+    width: 100%;
+    height: 100%;
+    background-color: $white;
+    clip-path: polygon(20% 40%, 40% 60%, 80% 20%, 90% 30%, 40% 80%, 10% 50%, 20% 40%);
+  }
+}

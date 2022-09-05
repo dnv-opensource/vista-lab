@@ -4,6 +4,10 @@
 .relative-time-range-picker-container {
   font-size: 0.7em;
 
+  .time-range-clock-icon {
+    color: $grey;
+  }
+
   .relative-time-range-picker-picker-input {
     cursor: pointer;
     white-space: nowrap;
@@ -14,6 +18,7 @@
 
   .relative-time-range-picker-content {
     position: absolute;
+    z-index: 1000000;
     display: flex;
     gap: 0.5em;
     flex-wrap: nowrap;

@@ -9,6 +9,7 @@
 .ui-input {
   @include remove-input-style;
   width: 100%;
+  cursor: text;
 
   display: flex;
   flex-direction: row;
@@ -53,9 +54,13 @@
   .ui-icon {
     color: $grey;
     font-size: 0.6em;
+    &:focus {
+      outline: none;
+    }
   }
 
   .cancel-icon {
+    cursor: pointer;
     &.empty {
       visibility: hidden;
     }

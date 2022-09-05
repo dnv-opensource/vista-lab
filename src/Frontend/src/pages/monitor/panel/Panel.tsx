@@ -1,23 +1,26 @@
 import React, { useMemo } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import DataChannelSelection from '../../../components/monitor/data-channel-selection/DataChannelSelection';
+import CombinedTimePickers from '../../../components/monitor/panel-pickers/combined-time-pickers/CombinedTimePickers';
 import QueryGenerator from '../../../components/monitor/query-generator/QueryGenerator';
 import ResultBar from '../../../components/shared/result-bar/ResultBar';
+import Checkbox from '../../../components/ui/checkbox/Checkbox';
 import Icon from '../../../components/ui/icons/Icon';
 import { IconName } from '../../../components/ui/icons/icons';
-import ScrollableField from '../../../components/ui/scrollable-field/ScrollableField';
 import { usePanelContext } from '../../../context/PanelContext';
 import './Panel.scss';
-
-export const QueryResults = React.lazy(() => import('../../../components/monitor/query-results/QueryResults'));
+const QueryResults = React.lazy(() => import('../../../components/monitor/query-results/QueryResults'));
 
 const Panel: React.FC = () => {
   const navigate = useNavigate();
   const { panelId } = useParams();
-  const { getPanel } = usePanelContext();
-  const panel = useMemo(() => (panelId ? getPanel(panelId) : undefined), [getPanel, panelId]);
+  const { getPanel, editPanel, timeRange, interval } = usePanelContext();
+  const initPanel = useMemo(() => (panelId ? getPanel(panelId) : undefined), [getPanel, panelId]);
 
-  if (!panel) navigate('/monitor');
+  if (!initPanel) navigate('/monitor');
+  const panel = initPanel!;
+
+  const isCustomTimeRange = !!panel.timeRange || !!panel.interval;
 
   return (
     <>
@@ -26,14 +29,30 @@ const Panel: React.FC = () => {
           <Icon icon={IconName.LeftArrow} />
           {panelId}
         </Link>
-      </ResultBar>
-      <ScrollableField className={'vista-panel-container-grid'}>
-        <div className={'panel-result-graph-wrapper item'}>{panel && <QueryResults panel={panel} />}</div>
-        <div className={'available-data-channels item'}>{panel && <DataChannelSelection panel={panel} />}</div>
-        <div className={'query-selection item'}>
-          <QueryGenerator panel={panel!} />
+        <div className={'panel-time-pickers'}>
+          <Checkbox
+            label="Custom"
+            className={'custom-time-range-checkbox'}
+            checked={isCustomTimeRange}
+            onChange={checked => {
+              if (checked) return editPanel({ ...panel, interval, timeRange });
+              return editPanel({ ...panel, interval: undefined, timeRange: undefined });
+            }}
+          />
+          <CombinedTimePickers panel={isCustomTimeRange ? panel : undefined} />
         </div>
-      </ScrollableField>
+      </ResultBar>
+      <div className={'vista-panel-container-grid'}>
+        <div className={'panel-result-graph-wrapper item'}>
+          <QueryResults panel={panel} />
+        </div>
+        <div className={'available-data-channels item'}>
+          <DataChannelSelection panel={panel} />
+        </div>
+        <div className={'query-selection item'}>
+          <QueryGenerator panel={panel} />
+        </div>
+      </div>
     </>
   );
 };

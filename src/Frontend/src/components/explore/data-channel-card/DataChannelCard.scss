@@ -3,7 +3,6 @@
 
 .data-channel-card {
   position: relative;
-  margin: 0.5em 0em 0em 1em;
   padding: 1em;
   box-shadow: $drop-shadow;
   border: $drop-shadow-border;
@@ -52,7 +51,7 @@
 
     :first-child {
       font-size: 0.9em;
-      flex: 0.2;
+      flex: 0.3;
       color: $grey;
       word-break: break-all;
     }

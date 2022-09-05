@@ -24,6 +24,7 @@ export type ExploreContextType = {
   universalIds: UniversalId[] | undefined;
   mode: VesselMode;
   setMode: (value: VesselMode) => void;
+  postImportAndSimulateDataChannelFile: (file: File) => void;
 };
 
 type ExploreContextProviderProps = React.PropsWithChildren<{}>;
@@ -35,12 +36,18 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
   const { visVersion } = useVISContext();
   const [dataChannelListPackages, setDataChannelListPackages] = useState<DataChannelListPackage[]>();
   const [searchParams, setSearchParam] = useSearchParams();
-  const mode: VesselMode = useMemo(() => searchParams.get('mode') as VesselMode | null ?? VesselMode.Any, [searchParams]);
-  const setMode = useCallback((value: VesselMode) => {
-    const current = new URLSearchParams(window.location.search);
-    current.set('mode', value);
-    setSearchParam(current);
-  }, [setSearchParam]);
+  const mode: VesselMode = useMemo(
+    () => (searchParams.get('mode') as VesselMode | null) ?? VesselMode.Any,
+    [searchParams]
+  );
+  const setMode = useCallback(
+    (value: VesselMode) => {
+      const current = new URLSearchParams(window.location.search);
+      current.set('mode', value);
+      setSearchParam(current);
+    },
+    [setSearchParam]
+  );
 
   const fetchFilteredDataChannels = useCallback(
     async (query?: string) => {
@@ -88,23 +95,20 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
         setUniversalIds(universalIds);
         if (mode === VesselMode.Any) {
           pmod = Pmod.createFromLocalIds(
-              visVersion,
-              universalIds.map(u => u.localId)
+            visVersion,
+            universalIds.map(u => u.localId)
           );
-        }
-        else  {
-          const paths = mode === VesselMode.PrimaryItem ?
-            universalIds.map(i => i.localId.primaryItem as GmodPath) :
-            universalIds.filter(i => i.localId.secondaryItem).map(i => i.localId.secondaryItem as GmodPath);
+        } else {
+          const paths =
+            mode === VesselMode.PrimaryItem
+              ? universalIds.map(i => i.localId.primaryItem as GmodPath)
+              : universalIds.filter(i => i.localId.secondaryItem).map(i => i.localId.secondaryItem as GmodPath);
 
           pmod = Pmod.createFromPaths(visVersion, paths);
         }
       }
 
-      return (
-        universalIds &&
-        pmod
-      );
+      return universalIds && pmod;
     },
     [dataChannelListPackages, visVersion, mode]
   );
@@ -136,6 +140,13 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
     [universalIds, mode]
   );
 
+  const postImportAndSimulateDataChannelFile = (file: File) => {
+    fetch('http://localhost:5000/api/data-channel/import-and-simulate', {
+      method: 'POST',
+      body: file,
+    });
+  };
+
   return (
     <ExploreContext.Provider
       value={{
@@ -147,6 +158,7 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
         universalIds,
         mode,
         setMode,
+        postImportAndSimulateDataChannelFile,
       }}
     >
       {children}

@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { Panel, usePanelContext } from '../../../context/PanelContext';
 import ButtonWithIcon from '../../ui/button/ButtonWithIcon';
 import { IconName } from '../../ui/icons/icons';
-import ScrollableField from '../../ui/scrollable-field/ScrollableField';
+import FlexScrollableField from '../../ui/scrollable-field/FlexScrollableField';
 import QueryCard from './query-card/QueryCard';
 import './QueryGenerator.scss';
 
@@ -27,11 +27,11 @@ const QueryGenerator: React.FC<Props> = ({ panel }) => {
           New query
         </ButtonWithIcon>
       </div>
-      <ScrollableField className={'query-generator-queries'}>
+      <FlexScrollableField className={'query-generator-queries'}>
         {queries.map(q => (
           <QueryCard panel={panel} key={q.id} query={q} />
         ))}
-      </ScrollableField>
+      </FlexScrollableField>
     </>
   );
 };
