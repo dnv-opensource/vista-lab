@@ -2,8 +2,6 @@
 @import 'src/styles/global';
 
 .relative-time-range-picker-container {
-  font-size: 0.7em;
-
   .time-range-clock-icon {
     color: $grey;
   }
@@ -22,8 +20,8 @@
     display: flex;
     gap: 0.5em;
     flex-wrap: nowrap;
-    width: 20em;
-    max-height: 15em;
+    width: 25em;
+    max-height: 20em;
     border-radius: 0.2em;
     box-shadow: $drop-shadow;
     border: $drop-shadow-border;
@@ -56,6 +54,7 @@
     }
 
     .relative-time-range-picker-right-side {
+      font-size: 1.1em;
       padding: 0.5em;
       .relative-time-range-picker-title {
         padding: 0;

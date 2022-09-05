@@ -2,10 +2,6 @@
 @import 'src/styles/variables';
 @import 'src/styles/global';
 
-.ui-input-label {
-  font-size: 0.8em;
-}
-
 .ui-input {
   @include remove-input-style;
   width: 100%;
@@ -32,7 +28,7 @@
     flex: 1;
     color: inherit;
     font-weight: 500;
-    font-size: 0.8em;
+    font-size: 1em;
 
     &::placeholder {
       /* Chrome, Firefox, Opera, Safari 10.1+ */
@@ -53,7 +49,7 @@
 
   .ui-icon {
     color: $grey;
-    font-size: 0.6em;
+    font-size: 0.8em;
     &:focus {
       outline: none;
     }
