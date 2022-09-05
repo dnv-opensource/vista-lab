@@ -82,12 +82,12 @@ const GmodViewNode: React.FC<Props> = ({ node, mergedChild, skippedParent, paren
       </span>
       <span className={clsx('gmod-tree-view-name')}>{path.getCurrentCommonName()}</span>
 
-      <div className={'data-channels-container'}>
+      <div className={`data-channels-container ${universalIds.length === 0 ? 'empty' : ''}`}>
         {expanded && (
-          <div className={'data-channels'}>
+          <div className={`data-channels ${universalIds.length === 0 ? 'empty' : ''}`}>
             {universalIds.map((universalId, index) => (
               <div key={index} className={'data-channel-card-wrapper'}>
-                <DataChannelCard universalId={universalId} />
+                <DataChannelCard universalId={universalId} compact={true} />
                 <AddToPanelButton universalId={universalId} />
               </div>
             ))}

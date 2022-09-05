@@ -47,21 +47,22 @@ const SearchBar: React.FC<Props> = ({ text, onSubmit, onChangeFile, loading }) =
           onChange={e => {
             if (e === undefined) {
               onSubmit('');
+              setSearchText(e);
               return;
             }
             setSearchText(e.currentTarget.value);
           }}
           loadingResult={loading}
         />
+      </form>
         <Button onClick={handleImportFileClick}>+</Button>
         <input
-          type={'file'}
-          id="file"
-          ref={dataChannelFile}
-          onChange={handleChangeFile}
-          style={{ display: 'none' }}
+            type={'file'}
+            id="file"
+            ref={dataChannelFile}
+            onChange={handleChangeFile}
+            style={{ display: 'none' }}
         ></input>
-      </form>
     </div>
   );
 };

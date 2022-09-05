@@ -30,6 +30,10 @@ const Explore: React.FC = () => {
         const current = new URLSearchParams(window.location.search);
         current.set('query', value);
         setSearchParam(current);
+      } else {
+        const current = new URLSearchParams(window.location.search);
+        current.delete('query');
+        setSearchParam(current);
       }
     },
     [setSearchParam]

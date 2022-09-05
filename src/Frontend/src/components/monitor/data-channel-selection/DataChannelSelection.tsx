@@ -18,7 +18,7 @@ const DataChannelSelection: React.FC<Props> = ({ panel }) => {
         {panel.dataChannelIds.length > 0 ? (
           panel.dataChannelIds.map(d => (
             <span key={d.toString()} className={'data-channel-card-wrapper'}>
-              <DataChannelCard universalId={d} key={d.toString()} />
+              <DataChannelCard universalId={d} key={d.toString()} hideExpander={true} />
             </span>
           ))
         ) : (

@@ -50,6 +50,11 @@
       flex-direction: column;
       gap: 0.7em;
 
+      &.empty {
+        padding-bottom: 0.1em;
+        padding-top: 0.1em;
+      }
+
       .data-channel-card-wrapper {
         position: relative;
       }

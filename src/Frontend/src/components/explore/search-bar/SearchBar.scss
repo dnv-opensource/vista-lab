@@ -1,4 +1,7 @@
 .search-bar {
+  display: flex;
+  flex-direction: row;
+
   .vista-brandmark {
     $size: 2em;
     width: $size;

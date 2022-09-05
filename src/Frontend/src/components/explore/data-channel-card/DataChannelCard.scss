@@ -9,6 +9,75 @@
   border-radius: 0.4em;
   background-color: $white;
 
+  .expand-icon {
+    padding: 0.5em;
+    box-shadow: $drop-shadow;
+    border: $drop-shadow-border;
+    border-radius: 50%;
+    &:hover {
+      background-color: $dark-blue;
+      color: $white;
+    }
+    position: absolute;
+    right: 3.65em;
+    bottom: 0.6em;
+
+  }
+
+  &.compact {
+    flex-direction: row;
+    align-items: center;
+    padding: 1em;
+
+    &:hover {
+      background-color: $bg-grey;
+    }
+
+    .tags {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 0.5em;
+    }
+
+    svg {
+        color: rgb(78, 78, 78);
+    }
+
+    .data-channel-card-c-title {
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+    }
+
+    .data-channel-card-c-value {
+        display: flex;
+        margin-left: auto;
+        margin-right: 4.65rem;
+    }
+
+    .separator {
+        font-size: 1em;
+        // color: #999;
+        font-weight: bold;
+        // padding-left: 0.25em;
+        padding-right: 0.25em;
+    }
+
+    .name {
+        color: #999;
+    }
+  }
+
+  .pre {
+      color: #999;
+  }
+
+  .timeseries-data {
+      font-weight: bold;
+      font-size: 0.8em;
+  }
+
   display: flex;
   flex-direction: column;
   flex-basis: content;
@@ -36,11 +105,8 @@
     .status-n-data {
       display: flex;
       align-content: center;
-      gap: 0.3em;
-
-      .timeseries-data {
-        font-size: 0.8em;
-      }
+      align-items: center;
+      gap: 0.5em;
     }
   }
 
