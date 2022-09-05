@@ -268,6 +268,66 @@
         }
       }
     },
+    "/api/data-channel/time-series/query": {
+      "post": {
+        "tags": [
+          "DataChannel"
+        ],
+        "summary": "Get timeseries by queries",
+        "operationId": "DataChannelGetTimeSeriesDataByQueries",
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PanelQueryDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PanelQueryDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/PanelQueryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AggregatedQueryResult"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AggregatedQueryResult"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AggregatedQueryResult"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/search/{visVersion}": {
       "post": {
         "tags": [
@@ -370,6 +430,38 @@
           "vesselId": {
             "type": "string",
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AggregatedQueryResult": {
+        "type": "object",
+        "properties": {
+          "timeseries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AggregatedTimeseries"
+            }
+          },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AggregatedTimeseries": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number",
+            "format": "double"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
           }
         },
         "additionalProperties": false
@@ -624,6 +716,21 @@
         },
         "additionalProperties": false
       },
+      "PanelQueryDto": {
+        "type": "object",
+        "properties": {
+          "timeRange": {
+            "$ref": "#/components/schemas/TimeRange"
+          },
+          "queries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Query"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
       "Property": {
         "type": "object",
         "properties": {
@@ -657,6 +764,53 @@
           }
         },
         "additionalProperties": { }
+      },
+      "Query": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "default": "123abc"
+          },
+          "name": {
+            "type": "string",
+            "default": "Subtract"
+          },
+          "operator": {
+            "$ref": "#/components/schemas/QueryOperator"
+          },
+          "subQueries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Query"
+            },
+            "default": null,
+            "nullable": true
+          },
+          "dataChannelIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": [
+              "data.dnv.com/IMO1234567/dnv-v2/vis-3-4a/621.21/S90/sec/411.1/C101/meta/qty-mass/cnt-fuel.oil/pos-outlet",
+              "data.dnv.com/IMO1234567/dnv-v2/vis-3-4a/621.21/S90/sec/411.1/C101/meta/qty-mass/cnt-fuel.oil/pos-inlet"
+            ],
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "QueryOperator": {
+        "enum": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "type": "integer",
+        "format": "int32"
       },
       "Range": {
         "type": "object",
@@ -757,6 +911,26 @@
         ],
         "type": "integer",
         "format": "int32"
+      },
+      "TimeRange": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "integer",
+            "format": "int64",
+            "default": 900
+          },
+          "to": {
+            "type": "integer",
+            "format": "int64",
+            "default": 0
+          },
+          "interval": {
+            "type": "string",
+            "default": "10s"
+          }
+        },
+        "additionalProperties": false
       },
       "TimeSeriesDataWithProps": {
         "type": "object",

@@ -1,5 +1,7 @@
 using Common;
 using QueryApi.Models;
+using Vista.SDK;
+using static QueryApi.Repository.DataChannelRepository;
 
 namespace QueryApi.Repository;
 
@@ -93,4 +95,81 @@ public static class SQLGenerator
             );
         return sql;
     }
+
+    public static string GenerateQueryTimeseriesSQL(
+        Query query,
+        TimeRange timeRange,
+        long now,
+        ref int incrementer
+    )
+    {
+        List<(string Query, int As)> subQueries = new();
+        var timeRangeSegment = TimeRangeToBetweenRange(timeRange, now);
+
+        if (query.DataChannelIds is not null)
+        {
+            foreach (var id in query.DataChannelIds)
+            {
+                var universalId = UniversalIdBuilder.Parse(id);
+
+                var q =
+                    @$"
+                SELECT avg(CAST({nameof(TimeSeriesEntity.Value)} as double)) as {nameof(TimeSeriesEntity.Value)},
+                    {nameof(TimeSeriesEntity.Timestamp)}
+                FROM {TimeSeriesEntity.TableName}
+                WHERE {nameof(TimeSeriesEntity.DataChannelId)} = '{universalId.LocalId}'
+                AND {nameof(TimeSeriesEntity.VesselId)} = 'IMO{universalId.ImoNumber}'
+                {timeRangeSegment}
+            ";
+
+                subQueries.Add((q, ++incrementer));
+            }
+        }
+
+        if (query.SubQueries is not null)
+        {
+            foreach (var subQuery in query.SubQueries)
+            {
+                var q = $"{GenerateQueryTimeseriesSQL(subQuery, timeRange, now, ref incrementer)}";
+                subQueries.Add((q, ++incrementer));
+            }
+        }
+
+        var aggregation = string.Join(
+            ToOperatorString(query.Operator),
+            subQueries.Select(q => $"q{q.As}.{nameof(TimeSeriesEntity.Value)}")
+        );
+
+        var subQueryIndex = 0;
+
+        var generatedQuery =
+            $@"SELECT ({aggregation}) as {nameof(TimeSeriesEntity.Value)}, q{incrementer}.Timestamp
+            FROM
+            {subQueries.Aggregate("", (prev, q) => { if (string.IsNullOrWhiteSpace(prev)) return $"({q.Query}) as q{subQueries[subQueryIndex++].As}"; return @$"{prev}
+            INNER JOIN (
+                {q.Query}
+            ) as q{subQueries[subQueryIndex].As}
+            ON q{subQueries[subQueryIndex - 1].As}.{nameof(TimeSeriesEntity.Timestamp)} = q{subQueries[subQueryIndex++].As}.{nameof(TimeSeriesEntity.Timestamp)}"; })}
+";
+
+        return generatedQuery;
+    }
+
+    public static string TimeRangeToBetweenRange(TimeRange timeRange, long now)
+    {
+        var from = (now - timeRange.From) * 1000000;
+        var to = (now - timeRange.To) * 1000000;
+
+        return $"AND {nameof(TimeSeriesEntity.Timestamp)} BETWEEN CAST({from} as timestamp) AND CAST({to} as timestamp) SAMPLE BY {timeRange.Interval}";
+    }
+
+    public static string ToOperatorString(QueryOperator queryOperator) =>
+        queryOperator switch
+        {
+            QueryOperator.Subtract => " - ",
+            QueryOperator.Sum => " + ",
+            QueryOperator.Times => " * ",
+            QueryOperator.Divide => " / ",
+            _ => throw new System.InvalidOperationException("Invalid QueryOperator enum value"),
+        };
 }
