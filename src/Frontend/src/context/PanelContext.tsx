@@ -1,6 +1,7 @@
 import { UniversalId, UniversalIdBuilder } from 'dnv-vista-sdk';
-import _ from 'lodash';
 import React, { createContext, useCallback, useMemo } from 'react';
+import { VistaLabApi } from '../apiConfig';
+import { TimeRange, QueryOperator, Query as QueryDto, AggregatedQueryResult } from '../client';
 import { Operator } from '../components/monitor/query-generator/operator-selection/OperatorSelection';
 import { RelativeTimeRange } from '../components/ui/time-pickers/relative-time-range-picker/types';
 import useLocalStorage, { LocalStorageSerializer } from '../hooks/use-localstorage';
@@ -26,6 +27,7 @@ export type PanelContextType = {
   setTimeRange: React.Dispatch<React.SetStateAction<RelativeTimeRange>>;
   interval: string;
   setInterval: React.Dispatch<React.SetStateAction<string>>;
+  getTimeseriesDataForPanel: (panel: Panel) => Promise<AggregatedQueryResult[]>;
 };
 
 type PanelContextProviderProps = React.PropsWithChildren<{}>;
@@ -47,16 +49,16 @@ export type Panel = {
   interval?: string;
 };
 
-type SerializableQuery = Omit<Query, 'items'> & {
+export type SerializableQuery = Omit<Query, 'items'> & {
   items: string[];
 };
 
-type SerializablePanel = Omit<Panel, 'dataChannelIds' | 'queries'> & {
+export type SerializablePanel = Omit<Panel, 'dataChannelIds' | 'queries'> & {
   queries: SerializableQuery[];
   dataChannelIds: string[];
 };
 
-const DEFAULT_QUERY: Query = { id: _.uniqueId(), name: 'A', items: [] };
+const DEFAULT_QUERY: Query = { id: Date.now() + '', name: 'A', items: [] };
 const DEFAULT_PANEL: Panel = { id: 'Default', dataChannelIds: [], queries: [DEFAULT_QUERY] };
 const DEFAULT_TIME_RANGE: RelativeTimeRange = { from: 900, to: 0 };
 const DEFAULT_INTERVAL: string = '10s';
@@ -131,6 +133,38 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
       return p;
     },
     [panels]
+  );
+
+  const getTimeseriesDataForPanel = useCallback(
+    async (panel: Panel) => {
+      const tr: TimeRange = {
+        from: panel.timeRange?.from ?? timeRange.from,
+        to: panel.timeRange?.to ?? timeRange.to,
+        interval: panel.interval ?? interval,
+      };
+
+      const toQueryDto = (q: Query): QueryDto => {
+        const operatorDto: QueryOperator = Object.entries(QueryOperator).find(
+          ([key, _]) =>
+            key === Object.keys(Operator)[Object.values(Operator).indexOf(q.operator as unknown as Operator)]
+        )?.[1] as QueryOperator;
+        return {
+          id: q.id,
+          name: q.name,
+          dataChannelIds: (q.items.filter(q => 'localId' in q) as UniversalId[]).map(u => u.toString()),
+          subQueries: (q.items.filter(q => 'items' in q) as Query[]).map(q => toQueryDto(q)),
+          operator: operatorDto,
+        };
+      };
+
+      const data = {
+        timeRange: tr,
+        queries: panel.queries.map(q => toQueryDto(q)),
+      };
+
+      return VistaLabApi.dataChannelGetTimeSeriesDataByQueries(data);
+    },
+    [interval, timeRange]
   );
 
   const addPanel = useCallback(
@@ -222,7 +256,7 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
           return panels;
         }
 
-        const query: Query = { ...DEFAULT_QUERY, id: _.uniqueId() };
+        const query: Query = { ...DEFAULT_QUERY, id: Date.now() + '' };
         while (panel.queries.some(q => q.name === query.name)) {
           query.name = nextChar(query.name);
         }
@@ -310,6 +344,7 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
     <PanelContext.Provider
       value={{
         timeRange,
+        getTimeseriesDataForPanel,
         setTimeRange,
         interval,
         setInterval,

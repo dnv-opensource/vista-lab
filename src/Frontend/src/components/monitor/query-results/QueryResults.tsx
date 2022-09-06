@@ -1,6 +1,7 @@
-import { AnimatedAxis, AnimatedGrid } from '@visx/xychart';
-import React from 'react';
-import { Panel } from '../../../context/PanelContext';
+import { AnimatedGrid } from '@visx/xychart';
+import React, { useEffect, useState } from 'react';
+import { AggregatedQueryResult } from '../../../client';
+import { Panel, usePanelContext } from '../../../context/PanelContext';
 import LineChart from '../../graph/LineChart';
 import './QueryResults.scss';
 
@@ -9,26 +10,22 @@ interface Props {
 }
 
 const QueryResults: React.FC<Props> = ({ panel }) => {
+  const [data, setData] = useState<AggregatedQueryResult[]>();
+  const { getTimeseriesDataForPanel } = usePanelContext();
+  useEffect(() => {
+    getTimeseriesDataForPanel(panel).then(setData);
+  }, [panel, getTimeseriesDataForPanel, setData]);
+  console.log(data);
+
   return (
     <>
       <LineChart
         className="query-result-graph"
-        dataset={panel.queries.map(q => ({
-          key: q.id,
-          data: Array(10)
-            .fill(0)
-            .map((_, i) => ({ x: '2020-01-0' + (i + 1), y: 10 + Math.random() * 5 })),
-        }))}
-        accessors={{ xAccessor: d => d?.x, yAccessor: d => d?.y }}
-        tooltipComponent={({ tooltipData, accessors }) => (
-          <p>
-            {accessors.xAccessor(tooltipData?.nearestDatum?.datum)},
-            {accessors.yAccessor(tooltipData?.nearestDatum?.datum)}
-          </p>
-        )}
+        dataset={data ? data.map(d => ({ key: d.id, data: d.timeseries })) : []}
+        accessors={{ xAccessor: d => d?.timestamp, yAccessor: d => d?.value }}
+        tooltipComponent={({ tooltipData, accessors }) => <p></p>}
       >
         <AnimatedGrid columns={true} numTicks={4} />
-        <AnimatedAxis orientation="bottom" />
       </LineChart>
     </>
   );

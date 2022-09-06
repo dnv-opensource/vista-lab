@@ -2,6 +2,7 @@ import { AxisScaleOutput } from '@visx/axis';
 import { ScaleConfig } from '@visx/scale';
 import {
   AnimatedAreaSeries,
+  AnimatedAxis,
   AnimatedBarSeries,
   AnimatedLineSeries,
   AreaStack,
@@ -80,7 +81,8 @@ const LineChart = <T extends object>({
         yScale={{ type: 'linear' }}
       >
         {chartComponent}
-
+        <AnimatedAxis orientation="left" />
+        <AnimatedAxis orientation="bottom" />
         <Tooltip<T>
           snapTooltipToDatumX
           snapTooltipToDatumY
@@ -89,9 +91,10 @@ const LineChart = <T extends object>({
           renderTooltip={({ tooltipData, colorScale, ...restProps }) => (
             <>
               <div style={{ color: colorScale?.(tooltipData!.nearestDatum!.key) }}>
-                {tooltipData?.nearestDatum?.key}
+                {tooltipComponent
+                  ? tooltipComponent({ tooltipData, colorScale, ...restProps, accessors })
+                  : tooltipData?.nearestDatum?.key}
               </div>
-              {tooltipComponent && tooltipComponent({ tooltipData, colorScale, ...restProps, accessors })}
             </>
           )}
         />
