@@ -100,11 +100,12 @@ public static class SQLGenerator
         Query query,
         TimeRange timeRange,
         long now,
-        ref int incrementer
+        ref int incrementer,
+        bool getReport = false
     )
     {
         List<(string Query, int As)> subQueries = new();
-        var timeRangeSegment = TimeRangeToBetweenRange(timeRange, now);
+        var timeRangeSegment = TimeRangeToBetweenRange(timeRange, now, getReport);
 
         if (query.DataChannelIds is not null)
         {
@@ -114,7 +115,7 @@ public static class SQLGenerator
 
                 var q =
                     @$"
-                SELECT avg(CAST({nameof(TimeSeriesEntity.Value)} as double)) as {nameof(TimeSeriesEntity.Value)},
+                SELECT {(!getReport ? "avg" : "sum")}(CAST({nameof(TimeSeriesEntity.Value)} as double)) as {nameof(TimeSeriesEntity.Value)},
                     {nameof(TimeSeriesEntity.Timestamp)}
                 FROM {TimeSeriesEntity.TableName}
                 WHERE {nameof(TimeSeriesEntity.DataChannelId)} = '{universalId.LocalId}'
@@ -155,12 +156,16 @@ public static class SQLGenerator
         return generatedQuery;
     }
 
-    public static string TimeRangeToBetweenRange(TimeRange timeRange, long now)
+    public static string TimeRangeToBetweenRange(
+        TimeRange timeRange,
+        long now,
+        bool getReport = false
+    )
     {
-        var from = (now - timeRange.From) * 1000000;
-        var to = (now - timeRange.To) * 1000000;
+        var from = (now - timeRange.From);
+        var to = (now - timeRange.To);
 
-        return $"AND {nameof(TimeSeriesEntity.Timestamp)} BETWEEN CAST({from} as timestamp) AND CAST({to} as timestamp) SAMPLE BY {timeRange.Interval}";
+        return $@"AND {nameof(TimeSeriesEntity.Timestamp)} BETWEEN CAST({from * 1000000} as timestamp) AND CAST({to * 1000000} as timestamp) SAMPLE BY {(!getReport ? timeRange.Interval : (to - from) * 1000000 + "s")} ";
     }
 
     public static string ToOperatorString(QueryOperator queryOperator) =>

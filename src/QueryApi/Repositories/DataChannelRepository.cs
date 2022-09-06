@@ -60,6 +60,8 @@ public sealed partial class DataChannelRepository
 
     public sealed record AggregatedTimeseries(double Value, DateTimeOffset Timestamp);
 
+    public sealed record AggregatedQueryResultAsReport(double Value, string Id, string Name);
+
     public sealed record AggregatedQueryResult(
         IEnumerable<AggregatedTimeseries> Timeseries,
         string Id,
@@ -398,7 +400,8 @@ public sealed partial class DataChannelRepository
     public async Task<IEnumerable<AggregatedQueryResult>> GetTimeSeriesByQueries(
         TimeRange timeRange,
         IEnumerable<Query> queries,
-        CancellationToken cancellationToken
+        CancellationToken cancellationToken,
+        bool getReport = false
     )
     {
         var now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
@@ -408,7 +411,13 @@ public sealed partial class DataChannelRepository
 
         foreach (var query in queries)
         {
-            var q = SQLGenerator.GenerateQueryTimeseriesSQL(query, timeRange, now, ref incrementer);
+            var q = SQLGenerator.GenerateQueryTimeseriesSQL(
+                query,
+                timeRange,
+                now,
+                ref incrementer,
+                getReport
+            );
 
             var response = await _client.Query(q, cancellationToken);
             var timeseries = ToAggregatedTimeseries(response);
@@ -416,5 +425,35 @@ public sealed partial class DataChannelRepository
         }
 
         return queryResults;
+    }
+
+    public async Task<IEnumerable<AggregatedQueryResultAsReport>> GetReportByQueries(
+        TimeRange timeRange,
+        IEnumerable<Query> queries,
+        CancellationToken cancellationToken
+    )
+    {
+        var queryResults = await GetTimeSeriesByQueries(
+            timeRange,
+            queries,
+            cancellationToken,
+            getReport: true
+        );
+
+        var reports = new List<AggregatedQueryResultAsReport>();
+        foreach (var queryResult in queryResults)
+        {
+            foreach (var timeseries in queryResult.Timeseries)
+            {
+                reports.Add(
+                    new AggregatedQueryResultAsReport(
+                        timeseries.Value,
+                        queryResult.Id,
+                        queryResult.Name
+                    )
+                );
+            }
+        }
+        return reports;
     }
 }

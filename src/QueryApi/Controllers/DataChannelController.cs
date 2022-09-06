@@ -146,4 +146,23 @@ public sealed class DataChannelController : ControllerBase
 
         return Ok(result);
     }
+
+    /// <summary>
+    /// Get aggregated values from timeseries as report
+    /// </summary>
+    /// <param name="query"></param>
+    /// <param name="cancellationToken"></param>
+    [HttpPost]
+    [Route("api/data-channel/time-series/query/report")]
+    public async Task<
+        ActionResult<IEnumerable<AggregatedQueryResultAsReport>>
+    > GetTimeSeriesDataByQueriesAsReport(PanelQueryDto query, CancellationToken cancellationToken)
+    {
+        var report = await _dataChannelRepository.GetReportByQueries(
+            query.TimeRange,
+            query.Queries,
+            cancellationToken
+        );
+        return Ok(report);
+    }
 }

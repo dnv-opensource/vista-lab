@@ -328,6 +328,66 @@
         }
       }
     },
+    "/api/data-channel/time-series/query/report": {
+      "post": {
+        "tags": [
+          "DataChannel"
+        ],
+        "summary": "Get aggregated values from timeseries as report",
+        "operationId": "DataChannelGetTimeSeriesDataByQueriesAsReport",
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PanelQueryDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PanelQueryDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/PanelQueryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AggregatedQueryResultAsReport"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AggregatedQueryResultAsReport"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AggregatedQueryResultAsReport"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/search/{visVersion}": {
       "post": {
         "tags": [
@@ -442,6 +502,22 @@
             "items": {
               "$ref": "#/components/schemas/AggregatedTimeseries"
             }
+          },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "AggregatedQueryResultAsReport": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "number",
+            "format": "double"
           },
           "id": {
             "type": "string"
