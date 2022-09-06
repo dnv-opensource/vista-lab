@@ -13,7 +13,7 @@ interface Props {
 const DataChannelSelection: React.FC<Props> = ({ panel }) => {
   return (
     <>
-      <p>Data channel selection</p>
+      <p>Selected data channels</p>
       <FlexScrollableField className={'data-channel-selection'}>
         {panel.dataChannelIds.length > 0 ? (
           panel.dataChannelIds.map(d => (

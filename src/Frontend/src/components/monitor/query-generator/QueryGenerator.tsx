@@ -18,13 +18,13 @@ const QueryGenerator: React.FC<Props> = ({ panel }) => {
   return (
     <>
       <div className={'query-generator-header'}>
-        <p className={'query-genrator-title'}>Query generator</p>
+        <p className={'query-genrator-title'}>Calculations</p>
         <ButtonWithIcon
           icon={IconName.Plus}
           className={'query-generator-new-query'}
           onClick={() => addNewQueryToPanel(panel.id)}
         >
-          New query
+          New calculation
         </ButtonWithIcon>
       </div>
       <FlexScrollableField className={'query-generator-queries'}>

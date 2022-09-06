@@ -15,7 +15,10 @@ import {
   faExpand,
   faExpandAlt,
   faEye,
+  faFileImport,
+  faFileLines,
   faFilter,
+  faFloppyDisk,
   faHashtag,
   faLink,
   faMagnifyingGlass,
@@ -69,7 +72,10 @@ library.add(
   faAngleRight,
   faAngleUp,
   faClock,
-  faArrowsLeftRightToLine
+  faArrowsLeftRightToLine,
+  faFloppyDisk,
+  faFileLines,
+  faFileImport
 );
 
 // Make sure these correspond with FontAwsome v6.1 icon names
@@ -107,6 +113,9 @@ export enum IconName {
   AnglesUp = 'angles-up',
   Clock = 'clock',
   ArrowsLeftRightToLine = 'arrows-left-right-to-line',
+  FloppyDisk = 'floppy-disk',
+  FileLines = 'file-lines',
+  FileImport = 'file-import',
 }
 
 export enum IconVariant {

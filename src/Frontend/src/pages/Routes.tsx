@@ -6,13 +6,15 @@ import { ExploreContextProvider } from '../context/ExploreContext';
 import Vessel from './explore/vessel/Vessel';
 import { VISContextProvider } from '../context/VISContext';
 import { PanelContextProvider } from '../context/PanelContext';
-import Monitor from './monitor/Monitor';
 import { IconName } from '../components/ui/icons/icons';
 import Panel from './monitor/panel/Panel';
 import Panels from './monitor/panels/Panels';
 
 const Home = React.lazy(() => import('./home/Home'));
 const Explore = React.lazy(() => import('./explore/Explore'));
+const Monitor = React.lazy(() => import('./monitor/Monitor'));
+const Report = React.lazy(() => import('./report/Report'));
+const Import = React.lazy(() => import('./import/Import'));
 
 type RouteProp = {
   path: string;
@@ -24,13 +26,19 @@ type RouteProp = {
 
 export const routesList: RouteProp[] = [
   {
-    path: '/explore',
+    path: '/import',
+    element: <Import />,
+    title: 'Import',
+    icon: IconName.ChartColumn,
+  },
+  {
+    path: '/search',
     element: (
       <ExploreContextProvider>
         <Explore />
       </ExploreContextProvider>
     ),
-    title: 'Explore',
+    title: 'Search',
     routes: (
       <>
         <Route path={':vesselId'} element={<Vessel />} />
@@ -40,9 +48,9 @@ export const routesList: RouteProp[] = [
     icon: IconName.Search,
   },
   {
-    path: '/monitor',
+    path: '/view',
     element: <Monitor />,
-    title: 'Monitor',
+    title: 'View&Build',
     icon: IconName.ChartColumn,
     routes: (
       <>
@@ -50,6 +58,12 @@ export const routesList: RouteProp[] = [
         <Route path="" element={<Panels />} />
       </>
     ),
+  },
+  {
+    path: '/report',
+    element: <Report />,
+    title: 'Report',
+    icon: IconName.FileLines,
   },
 ];
 
@@ -66,7 +80,7 @@ const Routes: React.FC = () => {
                     {route.routes}
                   </Route>
                 ))}
-                <Route path={''} element={<Home />} />
+                <Route path={'*'} element={<Home />} />
               </BrowserRoutes>
             </Suspense>
           </Layout>
