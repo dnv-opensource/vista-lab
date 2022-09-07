@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Panel, usePanelContext } from '../../../context/PanelContext';
+import { RoutePath } from '../../../pages/Routes';
 import { ButtonType } from '../../ui/button/Button';
 import ButtonWithLink from '../../ui/button/ButtonWithLink';
 import Dropdown from '../../ui/dropdown/Dropdown';
@@ -68,8 +69,8 @@ const PanelCard: React.FC<Props> = ({ panel }) => {
           {panel.dataChannelIds.length === 0 ? (
             <>
               <p className={'empty-subtitle'}>No data channels</p>
-              <ButtonWithLink to={'/explore'} role={'button'} type={ButtonType.Subtle}>
-                Explore
+              <ButtonWithLink to={RoutePath.Search} role={'button'} type={ButtonType.Subtle}>
+                Search
               </ButtonWithLink>
             </>
           ) : (
