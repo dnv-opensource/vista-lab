@@ -1,15 +1,19 @@
 import { AnimatedLineSeries } from '@visx/xychart';
 import React, { useEffect, useMemo, useState } from 'react';
-import { AggregatedQueryResult } from '../../../client';
+import { AggregatedQueryResult, AggregatedTimeseries } from '../../../client';
 import { Panel, usePanelContext } from '../../../context/PanelContext';
-import { removeDuplicateDates } from '../../../util/date';
+import { removeDuplicateDates, toLocaleTimeRangeString } from '../../../util/date';
 import { isNullOrWhitespace } from '../../../util/string';
-import LineChart from '../../graph/LineChart';
+import LineChart, { Accessors, AxisFormatter } from '../../graph/LineChart';
 import './QueryResults.scss';
 
 interface Props {
   panel: Panel;
 }
+
+const FALLBACK_DATA: AggregatedQueryResult[] = [
+  { id: 'Nan', name: 'Nan', timeseries: [{ timestamp: new Date(), value: 0 }] },
+];
 
 const QueryResults: React.FC<Props> = ({ panel }) => {
   const [data, setData] = useState<AggregatedQueryResult[]>([]);
@@ -18,6 +22,8 @@ const QueryResults: React.FC<Props> = ({ panel }) => {
     getTimeseriesDataForPanel(panel).then(setData);
   }, [panel, getTimeseriesDataForPanel, setData]);
 
+  const activeTimerange = useMemo(() => panel.timeRange ?? timeRange, [panel.timeRange, timeRange]);
+
   const thresholdTimestamps = useMemo(() => {
     if (!panel.threshold || data.length === 0) return [];
     const timestamps = data.flatMap(d => d.timeseries.map(t => new Date(t.timestamp)));
@@ -25,22 +31,32 @@ const QueryResults: React.FC<Props> = ({ panel }) => {
     return removeDuplicateDates(timestamps);
   }, [panel.threshold, data]);
 
-  const size = useMemo(() => {
-    const tr = panel.timeRange ?? timeRange;
-    const maxDataPoints = Math.max(...data.map(d => d.timeseries.length), 0);
-    if (maxDataPoints === 0) return undefined;
+  const accessors: Accessors<AggregatedTimeseries> = useMemo(
+    () => ({ xAccessor: d => new Date(d.timestamp), yAccessor: d => d.value }),
+    []
+  );
 
-    return Math.floor(Math.abs(tr.to - tr.from) / maxDataPoints);
-  }, [panel.timeRange, timeRange, data]);
+  const axisFormatter: AxisFormatter<AggregatedTimeseries> = useMemo(() => {
+    return {
+      xAxis: value => {
+        const v = value as Date;
+        return toLocaleTimeRangeString(v, activeTimerange, 'no-NB');
+      },
+    };
+  }, [activeTimerange]);
 
   return (
     <>
       <LineChart
         className="query-result-graph"
-        gridSize={size}
-        dataset={data.map(d => ({ key: d.name, data: d.timeseries }))}
-        accessors={{ xAccessor: d => d && new Date(d.timestamp), yAccessor: d => d?.value }}
+        dataset={
+          data.length > 0
+            ? data.map(d => ({ key: d.name, data: d.timeseries }))
+            : FALLBACK_DATA.map(d => ({ key: d.name, data: d.timeseries }))
+        }
+        accessors={accessors}
         tooltipComponent={({ tooltipData, accessors }) => <p>{tooltipData?.nearestDatum?.datum.value}</p>}
+        axisFormatter={axisFormatter}
       >
         {data?.length > 0 &&
           panel.threshold &&

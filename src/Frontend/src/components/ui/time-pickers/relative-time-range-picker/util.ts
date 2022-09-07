@@ -1,3 +1,4 @@
+import { units } from '../../../../util/date';
 import { RangeValidation, RelativeTimeRange, TimeOption } from './types';
 
 // eslint-disable-next-line
@@ -62,14 +63,6 @@ const relativeToSeconds = (relative: string): number => {
   }
 
   return parsed * units[unit];
-};
-
-const units: Record<string, number> = {
-  w: 604800,
-  d: 86400,
-  h: 3600,
-  m: 60,
-  s: 1,
 };
 
 const secondsToRelativeFormat = (seconds: number): string => {

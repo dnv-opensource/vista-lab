@@ -9,6 +9,7 @@ import Checkbox from '../../../components/ui/checkbox/Checkbox';
 import Icon from '../../../components/ui/icons/Icon';
 import { IconName } from '../../../components/ui/icons/icons';
 import { usePanelContext } from '../../../context/PanelContext';
+import { RoutePath } from '../../Routes';
 import './Panel.scss';
 const QueryResults = React.lazy(() => import('../../../components/monitor/query-results/QueryResults'));
 
@@ -18,7 +19,7 @@ const Panel: React.FC = () => {
   const { getPanel, editPanel, timeRange, interval } = usePanelContext();
   const initPanel = useMemo(() => (panelId ? getPanel(panelId) : undefined), [getPanel, panelId]);
 
-  if (!initPanel) navigate('/monitor');
+  if (!initPanel) navigate(RoutePath.ViewAndBuild);
   const panel = initPanel!;
 
   const isCustomTimeRange = !!panel.timeRange || !!panel.interval;
@@ -26,7 +27,7 @@ const Panel: React.FC = () => {
   return (
     <>
       <ResultBar className={'panel-nav-bar'}>
-        <Link className={'back'} to={'/monitor'}>
+        <Link className={'back'} to={RoutePath.ViewAndBuild}>
           <Icon icon={IconName.LeftArrow} />
           {panelId}
         </Link>

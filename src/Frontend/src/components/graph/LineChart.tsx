@@ -1,4 +1,4 @@
-import { AxisScaleOutput } from '@visx/axis';
+import { AxisScaleOutput, TickFormatter } from '@visx/axis';
 import { ScaleConfig } from '@visx/scale';
 import {
   AnimatedAreaSeries,
@@ -16,9 +16,14 @@ import clsx from 'clsx';
 import React, { useMemo, useRef } from 'react';
 import './LineChart.scss';
 
-type Accessors<T> = {
-  xAccessor: (d?: T) => T[keyof T] | undefined;
-  yAccessor: (d?: T) => T[keyof T] | undefined;
+export type Accessors<T> = {
+  xAccessor: (d: T) => T[keyof T] | string | number | undefined;
+  yAccessor: (d: T) => T[keyof T] | string | number | undefined;
+};
+
+export type AxisFormatter<T> = {
+  xAxis?: TickFormatter<T[keyof T]>;
+  yAxis?: TickFormatter<T[keyof T]>;
 };
 
 export enum ChartType {
@@ -27,8 +32,9 @@ export enum ChartType {
   Bar,
 }
 
-interface GraphProps<T extends object> {
+interface LineChartProps<T extends object> {
   accessors: Accessors<T>;
+  axisFormatter?: AxisFormatter<T>;
   dataset: {
     data: T[];
     key: string;
@@ -37,18 +43,17 @@ interface GraphProps<T extends object> {
   tooltipComponent?: (params: RenderTooltipParams<T> & { accessors: Accessors<T> }) => JSX.Element;
   children?: React.ReactNode;
   className?: string;
-  gridSize?: number;
 }
 
 const LineChart = <T extends object>({
   accessors,
   dataset,
+  axisFormatter,
   tooltipComponent,
   children,
   type = ChartType.Line,
   className,
-  gridSize,
-}: GraphProps<T>) => {
+}: LineChartProps<T>) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   const chartComponent = useMemo(() => {
@@ -83,9 +88,9 @@ const LineChart = <T extends object>({
         xScale={{ type: 'band' }}
         yScale={{ type: 'linear' }}
       >
-        <AnimatedAxis orientation="left" />
-        <AnimatedAxis orientation="bottom" numTicks={gridSize} />
-        <AnimatedGrid columns={true} rows={true} numTicks={gridSize} />
+        <AnimatedAxis orientation="left" tickFormat={axisFormatter?.yAxis} />
+        <AnimatedAxis orientation="bottom" numTicks={4} tickFormat={axisFormatter?.xAxis} />
+        <AnimatedGrid columns={true} rows={true} />
 
         <Tooltip<T>
           snapTooltipToDatumX
