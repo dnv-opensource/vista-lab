@@ -1,20 +1,16 @@
-import { CodebookName, CodebookNames, MetadataTag, UniversalId } from 'dnv-vista-sdk';
+import { CodebookNames, MetadataTag } from 'dnv-vista-sdk';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { VistaLabApi } from '../../../apiConfig';
 import { DataChannel, TimeSeriesDataWithProps } from '../../../client';
-import { capitalize } from '../../../util/string';
-import Icon from '../../ui/icons/Icon';
-import { IconName } from '../../ui/icons/icons';
+import { DataChannelWithShipData } from '../../../context/ExploreContext';
 import Loader from '../../ui/loader/Loader';
-import StatusIcon, { StatusVariant } from '../../ui/status-icon/StatusIcon';
-import TextWithIcon from '../../ui/text/TextWithIcon';
-import Tooltip from '../../ui/tooltip/Tooltip';
 import './DataChannelCard.scss';
 
 interface Props {
   dataChannel: DataChannel;
   mode: CardMode;
+  extraNodes?: React.ReactNode;
 }
 
 export enum CardMode {
@@ -22,13 +18,13 @@ export enum CardMode {
 }
 
 const DataChannelCard: React.FC<Props> = (props: Props) => {
-  const { dataChannel } = props;
+  const { dataChannel, extraNodes } = props;
   const [loading, setLoading] = useState(false);
   const [latestEventData, setLatestEventData] = useState<TimeSeriesDataWithProps>();
 
   const { vesselId } = useParams();
 
-  const universalId = useMemo(() => ((dataChannel.Property as any)['UniversalID'] as UniversalId), [dataChannel]);
+  const universalId = useMemo(() => (dataChannel as DataChannelWithShipData).Property.UniversalID, [dataChannel]);
   const localId = useMemo(() => (universalId.localId), [universalId]);
 
   useEffect(() => {
@@ -47,68 +43,11 @@ const DataChannelCard: React.FC<Props> = (props: Props) => {
     }
   }, [localId, setLatestEventData, setLoading]);
 
-//   const formatCodebookValue = (value: string) => {
-//     return capitalize(value.replaceAll('.', ' '));
-//   };
-
-//   // Example of status calculations
-//   const dataChannelStatus = useMemo((): { status: StatusVariant; info: string } => {
-//     if (
-//       !latestEventData ||
-//       !latestEventData.eventData ||
-//       !latestEventData.additionalProps ||
-//       !latestEventData.eventData.Value
-//     )
-//       return { status: StatusVariant.Warning, info: 'Missing recorded data' };
-
-//     const { Value: value } = latestEventData.eventData;
-//     const { rangeHigh, rangeLow } = latestEventData.additionalProps;
-
-//     if (rangeHigh && !isNaN(+value)) {
-//       if (+value > rangeHigh) {
-//         return { status: StatusVariant.Danger, info: 'Value is below upper range limit' };
-//       }
-//       if (+value > rangeHigh * 0.8) {
-//         return { status: StatusVariant.Warning, info: 'Value is close to upper range limit' };
-//       }
-//     }
-
-//     if (rangeLow && !isNaN(+value)) {
-//       if (+value < rangeLow) {
-//         return { status: StatusVariant.Danger, info: 'Value is below lower range limit' };
-//       }
-//       if (+value < rangeLow * 0.8) {
-//         return { status: StatusVariant.Warning, info: 'Value is close to lower range limit' };
-//       }
-//     }
-
-//     return { status: StatusVariant.Good, info: 'Status ok' };
-//   }, [latestEventData]);
-
 
   const parts: { key: string; noSep?: boolean; el: React.ReactNode }[] = [];
   if (vesselId === 'all') {
       parts.push({ key: 'imo', el: (<span>{vesselId}</span>) });
   }
-//   const primaryItem = localId.primaryItem;
-//   parts.push({
-//       key: 'pi',
-//       noSep: true,
-//       el: (
-//           <span><Icon icon={IconName.RSS} /> {primaryItem?.getCurrentCommonName()}</span>
-//       )
-//   });
-
-//   if (localId.secondaryItem) {
-//       const secondaryItem = localId.secondaryItem;
-//       parts.push({
-//           key: 'si',
-//           noSep: true,
-//           el: (
-//               <span><Icon icon={IconName.Link} /> {secondaryItem?.getCurrentCommonName()}</span>
-//           )
-//       });
-//   }
 
   parts.push({
     key: 'name',
@@ -118,36 +57,46 @@ const DataChannelCard: React.FC<Props> = (props: Props) => {
     )
   });
 
+  const getTinyTitle = () => {
+    const tags = CodebookNames.names.map(n => localId.getMetadataTag(n)).filter((t): t is MetadataTag => !!t);
 
-//   const tags = CodebookNames.names.map(n => localId.getMetadataTag(n)).filter((t): t is MetadataTag => !!t);
-//   parts.push({
-//       key: 'meta',
-//       noSep: true,
-//       el: (
-//           <span className={'tags'}>
-//               <Icon icon={IconName.Tag} style={{ marginTop: '0.25em' }} />
-//               {tags.map(t => (<span key={`tags-${t.name.toString()}`}>
-//                   <span className={'name'}>{CodebookNames.toPrefix(t.name)}=</span>
-//                   <span className={'value'}>{t.value}</span>
-//               </span>))}
-//           </span>
-//       )
-//   });
+    if (vesselId === 'all') {
+
+    } else {
+        return (
+            <>
+                <b>{localId.primaryItem!.toString()}</b>
+                {localId.secondaryItem && (<><span>/sec/</span><b>{localId.secondaryItem.toString()}</b></>)}
+                <span>/meta</span>
+                {tags.map(t => {
+                    return (
+                        <>
+                        <span>/{CodebookNames.toPrefix(t.name)}{t.prefix}</span>
+                        <b>{t.value}</b>
+                        </>
+                    );
+                })}
+            </>
+        );
+    }
+  }
 
   return (
     <div className={`data-channel-card compact`}>
-      <div className={'data-channel-card-c-title-tiny'}>
-            {vesselId === 'all' ? universalId.toString() : localId.toString()}
-        </div>
-        <div className={'data-channel-card-c-title'}>
-            {parts.map((p, i) => {
-                return (
-                  <span key={p.key}>
-                    {i > 0 && !p.noSep && <span className={'separator'} >|</span>}
-                    {p.el}
-                  </span>
-                );
-            })}
+        <div className={'data-channel-card-c-titles'}>
+            <div className={'data-channel-card-c-title-tiny'}>
+                {getTinyTitle()}
+            </div>
+            <div className={'data-channel-card-c-title'}>
+                {parts.map((p, i) => {
+                    return (
+                    <span key={p.key}>
+                        {i > 0 && !p.noSep && <span className={'separator'} >|</span>}
+                        {p.el}
+                    </span>
+                    );
+                })}
+            </div>
         </div>
         <div className={'data-channel-card-c-value'}>
                 {loading ? (
@@ -165,6 +114,7 @@ const DataChannelCard: React.FC<Props> = (props: Props) => {
                 </>
             )}
         </div>
+        {extraNodes}
     </div>
   );
 };

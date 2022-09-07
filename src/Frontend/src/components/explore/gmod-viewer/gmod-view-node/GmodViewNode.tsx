@@ -87,8 +87,7 @@ const GmodViewNode: React.FC<Props> = ({ node, mergedChild, skippedParent, paren
           <div className={`data-channels ${dataChannels.length === 0 ? 'empty' : ''}`}>
             {dataChannels.map((dc, index) => (
               <div key={index} className={'data-channel-card-wrapper'}>
-                <DataChannelCard dataChannel={dc} mode={CardMode.LegacyNameCentric} />
-                <AddToPanelButton dataChannel={dc} />
+                <DataChannelCard dataChannel={dc} mode={CardMode.LegacyNameCentric} extraNodes={<AddToPanelButton dataChannel={dc} />} />
               </div>
             ))}
           </div>
