@@ -19,7 +19,13 @@ interface Props {
 
 const QueryCard: React.FC<Props> = ({ query, panel }) => {
   const { addToast } = useToast();
-  const { removeQueryFromPanel, editQuery, selectQueryItem, selectQueryOperator } = usePanelContext();
+  const {
+    removeQueryFromPanel,
+    editQuery,
+    selectQueryItem,
+    selectQueryOperator,
+    toggleQueryItemInPanel
+  } = usePanelContext();
 
   const [isCollapsed, setCollapsed] = useState(
     !(panel.queries.length === 1 || panel.queries.findIndex(q => q.id === query.id) === 0)
@@ -104,6 +110,8 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
     ];
   }, [panel.dataChannels, panel.queries, query]);
 
+  const isQueryExcludedFromGraph = panel.queryItemsExcludedFromGraph.has(query.id);
+
   return (
     <div className={'query-card'}>
       <div className={'query-card-header'}>
@@ -115,6 +123,12 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
         <Input className={'query-card-title'} value={query.name} onChange={onTitleChange} />
 
         <div className={'query-card-action-buttons'}>
+          <Icon
+            role={'button'}
+            icon={IconName.Eye}
+            onClick={() => toggleQueryItemInPanel(panel.id, query)}
+            className={`query-card-toggle-query ${isQueryExcludedFromGraph ? 'excluded' : ''}`}
+          />
           <Icon
             role={'button'}
             icon={IconName.Trash}
@@ -151,11 +165,10 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
                 item = <DataChannelCard
                     dataChannel={i}
                     mode={CardMode.LegacyNameCentric}
-                    extraNodes={<Icon icon={IconName.Eye} />}
                 />;
               } else {
                 key = i.id;
-                item = <p key={i.id}>{i.name}</p>;
+                item = <QueryCardInner key={key} query={i} />;
               }
               return (
                 <div key={key} className={'query-generation-selected-item'}>
@@ -169,5 +182,14 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
     </div>
   );
 };
+
+
+const QueryCardInner = ({ query }: { query: Query }) => {
+    return (
+        <div className={'query-card-inner'}>
+            <p>{query.name}</p>
+        </div>
+    );
+}
 
 export default QueryCard;

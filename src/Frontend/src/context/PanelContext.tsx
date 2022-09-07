@@ -15,6 +15,7 @@ export type PanelContextType = {
   panels: Panel[];
   addDataChannelToPanel: (panelId: string, dataChannel: DataChannelWithShipData) => void;
   removeDataChannelFromPanel: (panelId: string, dataChannel: DataChannelWithShipData) => void;
+  toggleQueryItemInPanel: (panelId: string, item: DataChannelWithShipData | Query) => void;
   addNewQueryToPanel: (panelId: string) => void;
   removeQueryFromPanel: (panelId: string, query: Query) => void;
   editQuery: (panelId: string, query: Query) => void;
@@ -79,6 +80,7 @@ export function deserializeDataChannelWithShipData(item: SerializableDataChannel
 export type Panel = {
   queries: Query[];
   dataChannels: DataChannelWithShipData[];
+  queryItemsExcludedFromGraph: Set<string>;
   id: string;
   timeRange?: RelativeTimeRange;
   interval?: string;
@@ -91,13 +93,14 @@ export type SerializableQuery = Omit<Query, 'items'> & {
   items: (string | SerializableDataChannelWithShipData)[];
 };
 
-export type SerializablePanel = Omit<Panel, 'dataChannels' | 'queries'> & {
+export type SerializablePanel = Omit<Panel, 'dataChannels' | 'queries' | 'queryItemsExcludedFromGraph'> & {
   queries: SerializableQuery[];
   dataChannels: SerializableDataChannelWithShipData[];
+  queryItemsExcludedFromGraph: string[];
 };
 
 const DEFAULT_QUERY: Query = { id: Date.now() + '', name: 'A', items: [] };
-const DEFAULT_PANEL: Panel = { id: 'Default', dataChannels: [], queries: [DEFAULT_QUERY] };
+const DEFAULT_PANEL: Panel = { id: 'Default', dataChannels: [], queryItemsExcludedFromGraph: new Set<string>(), queries: [DEFAULT_QUERY] };
 const DEFAULT_TIME_RANGE: RelativeTimeRange = { from: 900, to: 0 };
 const DEFAULT_INTERVAL: string = '10s';
 
@@ -120,6 +123,7 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
               return item.id;
             }),
           })),
+          queryItemsExcludedFromGraph: Array.from(p.queryItemsExcludedFromGraph),
         }));
 
         return JSON.stringify(serializeablePanels);
@@ -154,6 +158,7 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
             ...dp,
             queries,
             dataChannels: dp.dataChannels.map(dc => deserializeDataChannelWithShipData(dc, gmod, codebooks)),
+            queryItemsExcludedFromGraph: new Set<string>(dp.queryItemsExcludedFromGraph),
           } as Panel;
         });
 
@@ -214,8 +219,11 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
       const data = {
         timeRange: tr,
         queries: panel.queries
+          .filter(q => !panel.queryItemsExcludedFromGraph.has(q.id))
           .map(q => toQueryDto(q))
-          .concat(...panel.dataChannels.map(toQueryDtoFromDataChannelId))
+          .concat(...panel.dataChannels
+            .filter(d => !panel.queryItemsExcludedFromGraph.has(d.Property.UniversalID.toString()))
+            .map(toQueryDtoFromDataChannelId))
           .filter(q => q.dataChannelIds?.length),
       };
 
@@ -231,7 +239,7 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
           addToast(ToastType.Warning, 'Failed to create panel', <p>Duplicate id: {id}</p>);
           return prev;
         }
-        return [...prev, { id, dataChannels: [], queries: [] }];
+        return [...prev, { id, dataChannels: [], queryItemsExcludedFromGraph: new Set<string>(), queries: [] }];
       });
     },
     [setPanels, addToast]
@@ -268,12 +276,13 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
     (panelId: string, dataChannel: DataChannelWithShipData) => {
       setPanels(panels => {
         const newPanels = [...panels];
-        const panel = newPanels.find(p => p.id === panelId);
-        if (!panel) {
+        const panelIndex = newPanels.findIndex(p => p.id === panelId);
+        if (panelIndex === -1) {
           addToast(ToastType.Danger, 'Failed to find panel', <p>Failed to find panel with id: {panelId}</p>);
           return panels;
         }
 
+        const panel = { ...newPanels[panelIndex] };
         if (panel.dataChannels.some(d => d.Property.UniversalID.equals(dataChannel.Property.UniversalID))) {
           addToast(ToastType.Warning, 'Duplicate data channel', <p>{dataChannel.Property.UniversalID.toString()}</p>);
           return panels;
@@ -282,6 +291,7 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
         addToast(ToastType.Success, 'DataChannel added', <p>{dataChannel.Property.UniversalID.toString()}</p>);
 
         panel.dataChannels = [...panel.dataChannels, dataChannel];
+        newPanels[panelIndex] = panel;
 
         return newPanels;
       });
@@ -293,12 +303,34 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
     (panelId: string, dataChannel: DataChannelWithShipData) => {
       setPanels(prev => {
         const newPanels = [...prev];
-        const panel = newPanels.find(p => p.id === panelId);
-        if (!panel) return prev;
+        const panelIndex = newPanels.findIndex(p => p.id === panelId);
+        if (panelIndex === -1) return prev;
+        const panel = { ...newPanels[panelIndex] };
         const dataChannelIndex = panel.dataChannels.findIndex(d => d.Property.UniversalID.equals(dataChannel.Property.UniversalID));
         panel.dataChannels.splice(dataChannelIndex, 1);
+        newPanels[panelIndex] = panel;
         return newPanels;
       });
+    },
+    [setPanels]
+  );
+
+  const toggleQueryItemInPanel = useCallback(
+    (panelId: string, queryItem: DataChannelWithShipData | Query) => {
+        setPanels(prev => {
+            const newPanels = [...prev];
+            const panelIndex = newPanels.findIndex(p => p.id === panelId);
+            if (panelIndex === -1) return prev;
+            const panel = { ...newPanels[panelIndex] };
+            const key = isDataChannelQueryItem(queryItem) ? queryItem.Property.UniversalID.toString() : queryItem.id;
+            const isExcluded = panel.queryItemsExcludedFromGraph.has(key);
+            if (isExcluded)
+                panel.queryItemsExcludedFromGraph.delete(key);
+            else
+                panel.queryItemsExcludedFromGraph.add(key);
+            newPanels[panelIndex] = panel;
+            return newPanels;
+        });
     },
     [setPanels]
   );
@@ -307,18 +339,20 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
     (panelId: string) => {
       setPanels(panels => {
         const newPanels = [...panels];
-        const panel = newPanels.find(p => p.id === panelId);
-        if (!panel) {
+        const panelIndex = newPanels.findIndex(p => p.id === panelId);
+        if (panelIndex === -1) {
           addToast(ToastType.Danger, 'Failed to find panel', <p>Failed to find panel with id: {panelId}</p>);
           return panels;
         }
 
+        const panel = { ...newPanels[panelIndex] };
         const query: Query = { ...DEFAULT_QUERY, id: Date.now() + '' };
         while (panel.queries.some(q => q.name === query.name)) {
           query.name = nextChar(query.name);
         }
 
         panel.queries = [...panel.queries, query];
+        newPanels[panelIndex] = panel;
 
         return newPanels;
       });
@@ -330,12 +364,15 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
     (panelId: string, query: Query) => {
       setPanels(prev => {
         const newPanels = [...prev];
-        const panel = newPanels.find(p => p.id === panelId);
-        if (!panel) return prev;
+        const panelIndex = newPanels.findIndex(p => p.id === panelId);
+        if (panelIndex === -1) return prev;
+        const panel = { ...newPanels[panelIndex] };
         const queries = [...panel.queries];
         const queryIndex = queries.findIndex(q => q.id === query.id);
         queries.splice(queryIndex, 1);
         panel.queries = queries;
+        newPanels[panelIndex] = panel;
+
         return newPanels;
       });
     },
@@ -343,14 +380,17 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
   );
   const editQuery = useCallback(
     (panelId: string, query: Query) => {
-      setPanels(panels => {
-        const newPanels = [...panels];
-        const panel = newPanels.find(p => p.id === panelId);
-        if (!panel) return panels;
+      setPanels(prev => {
+        const newPanels = [...prev];
+        const panelIndex = newPanels.findIndex(p => p.id === panelId);
+        if (panelIndex === -1) return prev;
+        const panel = { ...newPanels[panelIndex] };
         const queries = [...panel.queries];
         const queryIndex = queries.findIndex(q => q.id === query.id);
         queries.splice(queryIndex, 1, query);
         panel.queries = queries;
+        newPanels[panelIndex] = panel;
+
         return newPanels;
       });
     },
@@ -359,17 +399,19 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
 
   const selectQueryItem = useCallback(
     (panelId: string, queryId: string, item: Query | DataChannelWithShipData) => {
-      setPanels(panels => {
-        const newPanels = [...panels];
-        const panel = newPanels.find(p => p.id === panelId);
-        if (!panel) return panels;
+      setPanels(prev => {
+        const newPanels = [...prev];
+        const panelIndex = newPanels.findIndex(p => p.id === panelId);
+        if (panelIndex === -1) return prev;
+        const panel = { ...newPanels[panelIndex] };
         const queries = [...panel.queries];
         const query = queries.find(q => q.id === queryId);
-        if (!query) return panels;
+        if (!query) return prev;
 
         query.items = [...query.items, item];
 
         panel.queries = queries;
+        newPanels[panelIndex] = panel;
 
         return newPanels;
       });
@@ -379,17 +421,19 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
 
   const selectQueryOperator = useCallback(
     (panelId: string, queryId: string, operator: Operator) => {
-      setPanels(panels => {
-        const newPanels = [...panels];
-        const panel = newPanels.find(p => p.id === panelId);
-        if (!panel) return panels;
+      setPanels(prev => {
+        const newPanels = [...prev];
+        const panelIndex = newPanels.findIndex(p => p.id === panelId);
+        if (panelIndex === -1) return prev;
+        const panel = { ...newPanels[panelIndex] };
         const queries = [...panel.queries];
         const query = queries.find(q => q.id === queryId);
-        if (!query) return panels;
+        if (!query) return prev;
 
         query.operator = operator;
 
         panel.queries = queries;
+        newPanels[panelIndex] = panel;
 
         return newPanels;
       });
@@ -406,6 +450,7 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
         interval,
         setInterval,
         addDataChannelToPanel,
+        toggleQueryItemInPanel,
         panels,
         addPanel,
         editPanel,

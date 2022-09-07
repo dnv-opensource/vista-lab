@@ -16,12 +16,16 @@ const FALLBACK_DATA: AggregatedQueryResult[] = [
   { id: 'Nan', name: 'Nan', timeseries: [{ timestamp: new Date(), value: 0 }] },
 ];
 
+type TimeSeries = AggregatedTimeseries & { unit?: string; }
+
 const QueryResults: React.FC<Props> = ({ panel }) => {
   const [data, setData] = useState<AggregatedQueryResult[]>([]);
   const { getTimeseriesDataForPanel, timeRange } = usePanelContext();
   useEffect(() => {
     getTimeseriesDataForPanel(panel).then(setData);
   }, [panel, getTimeseriesDataForPanel, setData]);
+
+  const dataChannels = panel.dataChannels;
 
   const activeTimerange = useMemo(() => panel.timeRange ?? timeRange, [panel.timeRange, timeRange]);
 

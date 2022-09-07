@@ -13,7 +13,7 @@ const Tooltip: React.FC<Props> = ({ params }) => {
   return (
     <div className={'chart-tooltip'}>
       <p>{tooltipData?.nearestDatum?.key}</p>
-      <p>{tooltipData?.nearestDatum?.datum.value}</p>
+      <p>{tooltipData?.nearestDatum?.datum.value.toFixed(2)}</p>
     </div>
   );
 };
