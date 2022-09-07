@@ -1,5 +1,6 @@
 import { UniversalId } from 'dnv-vista-sdk';
 import React, { useRef, useState } from 'react';
+import { DataChannel } from '../../../client';
 import { usePanelContext } from '../../../context/PanelContext';
 import Dropdown from '../../ui/dropdown/Dropdown';
 import Icon from '../../ui/icons/Icon';
@@ -8,10 +9,10 @@ import Input from '../../ui/input/Input';
 import './AddToPanelButton.scss';
 
 interface Props {
-  universalId: UniversalId;
+  dataChannel: DataChannel;
 }
 
-const AddToPanelButton: React.FC<Props> = ({ universalId }) => {
+const AddToPanelButton: React.FC<Props> = ({ dataChannel }) => {
   const { addDataChannelToPanel, panels, addPanel } = usePanelContext();
   const [open, setOpen] = useState(false);
   const [newPanelValue, setNewPanelValue] = useState('');
@@ -47,7 +48,7 @@ const AddToPanelButton: React.FC<Props> = ({ universalId }) => {
                 key={p.id}
                 className={'panel-list-item'}
                 onClick={() => {
-                  addDataChannelToPanel(p.id, universalId);
+                  addDataChannelToPanel(p.id, dataChannel as unknown as UniversalId);
                   setOpen(false);
                 }}
               >

@@ -8,6 +8,7 @@ namespace Common;
 
 public sealed record DataChannelEntity(
     string VesselId,
+    string? VesselName,
     // Generated to uniquely identify a physical datachannel (does not change across VIS versions)
     string InternalId,
     // DataChannelID fields
@@ -79,6 +80,11 @@ public sealed record DataChannelEntity(
 
         var internalId = NewId.NextGuid();
 
+        var shipName =
+            (header.AdditionalProperties?.TryGetValue("ShipName", out var shipNameObj) ?? false)
+                ? (shipNameObj?.ToString())
+                : null;
+
         static double? ParseDouble(string? value) =>
             double.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out var v)
               ? v
@@ -90,6 +96,7 @@ public sealed record DataChannelEntity(
 
         return new DataChannelEntity(
             header.ShipID,
+            shipName,
             internalId.ToString(),
             dataChannelId.LocalID,
             dataChannelId.ShortID,

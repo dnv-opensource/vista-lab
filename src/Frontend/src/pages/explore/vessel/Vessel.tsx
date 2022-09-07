@@ -17,6 +17,7 @@ import './Vessel.scss';
 export type Vessel = {
   numDataChannels?: number;
   vesselId?: string;
+  name?: string;
   status?: number;
 };
 

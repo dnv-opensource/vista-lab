@@ -1,11 +1,11 @@
 import clsx from 'clsx';
-import { GmodNode, GmodPath } from 'dnv-vista-sdk';
+import { GmodNode, GmodPath, UniversalId } from 'dnv-vista-sdk';
 import React, { useMemo } from 'react';
 import { useExploreContext } from '../../../../context/ExploreContext';
 import Icon from '../../../ui/icons/Icon';
 import { IconName } from '../../../ui/icons/icons';
 import AddToPanelButton from '../../add-to-panel-button/AddToPanelButton';
-import DataChannelCard from '../../data-channel-card/DataChannelCard';
+import DataChannelCard, { CardMode } from '../../data-channel-card/DataChannelCard';
 import { GmodViewerNodeExtra } from '../GmodViewer';
 import './GmodViewNode.scss';
 
@@ -29,11 +29,11 @@ const GmodViewNode: React.FC<Props> = ({ node, mergedChild, skippedParent, paren
     [initPath, mergedChild, parents, node]
   );
 
-  const { getUniversalIdsFromGmodPath: getLocalIdsFromGmodPath } = useExploreContext();
+  const { getDataChannelsFromGmodPath } = useExploreContext();
 
-  const universalIds = useMemo(() => {
-    return getLocalIdsFromGmodPath(path);
-  }, [path, getLocalIdsFromGmodPath]);
+  const dataChannels = useMemo(() => {
+    return getDataChannelsFromGmodPath(path);
+  }, [path, getDataChannelsFromGmodPath]);
 
   const items = useMemo(() => {
     const items: { node: GmodNode; parents: GmodNode[] }[] = [];
@@ -55,7 +55,7 @@ const GmodViewNode: React.FC<Props> = ({ node, mergedChild, skippedParent, paren
 
   return (
     <div className={'gmod-view-node-container'}>
-      {universalIds.length > 0 && (
+      {dataChannels.length > 0 && (
         <Icon
           className={'expand-data-channel-icon'}
           icon={expanded ? IconName.Stream : IconName.Bars}
@@ -82,13 +82,13 @@ const GmodViewNode: React.FC<Props> = ({ node, mergedChild, skippedParent, paren
       </span>
       <span className={clsx('gmod-tree-view-name')}>{path.getCurrentCommonName()}</span>
 
-      <div className={`data-channels-container ${universalIds.length === 0 ? 'empty' : ''}`}>
+      <div className={`data-channels-container ${dataChannels.length === 0 ? 'empty' : ''}`}>
         {expanded && (
-          <div className={`data-channels ${universalIds.length === 0 ? 'empty' : ''}`}>
-            {universalIds.map((universalId, index) => (
+          <div className={`data-channels ${dataChannels.length === 0 ? 'empty' : ''}`}>
+            {dataChannels.map((dc, index) => (
               <div key={index} className={'data-channel-card-wrapper'}>
-                <DataChannelCard universalId={universalId} compact={true} />
-                <AddToPanelButton universalId={universalId} />
+                <DataChannelCard dataChannel={dc} mode={CardMode.LegacyNameCentric} />
+                <AddToPanelButton dataChannel={dc} />
               </div>
             ))}
           </div>

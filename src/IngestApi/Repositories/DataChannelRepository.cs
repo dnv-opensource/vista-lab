@@ -94,6 +94,7 @@ public sealed class DataChannelRepository : IHostedService
                     .TrySymbol(nameof(DataChannelEntity.LocalId_Detail), dataChannel.LocalId_Detail)
                     // Columns
                     .Column(nameof(DataChannelEntity.LocalId), dataChannel.LocalId)
+                    .TryColumn(nameof(DataChannelEntity.VesselName), dataChannel.VesselName)
                     .TryColumn(nameof(DataChannelEntity.ShortId), dataChannel.ShortId)
                     .TryColumn(
                         nameof(DataChannelEntity.NameObject_NamingRule),

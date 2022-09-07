@@ -102,6 +102,9 @@ public sealed partial class DataChannelRepository
             var vesselId = response
                 .GetValue(i, nameof(DataChannelEntity.VesselId))
                 .GetStringNonNull();
+            var vesselName = response
+                .GetValue(i, nameof(DataChannelEntity.VesselName))
+                .GetString();
             if (!dataChannelListsPackage.ContainsKey(vesselId))
             {
                 var dcList = new List<DataChannel>();
@@ -133,6 +136,11 @@ public sealed partial class DataChannelRepository
                     vesselId,
                     versionInformation
                 );
+
+                header.AdditionalProperties ??= new Dictionary<string, object>();
+                if (!string.IsNullOrWhiteSpace(vesselName))
+                    header.AdditionalProperties.Add("ShipName", vesselName);
+
                 var package = new Vista.SDK.Transport.Json.DataChannel.Package(
                     new DataChannelList(dcList),
                     header

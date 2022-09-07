@@ -10,6 +10,7 @@ public sealed class DbSchemas
             {nameof(DataChannelEntity.ShortId)} STRING,
             {nameof(DataChannelEntity.LocalId)} STRING NOT NULL,
             {nameof(DataChannelEntity.VesselId)} SYMBOL capacity 1024 cache index capacity 8192 NOT NULL,
+            {nameof(DataChannelEntity.VesselName)} STRING,
 
             {nameof(DataChannelEntity.NameObject_NamingRule)} STRING,
 

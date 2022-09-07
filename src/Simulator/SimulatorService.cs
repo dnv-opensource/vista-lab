@@ -53,7 +53,19 @@ namespace Simulator
             var names = assembly.GetManifestResourceNames();
             var dataChannels = new List<DataChannelListPackage>();
 
-            foreach (var name in names)
+            const string internalDelimiter = ".internal.";
+
+            var useOnlyInternal = names.Any(
+                n => n.Contains(internalDelimiter, StringComparison.OrdinalIgnoreCase)
+            );
+
+            foreach (
+                var name in useOnlyInternal
+                    ? names.Where(
+                          n => n.Contains(internalDelimiter, StringComparison.OrdinalIgnoreCase)
+                      )
+                    : names
+            )
             {
                 await using var dataChannelsFile = GetResource(name);
                 var dataChannelListDto = await Serializer.DeserializeDataChannelListAsync(
@@ -62,6 +74,8 @@ namespace Simulator
                 );
                 if (dataChannelListDto is null)
                     throw new Exception("Couldnt load datachannels");
+
+                _logger.LogInformation("Using internal datachannels from disk - {file}", name);
 
                 dataChannels.Add(dataChannelListDto);
             }

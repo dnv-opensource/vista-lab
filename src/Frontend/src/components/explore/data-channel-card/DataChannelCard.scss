@@ -27,7 +27,8 @@
   &.compact {
     flex-direction: row;
     align-items: center;
-    padding: 1em;
+    padding: 0.8em;
+    padding-bottom: 0.7em;
 
     &:hover {
       background-color: $bg-grey;
@@ -47,7 +48,16 @@
     .data-channel-card-c-title {
         display: flex;
         align-items: center;
+        margin-top: 0.8em;
         gap: 0.5em;
+    }
+
+    .data-channel-card-c-title-tiny {
+        position: absolute;
+        top: 0.5em;
+        // left: 0.6em;
+        font-size: 0.75em;
+        color: #999;
     }
 
     .data-channel-card-c-value {

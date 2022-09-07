@@ -1,6 +1,7 @@
 import React from 'react';
+import { DataChannel } from '../../../client';
 import { Panel } from '../../../context/PanelContext';
-import DataChannelCard from '../../explore/data-channel-card/DataChannelCard';
+import DataChannelCard, { CardMode } from '../../explore/data-channel-card/DataChannelCard';
 import { ButtonType } from '../../ui/button/Button';
 import ButtonWithLink from '../../ui/button/ButtonWithLink';
 import FlexScrollableField from '../../ui/scrollable-field/FlexScrollableField';
@@ -18,7 +19,7 @@ const DataChannelSelection: React.FC<Props> = ({ panel }) => {
         {panel.dataChannelIds.length > 0 ? (
           panel.dataChannelIds.map(d => (
             <span key={d.toString()} className={'data-channel-card-wrapper'}>
-              <DataChannelCard universalId={d} key={d.toString()} hideExpander={true} />
+              <DataChannelCard dataChannel={d as unknown as DataChannel} key={d.toString()} mode={CardMode.LegacyNameCentric} />
             </span>
           ))
         ) : (
