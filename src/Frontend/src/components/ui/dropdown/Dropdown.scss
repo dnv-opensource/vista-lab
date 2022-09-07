@@ -2,7 +2,7 @@
 @import 'src/styles/global';
 .ui-dropdown {
   position: absolute;
-  z-index: 10000000000000000000;
+  z-index: 1000;
   background-color: $white;
   border-radius: 0.2em;
   overflow: auto;

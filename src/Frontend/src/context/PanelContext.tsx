@@ -34,6 +34,13 @@ type PanelContextProviderProps = React.PropsWithChildren<{}>;
 
 const PanelContext = createContext<PanelContextType | undefined>(undefined);
 
+export type Threshold = {
+  value: number;
+  /**@description Converted to percentage */
+  deviation?: number;
+  name: string;
+};
+
 export type Query = {
   id: string;
   name: string;
@@ -47,6 +54,7 @@ export type Panel = {
   id: string;
   timeRange?: RelativeTimeRange;
   interval?: string;
+  threshold?: Threshold;
 };
 
 export type SerializableQuery = Omit<Query, 'items'> & {
@@ -128,7 +136,7 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
   const getPanel = useCallback(
     (id: string) => {
       const p = panels.find(p => p.id === id);
-      if (!p) throw new Error('Failed to find panel with id: ' + id);
+      if (!p) return DEFAULT_PANEL;
 
       return p;
     },
@@ -157,9 +165,25 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
         };
       };
 
+      const toQueryDtoFromDataChannelId = (universalId: UniversalId): QueryDto => {
+        const stringifiedUniversalId = universalId.toString();
+        const operatorDto: QueryOperator = Object.entries(QueryOperator).find(
+          ([key, _]) => key === Object.keys(Operator)[Object.values(Operator).indexOf('+' as unknown as Operator)]
+        )?.[1] as QueryOperator;
+        return {
+          id: stringifiedUniversalId,
+          dataChannelIds: [stringifiedUniversalId],
+          name: stringifiedUniversalId,
+          operator: operatorDto,
+          subQueries: [],
+        };
+      };
+
       const data = {
         timeRange: tr,
-        queries: panel.queries.map(q => toQueryDto(q)),
+        queries: panel.queries
+          .map(q => toQueryDto(q))
+          .concat(...panel.dataChannelIds.map(toQueryDtoFromDataChannelId)),
       };
 
       return VistaLabApi.dataChannelGetTimeSeriesDataByQueries(data);

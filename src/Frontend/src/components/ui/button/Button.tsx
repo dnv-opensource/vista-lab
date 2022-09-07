@@ -14,12 +14,12 @@ export interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonE
   type?: ButtonType;
 }
 
-const Button: React.FC<ButtonProps> = ({ type, children, className, ...restProps }) => {
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ type, children, className, ...restProps }, ref) => {
   return (
-    <button {...restProps} className={clsx('ui-button', className, type)}>
+    <button {...restProps} className={clsx('ui-button', className, type)} ref={ref}>
       {children}
     </button>
   );
-};
+});
 
 export default Button;

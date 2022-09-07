@@ -1,0 +1,32 @@
+@import 'src/styles/colors';
+
+.ui-collapse-menu-item {
+  display: flex;
+  border: none;
+
+  &.horizontal {
+    flex-direction: row;
+  }
+
+  &.vertical {
+    flex-direction: column;
+  }
+
+  .title-wrapper {
+    cursor: pointer;
+    padding: 0.4em;
+    display: flex;
+    align-items: center;
+    align-self: flex-start;
+    justify-content: space-between;
+    gap: 0.5em;
+    white-space: nowrap;
+    .ui-icon {
+      font-size: 0.8em;
+    }
+
+    &:hover {
+      background-color: $bg-grey;
+    }
+  }
+}

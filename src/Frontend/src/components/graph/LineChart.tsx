@@ -4,6 +4,7 @@ import {
   AnimatedAreaSeries,
   AnimatedAxis,
   AnimatedBarSeries,
+  AnimatedGrid,
   AnimatedLineSeries,
   AreaStack,
   BarGroup,
@@ -36,6 +37,7 @@ interface GraphProps<T extends object> {
   tooltipComponent?: (params: RenderTooltipParams<T> & { accessors: Accessors<T> }) => JSX.Element;
   children?: React.ReactNode;
   className?: string;
+  gridSize?: number;
 }
 
 const LineChart = <T extends object>({
@@ -45,6 +47,7 @@ const LineChart = <T extends object>({
   children,
   type = ChartType.Line,
   className,
+  gridSize,
 }: GraphProps<T>) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -80,9 +83,10 @@ const LineChart = <T extends object>({
         xScale={{ type: 'band' }}
         yScale={{ type: 'linear' }}
       >
-        {chartComponent}
         <AnimatedAxis orientation="left" />
-        <AnimatedAxis orientation="bottom" />
+        <AnimatedAxis orientation="bottom" numTicks={gridSize} />
+        <AnimatedGrid columns={true} rows={true} numTicks={gridSize} />
+
         <Tooltip<T>
           snapTooltipToDatumX
           snapTooltipToDatumY
@@ -98,6 +102,8 @@ const LineChart = <T extends object>({
             </>
           )}
         />
+        {chartComponent}
+
         {children}
       </XYChart>
     </div>

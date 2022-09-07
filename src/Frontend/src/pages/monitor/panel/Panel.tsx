@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import DataChannelSelection from '../../../components/monitor/data-channel-selection/DataChannelSelection';
 import CombinedTimePickers from '../../../components/monitor/panel-pickers/combined-time-pickers/CombinedTimePickers';
 import QueryGenerator from '../../../components/monitor/query-generator/QueryGenerator';
+import ResultEllipsisMenu from '../../../components/monitor/query-generator/result-ellipsis-menu/ResultEllipsisMenu';
 import ResultBar from '../../../components/shared/result-bar/ResultBar';
 import Checkbox from '../../../components/ui/checkbox/Checkbox';
 import Icon from '../../../components/ui/icons/Icon';
@@ -44,6 +45,7 @@ const Panel: React.FC = () => {
       </ResultBar>
       <div className={'vista-panel-container-grid'}>
         <div className={'panel-result-graph-wrapper item'}>
+          <ResultEllipsisMenu panel={panel} />
           <QueryResults panel={panel} />
         </div>
         <div className={'available-data-channels item'}>

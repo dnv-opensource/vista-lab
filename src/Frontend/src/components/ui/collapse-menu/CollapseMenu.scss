@@ -1,0 +1,11 @@
+.ui-collapse-menu {
+  display: flex;
+
+  &.horizontal {
+    flex-direction: column;
+  }
+
+  &.vertical {
+    flex-direction: row;
+  }
+}

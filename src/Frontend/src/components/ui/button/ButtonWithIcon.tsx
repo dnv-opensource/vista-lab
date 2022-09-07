@@ -10,15 +10,17 @@ interface Props extends ButtonProps {
   iconLast?: boolean;
 }
 
-const ButtonWithIcon: React.FC<Props> = ({ icon, iconLast, children, className, ...restProps }) => {
-  const iconComp = <Icon icon={icon} className={'ui-button-icon'} />;
-  return (
-    <Button {...restProps} className={clsx('ui-button-with-icon', className)}>
-      {!iconLast && iconComp}
-      <span className={'ui-button-children-wrapper'}>{children}</span>
-      {iconLast && iconComp}
-    </Button>
-  );
-};
+const ButtonWithIcon = React.forwardRef<HTMLButtonElement, Props>(
+  ({ icon, iconLast, children, className, ...restProps }, ref) => {
+    const iconComp = <Icon icon={icon} className={'ui-button-icon'} />;
+    return (
+      <Button {...restProps} className={clsx('ui-button-with-icon', className)} ref={ref}>
+        {!iconLast && iconComp}
+        <span className={'ui-button-children-wrapper'}>{children}</span>
+        {iconLast && iconComp}
+      </Button>
+    );
+  }
+);
 
 export default ButtonWithIcon;

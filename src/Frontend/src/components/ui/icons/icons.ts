@@ -12,6 +12,7 @@ import {
   faChartColumn,
   faClock,
   faCrosshairs,
+  faEllipsisVertical,
   faExpand,
   faExpandAlt,
   faEye,
@@ -75,7 +76,8 @@ library.add(
   faArrowsLeftRightToLine,
   faFloppyDisk,
   faFileLines,
-  faFileImport
+  faFileImport,
+  faEllipsisVertical
 );
 
 // Make sure these correspond with FontAwsome v6.1 icon names
@@ -116,6 +118,7 @@ export enum IconName {
   FloppyDisk = 'floppy-disk',
   FileLines = 'file-lines',
   FileImport = 'file-import',
+  EllipsisVersical = 'ellipsis-vertical',
 }
 
 export enum IconVariant {

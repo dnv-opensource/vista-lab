@@ -24,15 +24,23 @@ type RouteProp = {
   icon: IconName;
 };
 
+export enum RoutePath {
+  Import = '/import',
+  Search = '/search',
+  ViewAndBuild = '/view',
+  Report = '/report',
+  Home = '*',
+}
+
 export const routesList: RouteProp[] = [
   {
-    path: '/import',
+    path: RoutePath.Import,
     element: <Import />,
     title: 'Import',
-    icon: IconName.ChartColumn,
+    icon: IconName.FileImport,
   },
   {
-    path: '/search',
+    path: RoutePath.Search,
     element: (
       <ExploreContextProvider>
         <Explore />
@@ -48,7 +56,7 @@ export const routesList: RouteProp[] = [
     icon: IconName.Search,
   },
   {
-    path: '/view',
+    path: RoutePath.ViewAndBuild,
     element: <Monitor />,
     title: 'View&Build',
     icon: IconName.ChartColumn,
@@ -60,7 +68,7 @@ export const routesList: RouteProp[] = [
     ),
   },
   {
-    path: '/report',
+    path: RoutePath.Report,
     element: <Report />,
     title: 'Report',
     icon: IconName.FileLines,
@@ -80,7 +88,7 @@ const Routes: React.FC = () => {
                     {route.routes}
                   </Route>
                 ))}
-                <Route path={'*'} element={<Home />} />
+                <Route path={RoutePath.Home} element={<Home />} />
               </BrowserRoutes>
             </Suspense>
           </Layout>

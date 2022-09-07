@@ -49,6 +49,13 @@
   .panel-result-graph-wrapper {
     padding: 0em;
     grid-area: gr;
+
+    .add-threshold {
+      position: absolute;
+      top: 0.5em;
+      right: 0.5em;
+      z-index: 100000;
+    }
   }
 
   .query-selection {
