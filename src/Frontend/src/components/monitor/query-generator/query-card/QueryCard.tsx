@@ -9,6 +9,7 @@ import { IconName } from '../../../ui/icons/icons';
 import Input from '../../../ui/input/Input';
 import Typeahead, { TypeaheadOption } from '../../../ui/typeahead/Typeahead';
 import OperatorSelection, { Operator } from '../operator-selection/OperatorSelection';
+import DataChannelCard, { CardMode } from '../../../explore/data-channel-card/DataChannelCard';
 import './QueryCard.scss';
 
 interface Props {
@@ -144,13 +145,20 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
           {query.items.length > 0 &&
             query.items.map(i => {
               let item = undefined;
+              let key = '';
               if (isDataChannelQueryItem(i)) {
-                item = <p key={i.Property.UniversalID.toString()}>{i.Property.UniversalID.toString()}</p>;
+                key = i.Property.UniversalID.toString();
+                item = <DataChannelCard
+                    dataChannel={i}
+                    mode={CardMode.LegacyNameCentric}
+                    extraNodes={<Icon icon={IconName.Eye} />}
+                />;
               } else {
+                key = i.id;
                 item = <p key={i.id}>{i.name}</p>;
               }
               return (
-                <div key={i.toString()} className={'query-generation-selected-item'}>
+                <div key={key} className={'query-generation-selected-item'}>
                   {item}
                   <Icon icon={IconName.Minus} onClick={() => deleteSelectedItem(i)} />
                 </div>

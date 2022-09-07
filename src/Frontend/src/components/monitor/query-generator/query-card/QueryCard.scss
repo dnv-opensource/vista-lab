@@ -46,10 +46,16 @@
 
     .query-generation-selected-item {
       display: flex;
-      justify-content: space-between;
       width: 100%;
       overflow: hidden;
-      word-break: break-all;
+      align-items: center;
+      font-size: 0.95em;
+      gap: 0.75em;
+
+      &>svg {
+        margin-left: auto;
+        color: red;
+      }
     }
 
     .query-generation-selector {

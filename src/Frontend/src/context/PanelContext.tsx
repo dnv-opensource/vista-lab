@@ -215,7 +215,8 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
         timeRange: tr,
         queries: panel.queries
           .map(q => toQueryDto(q))
-          .concat(...panel.dataChannels.map(toQueryDtoFromDataChannelId)),
+          .concat(...panel.dataChannels.map(toQueryDtoFromDataChannelId))
+          .filter(q => q.dataChannelIds?.length),
       };
 
       return VistaLabApi.dataChannelGetTimeSeriesDataByQueries(data);
