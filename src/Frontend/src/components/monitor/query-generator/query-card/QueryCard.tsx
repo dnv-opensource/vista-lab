@@ -1,6 +1,7 @@
 import { UniversalId } from 'dnv-vista-sdk';
 import React, { useCallback, useMemo, useState } from 'react';
-import { Panel, Query, usePanelContext } from '../../../../context/PanelContext';
+import { DataChannelWithShipData } from '../../../../context/ExploreContext';
+import { isDataChannelQueryItem, Panel, Query, usePanelContext } from '../../../../context/PanelContext';
 import useToast, { ToastType } from '../../../../hooks/use-toast';
 import { isNullOrWhitespace } from '../../../../util/string';
 import Icon from '../../../ui/icons/Icon';
@@ -48,15 +49,15 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
     [editQuery, query, panel, addToast]
   );
 
-  const formatOption = useCallback((option: Query | UniversalId): TypeaheadOption<Query | UniversalId> => {
-    if ('localId' in option) {
-      return { name: 'DataChannel', value: `${option.toString()}`, option };
+  const formatOption = useCallback((option: Query | DataChannelWithShipData): TypeaheadOption<Query | DataChannelWithShipData> => {
+    if (isDataChannelQueryItem(option)) {
+      return { name: 'DataChannel', value: `${option.Property.UniversalID.toString()}`, option };
     }
     return { name: 'Query', value: option.name, option };
   }, []);
 
   const onSelectedOption = useCallback(
-    (option: Query | UniversalId) => {
+    (option: Query | DataChannelWithShipData) => {
       selectQueryItem(panel.id, query.id, option);
     },
     [selectQueryItem, panel.id, query.id]
@@ -70,7 +71,7 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
   );
 
   const deleteSelectedItem = useCallback(
-    (item: Query | UniversalId) => {
+    (item: Query | DataChannelWithShipData) => {
       const newQuery = { ...query };
       const items = [...newQuery.items];
       const itemIndex = items.findIndex(i => item.toString() === i.toString());
@@ -81,7 +82,7 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
     [editQuery, panel, query]
   );
 
-  const availableOptions: (Query | UniversalId)[] = useMemo(() => {
+  const availableOptions: (Query | DataChannelWithShipData)[] = useMemo(() => {
     return [
       ...panel.queries
         .filter(q => q.id !== query.id)
@@ -92,15 +93,15 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
               return false;
             })
         ),
-      ...panel.dataChannelIds.filter(
+      ...panel.dataChannels.filter(
         dc =>
           !query.items.find(item => {
-            if ('localId' in item) return item.equals(dc);
+            if (isDataChannelQueryItem(item)) return item.Property.UniversalID.equals(dc.Property.UniversalID);
             return false;
           })
       ),
     ];
-  }, [panel.dataChannelIds, panel.queries, query]);
+  }, [panel.dataChannels, panel.queries, query]);
 
   return (
     <div className={'query-card'}>
@@ -143,8 +144,8 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
           {query.items.length > 0 &&
             query.items.map(i => {
               let item = undefined;
-              if ('localId' in i) {
-                item = <p key={i.toString()}>{i.toString()}</p>;
+              if (isDataChannelQueryItem(i)) {
+                item = <p key={i.Property.UniversalID.toString()}>{i.Property.UniversalID.toString()}</p>;
               } else {
                 item = <p key={i.id}>{i.name}</p>;
               }

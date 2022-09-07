@@ -2,13 +2,13 @@ import { CodebookNames, MetadataTag } from 'dnv-vista-sdk';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { VistaLabApi } from '../../../apiConfig';
-import { DataChannel, TimeSeriesDataWithProps } from '../../../client';
+import { TimeSeriesDataWithProps } from '../../../client';
 import { DataChannelWithShipData } from '../../../context/ExploreContext';
 import Loader from '../../ui/loader/Loader';
 import './DataChannelCard.scss';
 
 interface Props {
-  dataChannel: DataChannel;
+  dataChannel: DataChannelWithShipData;
   mode: CardMode;
   extraNodes?: React.ReactNode;
 }
@@ -70,10 +70,10 @@ const DataChannelCard: React.FC<Props> = (props: Props) => {
                 <span>/meta</span>
                 {tags.map(t => {
                     return (
-                        <>
-                        <span>/{CodebookNames.toPrefix(t.name)}{t.prefix}</span>
-                        <b>{t.value}</b>
-                        </>
+                        <span key={t.name}>
+                            <span>/{CodebookNames.toPrefix(t.name)}{t.prefix}</span>
+                            <b>{t.value}</b>
+                        </span>
                     );
                 })}
             </>
@@ -90,10 +90,10 @@ const DataChannelCard: React.FC<Props> = (props: Props) => {
             <div className={'data-channel-card-c-title'}>
                 {parts.map((p, i) => {
                     return (
-                    <span key={p.key}>
-                        {i > 0 && !p.noSep && <span className={'separator'} >|</span>}
-                        {p.el}
-                    </span>
+                        <span key={p.key}>
+                            {i > 0 && !p.noSep && <span className={'separator'} >|</span>}
+                            {p.el}
+                        </span>
                     );
                 })}
             </div>

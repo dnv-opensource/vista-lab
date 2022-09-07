@@ -21,7 +21,7 @@ export type ExploreContextType = {
   fetchFilteredDataChannels: (query?: string) => Promise<DataChannelListPackage[]>;
   getVmodForVessel: (vesselId: string) => Promise<Pmod | undefined>;
   getUniversalIdsFromGmodPath: (path: GmodPath) => UniversalId[];
-  getDataChannelsFromGmodPath: (path: GmodPath, vesselId?: string) => DataChannel[];
+  getDataChannelsFromGmodPath: (path: GmodPath, vesselId?: string) => DataChannelWithShipData[];
   universalIds: UniversalId[] | undefined;
   mode: VesselMode;
   setMode: (value: VesselMode) => void;
@@ -132,11 +132,11 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
   );
 
   const getDataChannelsFromGmodPath = useCallback(
-    (path: GmodPath, vesselId?: string): DataChannel[] => {
+    (path: GmodPath, vesselId?: string): DataChannelWithShipData[] => {
 
-      const channels = (vesselId ?
+      const channels = ((vesselId ?
         dataChannelListPackages?.find(p => p.Package.Header.ShipID === vesselId)?.Package.DataChannelList.DataChannel :
-        dataChannelListPackages?.flatMap(dclp => dclp.Package.DataChannelList.DataChannel)) || [];
+        dataChannelListPackages?.flatMap(dclp => dclp.Package.DataChannelList.DataChannel)) || []) as DataChannelWithShipData[];
 
       return channels.filter(dc => {
         const universalId: UniversalId = (dc as DataChannelWithShipData).Property.UniversalID;

@@ -19,6 +19,7 @@ const Explore: React.FC = () => {
 
   useEffect(() => {
     setLoading(true);
+    if (!gmod || !codebooks) return;
     fetchFilteredDataChannels(queryParam)
       .then(res => {
         res.forEach(dclp => {
@@ -28,7 +29,7 @@ const Explore: React.FC = () => {
                 const channel = dc as DataChannelWithShipData;
                 channel.Property.ShipID = shipId;
                 channel.Property.UniversalID = UniversalIdBuilder.create(visVersion)
-                    .withLocalId(LocalIdBuilder.parse(dc.DataChannelID.LocalID, gmod!, codebooks!))
+                    .withLocalId(LocalIdBuilder.parse(dc.DataChannelID.LocalID, gmod, codebooks))
                     .withImoNumber(getImoNumberFromString(shipId))
                     .build();
             });
