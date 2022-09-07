@@ -6,6 +6,7 @@ import { removeDuplicateDates, toLocaleTimeRangeString } from '../../../util/dat
 import { isNullOrWhitespace } from '../../../util/string';
 import LineChart, { Accessors, AxisFormatter } from '../../graph/LineChart';
 import './QueryResults.scss';
+import Tooltip from './tooltip/Tooltip';
 
 interface Props {
   panel: Panel;
@@ -55,8 +56,8 @@ const QueryResults: React.FC<Props> = ({ panel }) => {
             : FALLBACK_DATA.map(d => ({ key: d.name, data: d.timeseries }))
         }
         accessors={accessors}
-        tooltipComponent={({ tooltipData, accessors }) => <p>{tooltipData?.nearestDatum?.datum.value}</p>}
         axisFormatter={axisFormatter}
+        tooltipComponent={params => <Tooltip params={params} />}
       >
         {data?.length > 0 &&
           panel.threshold &&
