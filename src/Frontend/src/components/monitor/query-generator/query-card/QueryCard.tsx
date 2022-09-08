@@ -1,8 +1,6 @@
-import { LocalIdBuilder } from 'dnv-vista-sdk';
 import React, { useCallback, useMemo, useState } from 'react';
 import { DataChannelWithShipData } from '../../../../context/ExploreContext';
 import { isDataChannelQueryItem, Panel, Query, usePanelContext } from '../../../../context/PanelContext';
-import { useVISContext } from '../../../../context/VISContext';
 import useToast, { ToastType } from '../../../../hooks/use-toast';
 import { isNullOrWhitespace } from '../../../../util/string';
 import DataChannelCard, { CardMode } from '../../../explore/data-channel-card/DataChannelCard';
@@ -22,7 +20,6 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
   const { addToast } = useToast();
   const { removeQueryFromPanel, editQuery, selectQueryItem, selectQueryOperator, toggleQueryItemInPanel } =
     usePanelContext();
-  const { gmod, codebooks } = useVISContext();
 
   const [isCollapsed, setCollapsed] = useState(
     !(panel.queries.length === 1 || panel.queries.findIndex(q => q.id === query.id) === 0)
@@ -112,13 +109,6 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
 
   const isQueryExcludedFromGraph = panel.queryItemsExcludedFromGraph.has(query.id);
 
-  const saveQuery = useCallback(() => {
-    if (!gmod || !codebooks || LocalIdBuilder.tryParse(query.name, gmod, codebooks) === undefined) {
-      addToast(ToastType.Warning, 'Save error', <p>Name must be a valid LocalId</p>);
-      return;
-    }
-  }, [query, gmod, codebooks, addToast]);
-
   return (
     <div className={'query-card'}>
       <div className={'query-card-header'}>
@@ -135,12 +125,7 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
           onClick={() => toggleQueryItemInPanel(panel.id, query)}
           className={`query-card-toggle-query ${isQueryExcludedFromGraph ? 'excluded' : ''}`}
         />
-        <Icon
-          role={'button'}
-          icon={IconName.FloppyDisk}
-          onClick={saveQuery}
-          className={'query-card-action-button query-card-save-query'}
-        />
+
         <Icon
           role={'button'}
           icon={IconName.Trash}

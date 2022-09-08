@@ -29,7 +29,7 @@ const Panels: React.FC = () => {
             icon={IconName.Plus}
           />
         </form>
-        <CombinedTimePickers className={'combined-time-pickers'} />
+        <CombinedTimePickers className={'time-pickers'} />
       </div>
       <ScrollableField className={'panels-container'}>
         {panels.map(p => (
