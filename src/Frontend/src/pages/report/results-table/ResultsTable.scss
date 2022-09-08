@@ -1,17 +1,30 @@
 @import 'src/styles/colors';
-.results-table {
-    border-collapse: collapse;
-    margin: 25px 0;
-    font-size: 0.9em;
-    font-family: sans-serif;
-    min-width: 400px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-    th, td { padding:  12px 15px;}
+@import 'src/styles/global';
 
-    thead tr {
-        background-color: #d4dee8;
-        color: $dark-blue;
-        text-align: left;
-    }
+.report-title {
+  margin-top: 0;
+}
+
+.results-table {
+  border-collapse: collapse;
+  font-size: 0.9em;
+  font-family: sans-serif;
+  min-width: 20em;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  width: 100%;
+
+  th,
+  td {
+    padding: 12px 15px;
   }
 
+  th {
+    background-color: #d4dee8;
+    color: $dark-blue;
+    text-align: left;
+  }
+
+  tr {
+    background-color: white;
+  }
+}

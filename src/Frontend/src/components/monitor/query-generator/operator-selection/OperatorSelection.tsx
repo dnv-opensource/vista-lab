@@ -8,8 +8,8 @@ export enum Operator {
   Subtract = '-',
   Times = 'x',
   Divide = '/',
-  Average = 'avg',
 }
+
 const OPERATOR_OPTIONS = Object.values(Operator) as Operator[];
 
 interface Props {

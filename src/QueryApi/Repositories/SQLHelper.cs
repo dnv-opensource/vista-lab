@@ -141,7 +141,7 @@ public static class SQLGenerator
                     {nameof(TimeSeriesEntity.Timestamp)}
                 FROM {TimeSeriesEntity.TableName}
                 WHERE {nameof(TimeSeriesEntity.DataChannelId)} = '{universalId.LocalId}'
-                AND {nameof(TimeSeriesEntity.VesselId)} = 'IMO{universalId.ImoNumber}'
+                {(universalId.ImoNumber is not null ? $"AND {nameof(TimeSeriesEntity.VesselId)} = 'IMO{universalId.ImoNumber.Value}'" : '\n')}
                 {timeRangeSegment}
             ";
 

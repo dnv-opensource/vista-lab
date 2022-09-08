@@ -1,10 +1,7 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { VistaLabApi } from '../../../apiConfig';
-import { AggregatedQueryResultAsReport, PanelQueryDto, QueryOperator, TimeRange } from '../../../client';
-
-import { useExploreContext } from '../../../context/ExploreContext';
-import { units } from '../../../util/date';
+import { AggregatedQueryResultAsReport } from '../../../client';
+import { toFormattedNumberString } from '../../../util/string';
 import { RoutePath } from '../../Routes';
 import { QueryReport } from './QueryReports';
 import './ResultsTable.scss';
@@ -27,20 +24,26 @@ const ResultsTable: React.FC = () => {
 
   return (
     <>
-      <h1>Annual Report</h1>
+      <h2 className={'report-title'}>Report</h2>
       <table className="results-table">
         <thead>
           {/* <link href="ResultsTable.css" rel="stylesheet" /> */}
           <tr>
             <th scope="col">Name</th>
             <th scope="col">Value</th>
+            <th>Unit</th>
+            <th>Duration</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>{data.map(d => d.name)}</td>
-            <td> {data.map(d => d.value.toFixed(2))}</td>
-          </tr>
+          {queryReport.queries.map(q => (
+            <tr key={q.id}>
+              <td>{q.name}</td>
+              <td>{toFormattedNumberString(data.find(d => d.name === q.name)?.value) ?? 'No data found'}</td>
+              <td>TBD</td>
+              <td>Annual</td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </>
