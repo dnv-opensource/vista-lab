@@ -1,8 +1,8 @@
-import { Codebooks, Gmod, UniversalId, UniversalIdBuilder } from 'dnv-vista-sdk';
+import { Codebooks, Gmod, UniversalId } from 'dnv-vista-sdk';
 import { isString } from 'lodash';
 import React, { createContext, useCallback, useMemo } from 'react';
 import { VistaLabApi } from '../apiConfig';
-import { TimeRange, QueryOperator, Query as QueryDto, AggregatedQueryResult, DataChannel, Property } from '../client';
+import { AggregatedQueryResult, DataChannel, Property, Query as QueryDto, QueryOperator, TimeRange } from '../client';
 import { Operator } from '../components/monitor/query-generator/operator-selection/OperatorSelection';
 import { RelativeTimeRange } from '../components/ui/time-pickers/relative-time-range-picker/types';
 import useLocalStorage, { LocalStorageSerializer } from '../hooks/use-localstorage';
@@ -52,29 +52,33 @@ export type Query = {
 };
 
 export function isDataChannelQueryItem(item: Query | DataChannelWithShipData): item is DataChannelWithShipData {
-    return 'DataChannelID' in item;
+  return 'DataChannelID' in item;
 }
 
 export function serializeDataChannelWithShipData(item: DataChannelWithShipData): SerializableDataChannelWithShipData {
-    const serializableDataChannel: SerializableDataChannelWithShipData = {
-        ...item,
-        Property: {
-            ...item.Property,
-            UniversalID: item.Property.UniversalID.toString(),
-        }
-    };
-    return serializableDataChannel;
+  const serializableDataChannel: SerializableDataChannelWithShipData = {
+    ...item,
+    Property: {
+      ...item.Property,
+      UniversalID: item.Property.UniversalID.toString(),
+    },
+  };
+  return serializableDataChannel;
 }
-export function deserializeDataChannelWithShipData(item: SerializableDataChannelWithShipData, gmod: Gmod, codebooks: Codebooks): DataChannelWithShipData {
-    const universalId = UniversalId.parse(item.Property.UniversalID, gmod, codebooks);
-    const dataChannel: DataChannelWithShipData = {
-        ...item,
-        Property: {
-            ...item.Property,
-            UniversalID: universalId,
-        }
-    }
-    return dataChannel;
+export function deserializeDataChannelWithShipData(
+  item: SerializableDataChannelWithShipData,
+  gmod: Gmod,
+  codebooks: Codebooks
+): DataChannelWithShipData {
+  const universalId = UniversalId.parse(item.Property.UniversalID, gmod, codebooks);
+  const dataChannel: DataChannelWithShipData = {
+    ...item,
+    Property: {
+      ...item.Property,
+      UniversalID: universalId,
+    },
+  };
+  return dataChannel;
 }
 
 export type Panel = {
@@ -87,7 +91,9 @@ export type Panel = {
   threshold?: Threshold;
 };
 
-export type SerializableDataChannelWithShipData = DataChannel & { Property: Property & {  ShipID: string; UniversalID: string; } };
+export type SerializableDataChannelWithShipData = DataChannel & {
+  Property: Property & { ShipID: string; UniversalID: string };
+};
 
 export type SerializableQuery = Omit<Query, 'items'> & {
   items: (string | SerializableDataChannelWithShipData)[];
@@ -100,7 +106,12 @@ export type SerializablePanel = Omit<Panel, 'dataChannels' | 'queries' | 'queryI
 };
 
 const DEFAULT_QUERY: Query = { id: Date.now() + '', name: 'A', items: [] };
-const DEFAULT_PANEL: Panel = { id: 'Default', dataChannels: [], queryItemsExcludedFromGraph: new Set<string>(), queries: [DEFAULT_QUERY] };
+const DEFAULT_PANEL: Panel = {
+  id: 'Default',
+  dataChannels: [],
+  queryItemsExcludedFromGraph: new Set<string>(),
+  queries: [DEFAULT_QUERY],
+};
 const DEFAULT_TIME_RANGE: RelativeTimeRange = { from: 900, to: 0 };
 const DEFAULT_INTERVAL: string = '10s';
 
@@ -189,14 +200,16 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
       };
 
       const toQueryDto = (q: Query): QueryDto => {
-        const operatorDto: QueryOperator = Object.entries(QueryOperator).find(
-          ([key, _]) =>
-            key === Object.keys(Operator)[Object.values(Operator).indexOf(q.operator as unknown as Operator)]
-        )?.[1] as QueryOperator;
+        const operatorDto: QueryOperator = +Object.keys(QueryOperator)[
+          Object.values(Operator).indexOf(q.operator!)
+        ] as QueryOperator;
+
         return {
           id: q.id,
           name: q.name,
-          dataChannelIds: (q.items.filter(q => isDataChannelQueryItem(q)) as DataChannelWithShipData[]).map(u => u.Property.UniversalID.toString()),
+          dataChannelIds: (q.items.filter(q => isDataChannelQueryItem(q)) as DataChannelWithShipData[]).map(u =>
+            u.Property.UniversalID.toString()
+          ),
           subQueries: (q.items.filter(q => !isDataChannelQueryItem(q)) as Query[]).map(q => toQueryDto(q)),
           operator: operatorDto,
         };
@@ -204,14 +217,12 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
 
       const toQueryDtoFromDataChannelId = (dataChannel: DataChannelWithShipData): QueryDto => {
         const stringifiedUniversalId = dataChannel.Property.UniversalID.toString();
-        const operatorDto: QueryOperator = Object.entries(QueryOperator).find(
-          ([key, _]) => key === Object.keys(Operator)[Object.values(Operator).indexOf('+' as unknown as Operator)]
-        )?.[1] as QueryOperator;
+
         return {
           id: stringifiedUniversalId,
           dataChannelIds: [stringifiedUniversalId],
           name: stringifiedUniversalId,
-          operator: operatorDto,
+          operator: QueryOperator._0,
           subQueries: [],
         };
       };
@@ -221,9 +232,11 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
         queries: panel.queries
           .filter(q => !panel.queryItemsExcludedFromGraph.has(q.id))
           .map(q => toQueryDto(q))
-          .concat(...panel.dataChannels
-            .filter(d => !panel.queryItemsExcludedFromGraph.has(d.Property.UniversalID.toString()))
-            .map(toQueryDtoFromDataChannelId))
+          .concat(
+            ...panel.dataChannels
+              .filter(d => !panel.queryItemsExcludedFromGraph.has(d.Property.UniversalID.toString()))
+              .map(toQueryDtoFromDataChannelId)
+          )
           .filter(q => q.dataChannelIds?.length),
       };
 
@@ -306,7 +319,9 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
         const panelIndex = newPanels.findIndex(p => p.id === panelId);
         if (panelIndex === -1) return prev;
         const panel = { ...newPanels[panelIndex] };
-        const dataChannelIndex = panel.dataChannels.findIndex(d => d.Property.UniversalID.equals(dataChannel.Property.UniversalID));
+        const dataChannelIndex = panel.dataChannels.findIndex(d =>
+          d.Property.UniversalID.equals(dataChannel.Property.UniversalID)
+        );
         panel.dataChannels.splice(dataChannelIndex, 1);
         newPanels[panelIndex] = panel;
         return newPanels;
@@ -317,20 +332,18 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
 
   const toggleQueryItemInPanel = useCallback(
     (panelId: string, queryItem: DataChannelWithShipData | Query) => {
-        setPanels(prev => {
-            const newPanels = [...prev];
-            const panelIndex = newPanels.findIndex(p => p.id === panelId);
-            if (panelIndex === -1) return prev;
-            const panel = { ...newPanels[panelIndex] };
-            const key = isDataChannelQueryItem(queryItem) ? queryItem.Property.UniversalID.toString() : queryItem.id;
-            const isExcluded = panel.queryItemsExcludedFromGraph.has(key);
-            if (isExcluded)
-                panel.queryItemsExcludedFromGraph.delete(key);
-            else
-                panel.queryItemsExcludedFromGraph.add(key);
-            newPanels[panelIndex] = panel;
-            return newPanels;
-        });
+      setPanels(prev => {
+        const newPanels = [...prev];
+        const panelIndex = newPanels.findIndex(p => p.id === panelId);
+        if (panelIndex === -1) return prev;
+        const panel = { ...newPanels[panelIndex] };
+        const key = isDataChannelQueryItem(queryItem) ? queryItem.Property.UniversalID.toString() : queryItem.id;
+        const isExcluded = panel.queryItemsExcludedFromGraph.has(key);
+        if (isExcluded) panel.queryItemsExcludedFromGraph.delete(key);
+        else panel.queryItemsExcludedFromGraph.add(key);
+        newPanels[panelIndex] = panel;
+        return newPanels;
+      });
     },
     [setPanels]
   );

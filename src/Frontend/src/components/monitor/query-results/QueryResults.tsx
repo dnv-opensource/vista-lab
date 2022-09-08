@@ -1,8 +1,7 @@
 import { AnimatedLineSeries } from '@visx/xychart';
 import React, { useEffect, useMemo, useState } from 'react';
 import { AggregatedQueryResult, AggregatedTimeseries } from '../../../client';
-import { DataChannelWithShipData } from '../../../context/ExploreContext';
-import { isDataChannelQueryItem, Panel, Query, usePanelContext } from '../../../context/PanelContext';
+import { Panel, usePanelContext } from '../../../context/PanelContext';
 import { removeDuplicateDates, toLocaleTimeRangeString } from '../../../util/date';
 import { isNullOrWhitespace } from '../../../util/string';
 import LineChart, { Accessors, AxisFormatter } from '../../graph/LineChart';
@@ -24,7 +23,8 @@ const QueryResults: React.FC<Props> = ({ panel }) => {
   const { getTimeseriesDataForPanel, timeRange } = usePanelContext();
   useEffect(() => {
     getTimeseriesDataForPanel(panel).then(setData);
-  }, [panel, getTimeseriesDataForPanel, setData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [panel.queries, getTimeseriesDataForPanel, setData]);
 
   const dataChannels = panel.dataChannels;
   const queries = panel.queries;
@@ -52,9 +52,10 @@ const QueryResults: React.FC<Props> = ({ panel }) => {
     };
   }, [activeTimerange]);
 
-  const dataSet: { key: string; data: TimeSeries[] }[] = data.length > 0
-    ? data.map(d => ({ key: d.name, data: d.timeseries }))
-    : FALLBACK_DATA.map(d => ({ key: d.name, data: d.timeseries }));
+  const dataSet: { key: string; data: TimeSeries[] }[] =
+    data.length > 0
+      ? data.map(d => ({ key: d.name, data: d.timeseries }))
+      : FALLBACK_DATA.map(d => ({ key: d.name, data: d.timeseries }));
 
   return (
     <>

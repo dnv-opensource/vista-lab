@@ -29,13 +29,8 @@
       font-weight: 600;
     }
 
-    .query-card-action-buttons {
-      flex: 1;
-      display: flex;
-      justify-content: flex-end;
-      font-size: 0.7em;
-      gap: 1em;
-
+    .query-card-action-button {
+      font-size: 0.8em;
       color: $bg-grey;
 
       .excluded {
@@ -58,7 +53,7 @@
       font-size: 0.95em;
       gap: 0.75em;
 
-      &>svg {
+      & > svg {
         margin-left: auto;
         color: red;
       }
@@ -84,17 +79,17 @@
 }
 
 .query-card-inner {
-    position: relative;
-    box-shadow: $drop-shadow;
-    border: $drop-shadow-border;
-    border-radius: 0.4em;
-    background-color: $white;
+  position: relative;
+  box-shadow: $drop-shadow;
+  border: $drop-shadow-border;
+  border-radius: 0.4em;
+  background-color: $white;
 
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 0.8em;
-    gap: 1em;
-    font-size: 0.95em;
-    width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0.8em;
+  gap: 1em;
+  font-size: 0.95em;
+  width: 100%;
 }

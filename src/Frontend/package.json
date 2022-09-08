@@ -16,7 +16,7 @@
     "@visx/scale": "^2.2.2",
     "@visx/xychart": "^2.12.2",
     "clsx": "^1.2.1",
-    "dnv-vista-sdk": "^0.0.1-preview-88",
+    "dnv-vista-sdk": "^0.0.1-preview-91",
     "leaflet": "^1.8.0",
     "lodash": "^4.17.21",
     "react": "^18.2.0",

@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { GmodNode, GmodPath, UniversalId } from 'dnv-vista-sdk';
+import { GmodNode, GmodPath } from 'dnv-vista-sdk';
 import React, { useMemo } from 'react';
 import { useExploreContext } from '../../../../context/ExploreContext';
 import Icon from '../../../ui/icons/Icon';
@@ -23,7 +23,6 @@ interface Props {
 }
 
 const GmodViewNode: React.FC<Props> = ({ node, mergedChild, skippedParent, parents, path: initPath, extra }) => {
-
   const path = useMemo(
     () => (mergedChild ? new GmodPath(parents.concat(node), mergedChild) : initPath),
     [initPath, mergedChild, parents, node]
@@ -51,7 +50,6 @@ const GmodViewNode: React.FC<Props> = ({ node, mergedChild, skippedParent, paren
   }, [node, parents, mergedChild, skippedParent]);
 
   const expanded = extra.isExpanded(node);
-
 
   return (
     <div className={'gmod-view-node-container'}>
@@ -87,7 +85,11 @@ const GmodViewNode: React.FC<Props> = ({ node, mergedChild, skippedParent, paren
           <div className={`data-channels ${dataChannels.length === 0 ? 'empty' : ''}`}>
             {dataChannels.map((dc, index) => (
               <div key={index} className={'data-channel-card-wrapper'}>
-                <DataChannelCard dataChannel={dc} mode={CardMode.LegacyNameCentric} extraNodes={<AddToPanelButton dataChannel={dc} />} />
+                <DataChannelCard
+                  dataChannel={dc}
+                  mode={CardMode.LegacyNameCentric}
+                  extraNodes={<AddToPanelButton dataChannel={dc} />}
+                />
               </div>
             ))}
           </div>
