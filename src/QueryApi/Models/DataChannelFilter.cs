@@ -4,6 +4,9 @@ namespace QueryApi.Models;
 
 public class DataChannelFilter
 {
+    [property: DefaultValue(null)]
+    public string? VesselId { get; set; }
+
     [property: DefaultValue(new[] { "411/*/C101.31-*" })]
     public string[]? PrimaryItem { get; set; }
 
@@ -14,7 +17,8 @@ public class DataChannelFilter
     public string[]? Meta { get; set; }
 
     public bool IsEmpty =>
-        (PrimaryItem == null || !PrimaryItem.Any())
+        string.IsNullOrWhiteSpace(VesselId)
+        && (PrimaryItem == null || !PrimaryItem.Any())
         && (SecondaryItem == null || !SecondaryItem.Any())
         && (Meta == null || !Meta.Any());
 }

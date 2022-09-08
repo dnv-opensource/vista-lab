@@ -102,9 +102,7 @@ public sealed partial class DataChannelRepository
             var vesselId = response
                 .GetValue(i, nameof(DataChannelEntity.VesselId))
                 .GetStringNonNull();
-            var vesselName = response
-                .GetValue(i, nameof(DataChannelEntity.VesselName))
-                .GetString();
+            var vesselName = response.GetValue(i, nameof(DataChannelEntity.VesselName)).GetString();
             if (!dataChannelListsPackage.ContainsKey(vesselId))
             {
                 var dcList = new List<DataChannel>();

@@ -27,6 +27,7 @@ public sealed class ElasticSearchService : IHostedService
     private IElasticClient _esClient;
 
     public sealed record DataChannelDocument(
+        string VesselId,
         string LocalId,
         string LocalId_PrimaryItem,
         string? LocalId_SecondaryItem,
@@ -101,6 +102,7 @@ public sealed class ElasticSearchService : IHostedService
 
     public async ValueTask<HitResults> Search(
         VisVersion version,
+        string? vesselId,
         string phrase,
         int? topResult,
         CancellationToken cancellationToken
@@ -111,24 +113,23 @@ public sealed class ElasticSearchService : IHostedService
 
         await _esClient.PingAsync(new PingRequest(), cancellationToken);
         _logger.LogInformation("{cliendId} - Pinged ElasticSearch client successfully", clientId);
+
+        var predicates =
+            new List<Func<QueryContainerDescriptor<DataChannelDocument>, QueryContainer>>();
+
+        if (!string.IsNullOrWhiteSpace(vesselId))
+            predicates.Add(filter => filter.Match(mu => mu.Field(d => d.VesselId).Query(vesselId)));
+
+        predicates.Add(
+            filter => filter.MultiMatch(mu => mu.Type(TextQueryType.BestFields).Query(phrase))
+        );
+
         var searchResponse = _esClient.Search<DataChannelDocument>(
             d =>
             {
                 if (topResult is not null) { }
                 return d.Index(version.ToString())
-                    .Query(
-                        q =>
-                            q.Bool(
-                                b =>
-                                    b.Must(
-                                        filter =>
-                                            filter.MultiMatch(
-                                                mu =>
-                                                    mu.Type(TextQueryType.BestFields).Query(phrase)
-                                            )
-                                    )
-                            )
-                    )
+                    .Query(q => q.Bool(b => b.Must(predicates)))
                     .Size(100);
             }
         );
@@ -229,6 +230,7 @@ public sealed class ElasticSearchService : IHostedService
 
                     var index = _esClient.Index(
                         new DataChannelDocument(
+                            entity.VesselId,
                             entity.LocalId,
                             entity.LocalId_PrimaryItem,
                             entity.LocalId_SecondaryItem,

@@ -9,7 +9,7 @@ import {
   VisVersion,
 } from 'dnv-vista-sdk';
 import React, { createContext, useCallback, useMemo, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { VistaLabApi } from '../apiConfig';
 import { DataChannel, DataChannelListPackage, Property } from '../client';
 import { VesselMode } from '../pages/explore/vessel/Vessel';
@@ -39,6 +39,7 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
   const { visVersion } = useVISContext();
   const [dataChannelListPackages, setDataChannelListPackages] = useState<DataChannelListPackage[]>();
   const [searchParams, setSearchParam] = useSearchParams();
+  const { vesselId } = useParams();
   const mode: VesselMode = useMemo(
     () => (searchParams.get('mode') as VesselMode | null) ?? VesselMode.Any,
     [searchParams]
@@ -64,11 +65,11 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
         [VesselMode.SecondaryItem]: 2,
       }[mode];
 
-      const response = await VistaLabApi.searchSearch(clientVersion, { scope: scope, phrase: query ?? '' });
+      const response = await VistaLabApi.searchSearch(clientVersion, { vesselId: vesselId === 'all' ? undefined : vesselId, scope: scope, phrase: query ?? '' });
 
       return response;
     },
-    [mode, visVersion]
+    [mode, visVersion, vesselId]
   );
 
   const getVmodForVessel = useCallback(

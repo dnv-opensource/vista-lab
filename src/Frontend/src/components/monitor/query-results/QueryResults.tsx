@@ -1,7 +1,8 @@
 import { AnimatedLineSeries } from '@visx/xychart';
 import React, { useEffect, useMemo, useState } from 'react';
 import { AggregatedQueryResult, AggregatedTimeseries } from '../../../client';
-import { Panel, usePanelContext } from '../../../context/PanelContext';
+import { DataChannelWithShipData } from '../../../context/ExploreContext';
+import { isDataChannelQueryItem, Panel, Query, usePanelContext } from '../../../context/PanelContext';
 import { removeDuplicateDates, toLocaleTimeRangeString } from '../../../util/date';
 import { isNullOrWhitespace } from '../../../util/string';
 import LineChart, { Accessors, AxisFormatter } from '../../graph/LineChart';
@@ -16,7 +17,7 @@ const FALLBACK_DATA: AggregatedQueryResult[] = [
   { id: 'Nan', name: 'Nan', timeseries: [{ timestamp: new Date(), value: 0 }] },
 ];
 
-type TimeSeries = AggregatedTimeseries & { unit?: string; }
+export type TimeSeries = AggregatedTimeseries;
 
 const QueryResults: React.FC<Props> = ({ panel }) => {
   const [data, setData] = useState<AggregatedQueryResult[]>([]);
@@ -26,6 +27,7 @@ const QueryResults: React.FC<Props> = ({ panel }) => {
   }, [panel, getTimeseriesDataForPanel, setData]);
 
   const dataChannels = panel.dataChannels;
+  const queries = panel.queries;
 
   const activeTimerange = useMemo(() => panel.timeRange ?? timeRange, [panel.timeRange, timeRange]);
 
@@ -36,12 +38,12 @@ const QueryResults: React.FC<Props> = ({ panel }) => {
     return removeDuplicateDates(timestamps);
   }, [panel.threshold, data]);
 
-  const accessors: Accessors<AggregatedTimeseries> = useMemo(
+  const accessors: Accessors<TimeSeries> = useMemo(
     () => ({ xAccessor: d => new Date(d.timestamp), yAccessor: d => d.value }),
     []
   );
 
-  const axisFormatter: AxisFormatter<AggregatedTimeseries> = useMemo(() => {
+  const axisFormatter: AxisFormatter<TimeSeries> = useMemo(() => {
     return {
       xAxis: value => {
         const v = value as Date;
@@ -50,18 +52,18 @@ const QueryResults: React.FC<Props> = ({ panel }) => {
     };
   }, [activeTimerange]);
 
+  const dataSet: { key: string; data: TimeSeries[] }[] = data.length > 0
+    ? data.map(d => ({ key: d.name, data: d.timeseries }))
+    : FALLBACK_DATA.map(d => ({ key: d.name, data: d.timeseries }));
+
   return (
     <>
       <LineChart
         className="query-result-graph"
-        dataset={
-          data.length > 0
-            ? data.map(d => ({ key: d.name, data: d.timeseries }))
-            : FALLBACK_DATA.map(d => ({ key: d.name, data: d.timeseries }))
-        }
+        dataset={dataSet}
         accessors={accessors}
         axisFormatter={axisFormatter}
-        tooltipComponent={params => <Tooltip params={params} />}
+        tooltipComponent={params => <Tooltip params={params} dataChannels={dataChannels} queries={queries} />}
       >
         {data?.length > 0 &&
           panel.threshold &&

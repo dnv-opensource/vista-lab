@@ -56,6 +56,7 @@ public sealed class SearchController : ControllerBase
     }
 
     public sealed record SearchRequestDto(
+        string? VesselId,
         [property: DefaultValue("Main engine")] string? Phrase,
         [property: DefaultValue(SearchScope.Any)] SearchScope? Scope
     );
@@ -77,7 +78,7 @@ public sealed class SearchController : ControllerBase
     {
         var gmod = _vis.GetGmod(visVersion);
 
-        var request = new SearchDto(body.Phrase, null);
+        var request = new SearchDto(body.Phrase, null, body.VesselId);
 
         var searchApiResultDto = await _searchClient.VISSearchAsync(
             (Search.Client.VisVersion)visVersion,
@@ -85,6 +86,7 @@ public sealed class SearchController : ControllerBase
             cancellationToken
         );
         var filter = new DataChannelFilter();
+        filter.VesselId = body.VesselId;
 
         if (searchApiResultDto.Hits is not null && searchApiResultDto.Hits.Count > 0)
         {

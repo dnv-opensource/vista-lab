@@ -73,6 +73,9 @@
       "DataChannelDocument": {
         "type": "object",
         "properties": {
+          "vesselId": {
+            "type": "string"
+          },
           "localId": {
             "type": "string"
           },
@@ -291,6 +294,10 @@
       "SearchDto": {
         "type": "object",
         "properties": {
+          "vesselId": {
+            "type": "string",
+            "nullable": true
+          },
           "phrase": {
             "type": "string",
             "default": "Main engine"
