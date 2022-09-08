@@ -16,7 +16,6 @@ export type ExploreContextType = {
   universalIds: UniversalId[] | undefined;
   mode: VesselMode;
   setMode: (value: VesselMode) => void;
-  postImportAndSimulateDataChannelFile: (file: File) => void;
 };
 
 type ExploreContextProviderProps = React.PropsWithChildren<{}>;
@@ -162,13 +161,6 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
     [dataChannelListPackages, mode]
   );
 
-  const postImportAndSimulateDataChannelFile = (file: File) => {
-    fetch('http://localhost:5054/api/data-channel/import-and-simulate', {
-      method: 'POST',
-      body: file,
-    });
-  };
-
   return (
     <ExploreContext.Provider
       value={{
@@ -181,7 +173,6 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
         universalIds,
         mode,
         setMode,
-        postImportAndSimulateDataChannelFile,
       }}
     >
       {children}

@@ -9,8 +9,7 @@ import { isNullOrWhitespace, getImoNumberFromString } from '../../util/string';
 import './Explore.scss';
 
 const Explore: React.FC = () => {
-  const { setDataChannelListPackages, fetchFilteredDataChannels, postImportAndSimulateDataChannelFile } =
-    useExploreContext();
+  const { setDataChannelListPackages, fetchFilteredDataChannels } = useExploreContext();
   const [searchParams, setSearchParam] = useSearchParams();
   const [loading, setLoading] = useState(false);
   const queryParam = useMemo(() => searchParams.get('query') ?? undefined, [searchParams]);
@@ -23,17 +22,17 @@ const Explore: React.FC = () => {
     fetchFilteredDataChannels(queryParam)
       .then(res => {
         res.forEach(dclp => {
-            const channels = dclp.Package.DataChannelList.DataChannel;
-            const shipId = dclp.Package.Header.ShipID;
-            channels.forEach(dc => {
-                const channel = dc as DataChannelWithShipData;
-                channel.Property.ShipID = shipId;
-                channel.Property.UniversalID = UniversalIdBuilder.create(visVersion)
-                    .withLocalId(LocalIdBuilder.parse(dc.DataChannelID.LocalID, gmod, codebooks))
-                    .withImoNumber(getImoNumberFromString(shipId))
-                    .build();
-            });
-            return channels;
+          const channels = dclp.Package.DataChannelList.DataChannel;
+          const shipId = dclp.Package.Header.ShipID;
+          channels.forEach(dc => {
+            const channel = dc as DataChannelWithShipData;
+            channel.Property.ShipID = shipId;
+            channel.Property.UniversalID = UniversalIdBuilder.create(visVersion)
+              .withLocalId(LocalIdBuilder.parse(dc.DataChannelID.LocalID, gmod, codebooks))
+              .withImoNumber(getImoNumberFromString(shipId))
+              .build();
+          });
+          return channels;
         });
 
         setDataChannelListPackages(res);
@@ -60,12 +59,7 @@ const Explore: React.FC = () => {
 
   return (
     <div className={'vista-explore'}>
-      <SearchBar
-        text={queryParam}
-        onSubmit={handleSearchSubmit}
-        loading={loading}
-        onChangeFile={postImportAndSimulateDataChannelFile}
-      />
+      <SearchBar text={queryParam} onSubmit={handleSearchSubmit} loading={loading} />
       <MapContainer />
       <Outlet />
     </div>
