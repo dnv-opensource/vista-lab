@@ -57,12 +57,24 @@ const QueryResults: React.FC<Props> = ({ panel }) => {
       ? data.map(d => ({ key: d.name, data: d.timeseries }))
       : FALLBACK_DATA.map(d => ({ key: d.name, data: d.timeseries }));
 
+  const bounds = useMemo(() => {
+    const nums = dataSet.flatMap(d => d.data.map(dp => dp.value));
+    const min = Math.min(...nums);
+    const max = Math.max(...nums);
+    const minDiff = Math.abs(min * 0.2);
+    const maxDiff = Math.abs(max * 0.2);
+    const bounds = [min - minDiff, max + maxDiff]
+    return bounds;
+  }, [dataSet]);
+
   return (
     <>
       <LineChart
         className="query-result-graph"
         dataset={dataSet}
         accessors={accessors}
+        topOffset={bounds[1]}
+        bottomOffset={bounds[0]}
         axisFormatter={axisFormatter}
         tooltipComponent={params => <Tooltip params={params} dataChannels={dataChannels} queries={queries} />}
       >
