@@ -123,14 +123,14 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
           role={'button'}
           icon={IconName.Eye}
           onClick={() => toggleQueryItemInPanel(panel.id, query)}
-          className={`query-card-toggle-query ${isQueryExcludedFromGraph ? 'excluded' : ''}`}
+          className={`query-card-action-button query-card-toggle-query ${isQueryExcludedFromGraph ? 'excluded' : ''}`}
         />
 
         <Icon
           role={'button'}
           icon={IconName.Trash}
           onClick={() => removeQueryFromPanel(panel.id, query)}
-          className={'query-card-delete-query'}
+          className={'query-card-action-button query-card-delete-query'}
         />
       </div>
       {!isCollapsed && (

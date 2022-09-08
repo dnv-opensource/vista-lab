@@ -22,6 +22,7 @@ const DataChannelSelection: React.FC<Props> = ({ panel }) => {
         {panel.dataChannels.length > 0 ? (
           panel.dataChannels.map(d => {
             const isExcludedFromGraph = panel.queryItemsExcludedFromGraph.has(d.Property.UniversalID.toString());
+
             return (
                 <span key={d.Property.UniversalID.toString()} className={'data-channel-card-wrapper'}>
                   <DataChannelCard
