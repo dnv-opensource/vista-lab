@@ -1,14 +1,15 @@
 import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Panel, usePanelContext } from '../../../context/PanelContext';
+import { Panel } from '../../../context/PanelContext';
 import { RoutePath } from '../../../pages/Routes';
 import { ButtonType } from '../../ui/button/Button';
 import ButtonWithLink from '../../ui/button/ButtonWithLink';
 import Dropdown from '../../ui/dropdown/Dropdown';
 import Icon from '../../ui/icons/Icon';
 import { IconName } from '../../ui/icons/icons';
-import Modal from '../../ui/modal/Modal';
 import TextWithIcon from '../../ui/text/TextWithIcon';
+import VerifyDeleteModal from './delete-modal/DeleteModal';
+import RenameModal from './rename-modal/RenameModal';
 import './PanelCard.scss';
 
 interface Props {
@@ -20,7 +21,7 @@ export const QueryResults = React.lazy(() => import('../query-results/QueryResul
 const PanelCard: React.FC<Props> = ({ panel }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [verifyingDelete, setVerifying] = useState(false);
-  const { deletePanel } = usePanelContext();
+  const [renaming, setRenaming] = useState(false);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   return (
@@ -35,33 +36,21 @@ const PanelCard: React.FC<Props> = ({ panel }) => {
           anchorRef={dropdownRef}
           open={menuOpen}
           setOpen={setMenuOpen}
-          closeOnOutsideClick={!verifyingDelete}
+          closeOnOutsideClick={!verifyingDelete && !renaming}
         >
           <Link to={`${panel.id}`}>
             <TextWithIcon className={'panel-dropdown-item'} icon={IconName.Eye}>
               View
             </TextWithIcon>
           </Link>
+          <TextWithIcon className={'panel-dropdown-item'} icon={IconName.Pencil} onClick={() => setRenaming(true)}>
+            Rename
+          </TextWithIcon>
           <TextWithIcon className={'panel-dropdown-item'} icon={IconName.Trash} onClick={() => setVerifying(true)}>
             Delete
           </TextWithIcon>
-          <Modal open={verifyingDelete} setOpen={setVerifying} title={'Remove panel'}>
-            <div className={'modal-content-wrapper'}>Are you sure you want to remove this panel?</div>
-            <div className={'modal-submit-button-wrapper'}>
-              <button className={'modal-submit-button cancel'} onClick={() => setVerifying(false)}>
-                Cancel
-              </button>
-              <button
-                className={'modal-submit-button submit'}
-                onClick={() => {
-                  deletePanel(panel.id);
-                  setVerifying(false);
-                }}
-              >
-                Yes
-              </button>
-            </div>
-          </Modal>
+          <VerifyDeleteModal panel={panel} open={verifyingDelete} setOpen={setVerifying} />
+          <RenameModal panel={panel} open={renaming} setOpen={setRenaming} />
         </Dropdown>
       )}
       <div className={'panel-content-wrapper'}>

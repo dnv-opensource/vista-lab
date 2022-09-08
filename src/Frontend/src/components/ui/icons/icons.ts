@@ -27,6 +27,7 @@ import {
   faMapMarker,
   faMicrochip,
   faMinus,
+  faPencil,
   faPlus,
   faRss,
   fas,
@@ -77,7 +78,8 @@ library.add(
   faFloppyDisk,
   faFileLines,
   faFileImport,
-  faEllipsisVertical
+  faEllipsisVertical,
+  faPencil
 );
 
 // Make sure these correspond with FontAwsome v6.1 icon names
@@ -120,6 +122,7 @@ export enum IconName {
   FileLines = 'file-lines',
   FileImport = 'file-import',
   EllipsisVersical = 'ellipsis-vertical',
+  Pencil = 'pencil',
 }
 
 export enum IconVariant {

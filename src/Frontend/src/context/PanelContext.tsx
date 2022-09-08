@@ -27,6 +27,7 @@ export type PanelContextType = {
   setPanels: React.Dispatch<React.SetStateAction<Panel[]>>;
   addPanel: (id: string) => void;
   editPanel: (panel: Panel) => void;
+  renamePanel: (panelId: string, name: string) => void;
   deletePanel: (id: string) => void;
   getPanel: (id: string) => Panel;
   selectQueryItem: (panelId: string, queryId: string, item: DataChannelWithShipData | Query) => void;
@@ -264,6 +265,20 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
     [setPanels, addToast]
   );
 
+  const renamePanel = useCallback(
+    (panelId: string, name: string) => {
+      setPanels(prev => {
+        const newPanels = [...prev];
+        const panel = newPanels.find(p => p.id === panelId);
+        if (!panel) return prev;
+
+        panel.id = name;
+        return newPanels;
+      });
+    },
+    [setPanels]
+  );
+
   const editPanel = useCallback(
     (panel: Panel) => {
       setPanels(prev => {
@@ -301,10 +316,15 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
           return panels;
         }
 
-        const dataChannelEl =
-            <span style={{ fontSize: '0.75em' }} >
-                <DataChannelCard dataChannel={dataChannel} mode={CardMode.LegacyNameCentric} extraNodes={<Icon icon={IconName.RightArrow} />} />
-            </span>;
+        const dataChannelEl = (
+          <span style={{ fontSize: '0.75em' }}>
+            <DataChannelCard
+              dataChannel={dataChannel}
+              mode={CardMode.LegacyNameCentric}
+              extraNodes={<Icon icon={IconName.RightArrow} />}
+            />
+          </span>
+        );
 
         const panel = { ...newPanels[panelIndex] };
         if (panel.dataChannels.some(d => d.Property.UniversalID.equals(dataChannel.Property.UniversalID))) {
@@ -312,7 +332,9 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
           return panels;
         }
 
-        addToast(ToastType.Success, 'Data channel added', dataChannelEl, () => navigate(RoutePath.ViewAndBuild + `/${panelId}`));
+        addToast(ToastType.Success, 'Data channel added', dataChannelEl, () =>
+          navigate(RoutePath.ViewAndBuild + `/${panelId}`)
+        );
 
         panel.dataChannels = [...panel.dataChannels, dataChannel];
         newPanels[panelIndex] = panel;
@@ -479,6 +501,7 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
         addPanel,
         editPanel,
         deletePanel,
+        renamePanel,
         removeDataChannelFromPanel,
         getPanel,
         addNewQueryToPanel,
