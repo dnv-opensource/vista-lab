@@ -24,7 +24,7 @@ const QueryResults: React.FC<Props> = ({ panel }) => {
   useEffect(() => {
     getTimeseriesDataForPanel(panel).then(setData);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [panel.queries, getTimeseriesDataForPanel, setData]);
+  }, [panel, getTimeseriesDataForPanel, setData]);
 
   const dataChannels = panel.dataChannels;
   const queries = panel.queries;

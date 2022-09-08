@@ -333,6 +333,7 @@ public sealed partial class DataChannelRepository
 
     public async Task<TimeSeriesDataWithProps> GetLatestTimeSeriesForDataChannel(
         string localId,
+        string? vesselId,
         CancellationToken cancellationToken
     )
     {
@@ -341,9 +342,9 @@ public sealed partial class DataChannelRepository
                 SELECT t.*, d.Unit_UnitSymbol, d.Unit_QuantityName, d.Range_High, d.Range_Low, d.Name
                 FROM 'TimeSeries' t
                 INNER JOIN 'DataChannel' d
-                ON d.LocalId = t.DataChannelId
-                WHERE t.VesselId = d.VesselId
-                AND DataChannelId = '{localId}'
+                ON d.LocalId = t.DataChannelId AND t.VesselId = d.VesselId
+                WHERE DataChannelId = '{localId}'
+                {(!string.IsNullOrWhiteSpace(vesselId) ? $"AND t.VesselId = '{vesselId}'" : "")}
                 LATEST ON Timestamp PARTITION BY DataChannelId;
             ",
             cancellationToken

@@ -71,7 +71,7 @@ public static class SQLGenerator
 
             if (!string.IsNullOrWhiteSpace(secondaryItemsSQL))
             {
-                if (!string.IsNullOrWhiteSpace(whereSQL) && whereSQL.Trim() != "WHERE")
+                if (!string.IsNullOrWhiteSpace(primaryItemsSQL))
                     whereSQL += " OR ";
 
                 whereSQL += $"({secondaryItemsSQL})";
