@@ -22,10 +22,9 @@ const DataChannelCard: React.FC<Props> = (props: Props) => {
   const [loading, setLoading] = useState(false);
   const [latestEventData, setLatestEventData] = useState<TimeSeriesDataWithProps>();
 
-  const { vesselId } = useParams();
-
   const universalId = useMemo(() => (dataChannel as DataChannelWithShipData).Property.UniversalID, [dataChannel]);
   const localId = useMemo(() => (universalId.localId), [universalId]);
+  const vesselId = useMemo(() => `IMO${universalId.imoNumber.toString()}`, [universalId]);
 
   useEffect(() => {
     if (localId) {
