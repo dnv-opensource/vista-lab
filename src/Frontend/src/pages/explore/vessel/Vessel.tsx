@@ -17,6 +17,7 @@ import './Vessel.scss';
 export type Vessel = {
   numDataChannels?: number;
   vesselId?: string;
+  name?: string;
   status?: number;
 };
 
@@ -43,7 +44,7 @@ const VesselComp: React.FC = () => {
   return (
     <>
       <ResultBar className={'vessel-result-bar'}>
-        <LinkWithQuery className={'back'} to={'/explore'} queryKey={['query', 'mode']}>
+        <LinkWithQuery className={'back'} to={'/search'} queryKey={['query', 'mode']}>
           <Icon icon={IconName.LeftArrow} />
           {vesselId}
         </LinkWithQuery>

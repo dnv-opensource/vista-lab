@@ -46,26 +46,48 @@ public static class SQLGenerator
     private static string MountDataChannelWhere(DataChannelFilter filter)
     {
         var whereSQL = string.Empty;
+        var vesselIdSQL = MountVesselIdFilter(filter);
         var primaryItemsSQL = MountPrimaryItemFilter(filter);
         var secondaryItemsSQL = MountSecondaryItemFilter(filter);
 
-        if (primaryItemsSQL != null || secondaryItemsSQL != null)
-        {
+        if (
+            vesselIdSQL != string.Empty
+            || primaryItemsSQL != string.Empty
+            || secondaryItemsSQL != string.Empty
+        )
             whereSQL = " WHERE ";
 
+        if (vesselIdSQL != string.Empty)
+            whereSQL += vesselIdSQL;
+
+        if (primaryItemsSQL != string.Empty || secondaryItemsSQL != string.Empty)
+        {
+            if (vesselIdSQL != string.Empty)
+                whereSQL += " AND ";
+
+            whereSQL += "(";
             if (!string.IsNullOrWhiteSpace(primaryItemsSQL))
-                whereSQL += primaryItemsSQL;
+                whereSQL += $"({primaryItemsSQL})";
 
             if (!string.IsNullOrWhiteSpace(secondaryItemsSQL))
             {
                 if (!string.IsNullOrWhiteSpace(whereSQL) && whereSQL.Trim() != "WHERE")
                     whereSQL += " OR ";
 
-                whereSQL += secondaryItemsSQL;
+                whereSQL += $"({secondaryItemsSQL})";
             }
+            whereSQL += ")";
         }
 
         return whereSQL;
+    }
+
+    private static string MountVesselIdFilter(DataChannelFilter filter)
+    {
+        var sql = string.Empty;
+        if (!string.IsNullOrWhiteSpace(filter.VesselId))
+            sql += $" {nameof(DataChannelEntity.VesselId)} = \'{filter.VesselId}\' ";
+        return sql;
     }
 
     private static string MountPrimaryItemFilter(DataChannelFilter filter)

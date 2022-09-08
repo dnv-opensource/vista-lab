@@ -66,7 +66,7 @@ const PanelCard: React.FC<Props> = ({ panel }) => {
       )}
       <div className={'panel-content-wrapper'}>
         <div className={'panel-content'}>
-          {panel.dataChannelIds.length === 0 ? (
+          {panel.dataChannels.length === 0 ? (
             <>
               <p className={'empty-subtitle'}>No data channels</p>
               <ButtonWithLink to={RoutePath.Search} role={'button'} type={ButtonType.Subtle}>

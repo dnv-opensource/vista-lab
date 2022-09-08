@@ -9,9 +9,9 @@ import {
   VisVersion,
 } from 'dnv-vista-sdk';
 import React, { createContext, useCallback, useMemo, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { VistaLabApi } from '../apiConfig';
-import { DataChannelListPackage } from '../client';
+import { DataChannel, DataChannelListPackage, Property } from '../client';
 import { VesselMode } from '../pages/explore/vessel/Vessel';
 import { useVISContext } from './VISContext';
 
@@ -21,6 +21,7 @@ export type ExploreContextType = {
   fetchFilteredDataChannels: (query?: string) => Promise<DataChannelListPackage[]>;
   getVmodForVessel: (vesselId: string) => Promise<Pmod | undefined>;
   getUniversalIdsFromGmodPath: (path: GmodPath) => UniversalId[];
+  getDataChannelsFromGmodPath: (path: GmodPath, vesselId?: string) => DataChannelWithShipData[];
   universalIds: UniversalId[] | undefined;
   mode: VesselMode;
   setMode: (value: VesselMode) => void;
@@ -31,11 +32,14 @@ type ExploreContextProviderProps = React.PropsWithChildren<{}>;
 
 const ExploreContext = createContext<ExploreContextType | undefined>(undefined);
 
+export type DataChannelWithShipData = DataChannel & { Property: Property & {  ShipID: string; UniversalID: UniversalId } };
+
 const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
   const [universalIds, setUniversalIds] = useState<UniversalId[]>();
   const { visVersion } = useVISContext();
   const [dataChannelListPackages, setDataChannelListPackages] = useState<DataChannelListPackage[]>();
   const [searchParams, setSearchParam] = useSearchParams();
+  const { vesselId } = useParams();
   const mode: VesselMode = useMemo(
     () => (searchParams.get('mode') as VesselMode | null) ?? VesselMode.Any,
     [searchParams]
@@ -61,34 +65,22 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
         [VesselMode.SecondaryItem]: 2,
       }[mode];
 
-      const response = await VistaLabApi.searchSearch(clientVersion, { scope: scope, phrase: query ?? '' });
+      const response = await VistaLabApi.searchSearch(clientVersion, { vesselId: vesselId === 'all' ? undefined : vesselId, scope: scope, phrase: query ?? '' });
 
       return response;
     },
-    [mode, visVersion]
+    [mode, visVersion, vesselId]
   );
 
   const getVmodForVessel = useCallback(
     async (vesselId: string): Promise<Pmod | undefined> => {
-      const vesselImoNr = +(/\d+/.exec(vesselId)?.[0] ?? '');
-      if (isNaN(vesselImoNr)) throw new Error('Invalid vesselId');
-      const imo = new ImoNumber(vesselImoNr);
-
       const dclp = dataChannelListPackages?.find(dclp => dclp.Package?.Header?.ShipID === vesselId)?.Package;
       if (!dclp) return;
 
       const dataChannels = dclp?.DataChannelList?.DataChannel;
       if (!dataChannels || dataChannels.length === 0 || !dclp.Header?.DataChannelListID?.Version) return;
 
-      const gmod = await VIS.instance.getGmod(visVersion);
-      const codebooks = await VIS.instance.getCodebooks(visVersion);
-
-      const universalIds = dclp.DataChannelList?.DataChannel?.map(dc =>
-        UniversalIdBuilder.create(visVersion)
-          .withLocalId(LocalIdBuilder.parse(dc.DataChannelID?.LocalID!, gmod, codebooks))
-          .withImoNumber(imo)
-          .build()
-      );
+      const universalIds = dclp.DataChannelList?.DataChannel?.map(dc => (dc as DataChannelWithShipData).Property.UniversalID);
 
       let pmod: Pmod | undefined = undefined;
       if (universalIds) {
@@ -110,7 +102,7 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
 
       return universalIds && pmod;
     },
-    [dataChannelListPackages, visVersion, mode]
+    [dataChannelListPackages, mode, visVersion]
   );
 
   const getUniversalIdsFromGmodPath = useCallback(
@@ -140,6 +132,37 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
     [universalIds, mode]
   );
 
+  const getDataChannelsFromGmodPath = useCallback(
+    (path: GmodPath, vesselId?: string): DataChannelWithShipData[] => {
+
+      const channels = ((vesselId ?
+        dataChannelListPackages?.find(p => p.Package.Header.ShipID === vesselId)?.Package.DataChannelList.DataChannel :
+        dataChannelListPackages?.flatMap(dclp => dclp.Package.DataChannelList.DataChannel)) || []) as DataChannelWithShipData[];
+
+      return channels.filter(dc => {
+        const universalId: UniversalId = (dc as DataChannelWithShipData).Property.UniversalID;
+        const localId = universalId.localId;
+        const items: (GmodPath | undefined)[] = [];
+        switch (mode) {
+          case VesselMode.PrimaryItem:
+            items.push(localId.primaryItem);
+            break;
+          case VesselMode.SecondaryItem:
+            items.push(localId.secondaryItem);
+            break;
+          default:
+            items.push(...[localId.primaryItem, localId.secondaryItem]);
+            break;
+        }
+        for (const item of items) {
+          if (item?.equals(path)) return true;
+        }
+        return false;
+      });
+    },
+    [dataChannelListPackages, mode]
+  );
+
   const postImportAndSimulateDataChannelFile = (file: File) => {
     fetch('http://localhost:5054/api/data-channel/import-and-simulate', {
       method: 'POST',
@@ -155,6 +178,7 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
         fetchFilteredDataChannels,
         getVmodForVessel,
         getUniversalIdsFromGmodPath,
+        getDataChannelsFromGmodPath,
         universalIds,
         mode,
         setMode,

@@ -588,6 +588,11 @@
       "DataChannelFilter": {
         "type": "object",
         "properties": {
+          "vesselId": {
+            "type": "string",
+            "default": null,
+            "nullable": true
+          },
           "primaryItem": {
             "type": "array",
             "items": {
@@ -968,6 +973,10 @@
       "SearchRequestDto": {
         "type": "object",
         "properties": {
+          "vesselId": {
+            "type": "string",
+            "nullable": true
+          },
           "phrase": {
             "type": "string",
             "default": "Main engine",

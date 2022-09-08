@@ -249,9 +249,11 @@ namespace Search.Client
     {
         [System.Text.Json.Serialization.JsonConstructor]
 
-        public DataChannelDocument(string? @localId, string? @localId_Calculation, string? @localId_Command, string? @localId_Content, string? @localId_Detail, string? @localId_Position, string? @localId_PrimaryItem, string? @localId_Quantity, string? @localId_SecondaryItem, string? @localId_Type, string? @name, string? @remarks, System.DateTimeOffset? @timestamp, string? @unit_QuantityName, string? @unit_UnitSymbol)
+        public DataChannelDocument(string? @localId, string? @localId_Calculation, string? @localId_Command, string? @localId_Content, string? @localId_Detail, string? @localId_Position, string? @localId_PrimaryItem, string? @localId_Quantity, string? @localId_SecondaryItem, string? @localId_Type, string? @name, string? @remarks, System.DateTimeOffset? @timestamp, string? @unit_QuantityName, string? @unit_UnitSymbol, string? @vesselId)
 
         {
+
+            this.VesselId = @vesselId;
 
             this.LocalId = @localId;
 
@@ -284,6 +286,9 @@ namespace Search.Client
             this.Timestamp = @timestamp;
 
         }
+        [System.Text.Json.Serialization.JsonPropertyName("vesselId")]
+        public string? VesselId { get; }
+
         [System.Text.Json.Serialization.JsonPropertyName("localId")]
         public string? LocalId { get; }
 
@@ -526,15 +531,20 @@ namespace Search.Client
     {
         [System.Text.Json.Serialization.JsonConstructor]
 
-        public SearchDto(string? @phrase, int? @topResults)
+        public SearchDto(string? @phrase, int? @topResults, string? @vesselId)
 
         {
+
+            this.VesselId = @vesselId;
 
             this.Phrase = @phrase;
 
             this.TopResults = @topResults;
 
         }
+        [System.Text.Json.Serialization.JsonPropertyName("vesselId")]
+        public string? VesselId { get; }
+
         [System.Text.Json.Serialization.JsonPropertyName("phrase")]
         public string? Phrase { get; }
 

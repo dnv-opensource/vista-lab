@@ -16,7 +16,7 @@ const QueryResults = React.lazy(() => import('../../../components/monitor/query-
 const Panel: React.FC = () => {
   const navigate = useNavigate();
   const { panelId } = useParams();
-  const { getPanel, editPanel, timeRange, interval } = usePanelContext();
+  const { getPanel, editPanel, timeRange, interval, toggleQueryItemInPanel } = usePanelContext();
   const initPanel = useMemo(() => (panelId ? getPanel(panelId) : undefined), [getPanel, panelId]);
 
   if (!initPanel) navigate(RoutePath.ViewAndBuild);

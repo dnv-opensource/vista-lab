@@ -443,6 +443,7 @@ export interface DataChannel {
 }
 
 export interface DataChannelFilter {
+    vesselId: string | undefined;
     primaryItem: string[] | undefined;
     secondaryItem: string[] | undefined;
     meta: string[] | undefined;
@@ -573,6 +574,7 @@ export enum RestrictionWhiteSpace {
 }
 
 export interface SearchRequestDto {
+    vesselId: string | undefined;
     phrase: string | undefined;
     scope: SearchScope;
 }

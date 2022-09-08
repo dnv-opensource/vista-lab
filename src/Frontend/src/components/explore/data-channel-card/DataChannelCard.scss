@@ -9,122 +9,66 @@
   border-radius: 0.4em;
   background-color: $white;
 
-  .expand-icon {
-    padding: 0.5em;
-    box-shadow: $drop-shadow;
-    border: $drop-shadow-border;
-    border-radius: 50%;
-    &:hover {
-      background-color: $dark-blue;
-      color: $white;
-    }
-    position: absolute;
-    right: 3.65em;
-    bottom: 0.6em;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0.8em;
+  padding-bottom: 0.55em;
+  gap: 1em;
+  font-size: 0.95em;
+  width: 100%;
 
+  &:hover {
+    background-color: $bg-grey;
   }
 
-  &.compact {
-    flex-direction: row;
-    align-items: center;
-    padding: 1em;
-
-    &:hover {
-      background-color: $bg-grey;
-    }
-
-    .tags {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        gap: 0.5em;
-    }
-
-    svg {
-        color: rgb(78, 78, 78);
-    }
-
-    .data-channel-card-c-title {
-        display: flex;
-        align-items: center;
-        gap: 0.5em;
-    }
-
-    .data-channel-card-c-value {
-        display: flex;
-        margin-left: auto;
-        margin-right: 4.65rem;
-    }
-
-    .separator {
-        font-size: 1em;
-        // color: #999;
-        font-weight: bold;
-        // padding-left: 0.25em;
-        padding-right: 0.25em;
-    }
-
-    .name {
-        color: #999;
-    }
+  .tags {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 0.5em;
   }
 
-  .pre {
+  svg {
+      color: rgb(78, 78, 78);
+  }
+
+  .data-channel-card-c-titles {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.1em;
+  }
+
+  .data-channel-card-c-title {
+      display: flex;
+      align-items: center;
+  }
+
+  .data-channel-card-c-title-tiny {
+      display: flex;
+      // left: 0.6em;
+      font-size: 0.75em;
       color: #999;
   }
 
-  .timeseries-data {
-      font-weight: bold;
-      font-size: 0.8em;
-  }
-
-  display: flex;
-  flex-direction: column;
-  flex-basis: content;
-  gap: 0.5em;
-
-  .channel-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    .vessel-info-placeholder {
-      min-height: 1px;
-      flex: 0.8;
-    }
-    .vessel-info {
-      position: absolute;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      justify-content: center;
-      flex: 0.8;
-      font-size: 0.9em;
-      color: $grey;
-    }
-
-    .status-n-data {
+  .data-channel-card-c-value {
       display: flex;
-      align-content: center;
-      align-items: center;
-      gap: 0.5em;
-    }
+      margin-left: auto;
+      font-size: 0.75em;
+      font-weight: bold;
   }
 
-  .local-id-item {
-    display: flex;
-    align-items: center;
-    gap: 0.8em;
+  .separator {
+      font-size: 1em;
+      // color: #999;
+      font-weight: bold;
+      // padding-left: 0.25em;
+      padding-right: 0.25em;
+  }
 
-    :first-child {
-      font-size: 0.9em;
-      flex: 0.2;
-      color: $grey;
-      word-break: break-all;
-    }
-    :last-child {
-      flex: 0.7;
-      overflow-wrap: break-word;
-    }
+  .name {
+      color: #999;
   }
 }
 

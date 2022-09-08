@@ -22,7 +22,8 @@ const VesselCard: React.FC<Props> = ({ vessel }) => {
             <div className={'vessel-icon-container'}>
               <Icon className={'vessel-icon'} icon={IconName.Ship} />
             </div>
-            <div>{vessel.vesselId ?? 'Unknown vessel'}</div>
+            <div className="name">{vessel.name ?? 'Unknown vessel'}</div>
+            <div className="imo">{vessel.vesselId ?? 'Unknown vessel'}</div>
             <StatusIcon variant={StatusVariant.Good} />
           </div>
         }

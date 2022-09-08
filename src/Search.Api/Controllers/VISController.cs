@@ -18,6 +18,7 @@ public sealed class VISController : ControllerBase
     }
 
     public sealed record SearchDto(
+        string? VesselId,
         [property: DefaultValue("Main engine")] string Phrase,
         int? TopResults
     );
@@ -39,6 +40,7 @@ public sealed class VISController : ControllerBase
     {
         var result = await _service.Search(
             visVersion,
+            body.VesselId,
             body.Phrase,
             body.TopResults,
             cancellationToken

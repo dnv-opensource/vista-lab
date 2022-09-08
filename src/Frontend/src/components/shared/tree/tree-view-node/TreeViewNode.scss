@@ -4,7 +4,7 @@
 .tree-node-container {
   @for $i from 0 through 50 {
     .tree-depth-#{$i} {
-      margin-left: 25px;
+      margin-left: 1.1em;
     }
   }
 

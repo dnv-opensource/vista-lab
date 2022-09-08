@@ -1,6 +1,7 @@
 import { UniversalId } from 'dnv-vista-sdk';
 import React, { useCallback, useMemo, useState } from 'react';
-import { Panel, Query, usePanelContext } from '../../../../context/PanelContext';
+import { DataChannelWithShipData } from '../../../../context/ExploreContext';
+import { isDataChannelQueryItem, Panel, Query, usePanelContext } from '../../../../context/PanelContext';
 import useToast, { ToastType } from '../../../../hooks/use-toast';
 import { isNullOrWhitespace } from '../../../../util/string';
 import Icon from '../../../ui/icons/Icon';
@@ -8,6 +9,7 @@ import { IconName } from '../../../ui/icons/icons';
 import Input from '../../../ui/input/Input';
 import Typeahead, { TypeaheadOption } from '../../../ui/typeahead/Typeahead';
 import OperatorSelection, { Operator } from '../operator-selection/OperatorSelection';
+import DataChannelCard, { CardMode } from '../../../explore/data-channel-card/DataChannelCard';
 import './QueryCard.scss';
 
 interface Props {
@@ -17,7 +19,13 @@ interface Props {
 
 const QueryCard: React.FC<Props> = ({ query, panel }) => {
   const { addToast } = useToast();
-  const { removeQueryFromPanel, editQuery, selectQueryItem, selectQueryOperator } = usePanelContext();
+  const {
+    removeQueryFromPanel,
+    editQuery,
+    selectQueryItem,
+    selectQueryOperator,
+    toggleQueryItemInPanel
+  } = usePanelContext();
 
   const [isCollapsed, setCollapsed] = useState(
     !(panel.queries.length === 1 || panel.queries.findIndex(q => q.id === query.id) === 0)
@@ -48,15 +56,15 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
     [editQuery, query, panel, addToast]
   );
 
-  const formatOption = useCallback((option: Query | UniversalId): TypeaheadOption<Query | UniversalId> => {
-    if ('localId' in option) {
-      return { name: 'DataChannel', value: `${option.toString()}`, option };
+  const formatOption = useCallback((option: Query | DataChannelWithShipData): TypeaheadOption<Query | DataChannelWithShipData> => {
+    if (isDataChannelQueryItem(option)) {
+      return { name: 'DataChannel', value: `${option.Property.UniversalID.toString()}`, option };
     }
     return { name: 'Query', value: option.name, option };
   }, []);
 
   const onSelectedOption = useCallback(
-    (option: Query | UniversalId) => {
+    (option: Query | DataChannelWithShipData) => {
       selectQueryItem(panel.id, query.id, option);
     },
     [selectQueryItem, panel.id, query.id]
@@ -70,7 +78,7 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
   );
 
   const deleteSelectedItem = useCallback(
-    (item: Query | UniversalId) => {
+    (item: Query | DataChannelWithShipData) => {
       const newQuery = { ...query };
       const items = [...newQuery.items];
       const itemIndex = items.findIndex(i => item.toString() === i.toString());
@@ -81,7 +89,7 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
     [editQuery, panel, query]
   );
 
-  const availableOptions: (Query | UniversalId)[] = useMemo(() => {
+  const availableOptions: (Query | DataChannelWithShipData)[] = useMemo(() => {
     return [
       ...panel.queries
         .filter(q => q.id !== query.id)
@@ -92,15 +100,17 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
               return false;
             })
         ),
-      ...panel.dataChannelIds.filter(
+      ...panel.dataChannels.filter(
         dc =>
           !query.items.find(item => {
-            if ('localId' in item) return item.equals(dc);
+            if (isDataChannelQueryItem(item)) return item.Property.UniversalID.equals(dc.Property.UniversalID);
             return false;
           })
       ),
     ];
-  }, [panel.dataChannelIds, panel.queries, query]);
+  }, [panel.dataChannels, panel.queries, query]);
+
+  const isQueryExcludedFromGraph = panel.queryItemsExcludedFromGraph.has(query.id);
 
   return (
     <div className={'query-card'}>
@@ -113,6 +123,12 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
         <Input className={'query-card-title'} value={query.name} onChange={onTitleChange} />
 
         <div className={'query-card-action-buttons'}>
+          <Icon
+            role={'button'}
+            icon={IconName.Eye}
+            onClick={() => toggleQueryItemInPanel(panel.id, query)}
+            className={`query-card-toggle-query ${isQueryExcludedFromGraph ? 'excluded' : ''}`}
+          />
           <Icon
             role={'button'}
             icon={IconName.Trash}
@@ -143,13 +159,19 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
           {query.items.length > 0 &&
             query.items.map(i => {
               let item = undefined;
-              if ('localId' in i) {
-                item = <p key={i.toString()}>{i.toString()}</p>;
+              let key = '';
+              if (isDataChannelQueryItem(i)) {
+                key = i.Property.UniversalID.toString();
+                item = <DataChannelCard
+                    dataChannel={i}
+                    mode={CardMode.LegacyNameCentric}
+                />;
               } else {
-                item = <p key={i.id}>{i.name}</p>;
+                key = i.id;
+                item = <QueryCardInner key={key} query={i} />;
               }
               return (
-                <div key={i.toString()} className={'query-generation-selected-item'}>
+                <div key={key} className={'query-generation-selected-item'}>
                   {item}
                   <Icon icon={IconName.Minus} onClick={() => deleteSelectedItem(i)} />
                 </div>
@@ -160,5 +182,14 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
     </div>
   );
 };
+
+
+const QueryCardInner = ({ query }: { query: Query }) => {
+    return (
+        <div className={'query-card-inner'}>
+            <p>{query.name}</p>
+        </div>
+    );
+}
 
 export default QueryCard;
