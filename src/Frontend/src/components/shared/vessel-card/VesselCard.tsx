@@ -1,5 +1,5 @@
 import React from 'react';
-import { Vessel } from '../../../pages/explore/vessel/Vessel';
+import { Vessel } from '../../../pages/shared/vessel/Vessel';
 import FlipCard from '../../ui/flip-card/FlipCard';
 import Icon from '../../ui/icons/Icon';
 import { IconName } from '../../ui/icons/icons';
@@ -14,7 +14,7 @@ interface Props {
 
 const VesselCard: React.FC<Props> = ({ vessel }) => {
   return (
-    <LinkWithQuery className={'vessel-card'} to={`${vessel.vesselId}`} queryKey={["query", "mode"]}>
+    <LinkWithQuery className={'vessel-card'} to={`${vessel.vesselId}`} queryKey={['query', 'mode']}>
       <FlipCard
         className="vessel-card-content"
         front={

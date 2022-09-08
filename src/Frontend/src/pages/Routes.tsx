@@ -1,14 +1,15 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter, Routes as BrowserRoutes, Route } from 'react-router-dom';
-import FleetGrid from './explore/fleet/Fleet';
+import FleetGrid from './shared/fleet/Fleet';
 import Layout from '../components/layout/Layout';
 import { ExploreContextProvider } from '../context/ExploreContext';
-import Vessel from './explore/vessel/Vessel';
+import Vessel from './shared/vessel/Vessel';
 import { VISContextProvider } from '../context/VISContext';
 import { PanelContextProvider } from '../context/PanelContext';
 import { IconName } from '../components/ui/icons/icons';
 import Panel from './monitor/panel/Panel';
 import Panels from './monitor/panels/Panels';
+import ResultsTable from './report/results-table/ResultsTable';
 
 const Home = React.lazy(() => import('./home/Home'));
 const Explore = React.lazy(() => import('./explore/Explore'));
@@ -69,8 +70,18 @@ export const routesList: RouteProp[] = [
   },
   {
     path: RoutePath.Report,
-    element: <Report />,
+    element: (
+      <ExploreContextProvider>
+        <Report />
+      </ExploreContextProvider>
+    ),
     title: 'Report',
+    routes: (
+      <>
+        <Route path={':vesselId'} element={<ResultsTable />} />
+        <Route path="" element={<FleetGrid />} />
+      </>
+    ),
     icon: IconName.FileLines,
   },
 ];

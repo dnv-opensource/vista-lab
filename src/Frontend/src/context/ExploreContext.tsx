@@ -3,7 +3,7 @@ import React, { createContext, useCallback, useMemo, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { VistaLabApi } from '../apiConfig';
 import { DataChannel, DataChannelListPackage, Property } from '../client';
-import { VesselMode } from '../pages/explore/vessel/Vessel';
+import { VesselMode } from '../pages/shared/vessel/Vessel';
 import { useVISContext } from './VISContext';
 
 export type ExploreContextType = {

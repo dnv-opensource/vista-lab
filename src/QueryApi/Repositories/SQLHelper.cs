@@ -187,7 +187,7 @@ public static class SQLGenerator
         var from = (now - timeRange.From);
         var to = (now - timeRange.To);
 
-        return $@"AND {nameof(TimeSeriesEntity.Timestamp)} BETWEEN CAST({from * 1000000} as timestamp) AND CAST({to * 1000000} as timestamp) SAMPLE BY {(!getReport ? timeRange.Interval : (to - from) * 1000000 + "s")} ";
+        return $@"AND {nameof(TimeSeriesEntity.Timestamp)} BETWEEN CAST({from * 1000000} as timestamp) AND CAST({to * 1000000} as timestamp) SAMPLE BY {(!getReport ? timeRange.Interval : (to - from) + "s")} ";
     }
 
     public static string ToOperatorString(QueryOperator queryOperator) =>
