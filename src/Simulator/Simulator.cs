@@ -1,6 +1,5 @@
 using MQTTnet.Client;
 using System.Globalization;
-using System.Reflection;
 using Vista.SDK;
 using Vista.SDK.Transport.Json;
 using Vista.SDK.Transport.Json.DataChannel;
@@ -21,39 +20,170 @@ namespace Simulator
 
         public async Task SimulateDataChannel(
             DataChannelListPackage dataChannelListDto,
+            ExcelTimeSeriesFile? timeSeriesFile,
             CancellationToken stoppingToken
         )
         {
-            var dataChannelList = dataChannelListDto.ToDomainModel();
-            await Send(dataChannelListDto);
+            try
+            {
+                var dataChannelList = dataChannelListDto.ToDomainModel();
+                await Send(dataChannelListDto);
 
-            var header = dataChannelList.Package.Header;
-            var dataChannels = GetDataChannelsForSimulation(dataChannelList);
+                if (timeSeriesFile is not null)
+                {
+                    await SimulateBasedOnFile(dataChannelListDto, timeSeriesFile, stoppingToken);
+                }
+                else
+                {
+                    var header = dataChannelList.Package.Header;
+                    var dataChannels = GetDataChannelsForSimulation(dataChannelList);
 
-            var tickInterval = System.TimeSpan.FromSeconds(1);
-            var timer = new PeriodicTimer(tickInterval);
+                    var tickInterval = System.TimeSpan.FromSeconds(1);
+                    var timer = new PeriodicTimer(tickInterval);
 
-            var sentData = new Dictionary<string, List<(double Value, string? Quality)>>();
+                    var sentData = new Dictionary<string, List<(double Value, string? Quality)>>();
 
-            var lastTick = DateTimeOffset.UtcNow.Subtract(tickInterval);
+                    var lastTick = DateTimeOffset.UtcNow.Subtract(tickInterval);
+                    do
+                    {
+                        var currentTick = DateTimeOffset.UtcNow;
+
+                        var timeSeries = Simulate(
+                            currentTick,
+                            lastTick,
+                            header,
+                            dataChannels,
+                            sentData,
+                            out var simulatedIds
+                        );
+
+                        if (simulatedIds.Count > 0)
+                            await Send(timeSeries.ToJsonDto());
+
+                        lastTick = currentTick;
+                    } while (await timer.WaitForNextTickAsync(stoppingToken));
+                }
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error running simulation");
+            }
+        }
+
+        async Task SimulateBasedOnFile(
+            DataChannelListPackage dataChannelListDto,
+            ExcelTimeSeriesFile timeSeriesFile,
+            CancellationToken stoppingToken
+        )
+        {
+            await using var _ = timeSeriesFile;
+            var reader = timeSeriesFile.Reader;
+            var row = -1;
+
+            DateTimeOffset lastTick = default;
+            DateTimeOffset lastTime = default;
+            var header = dataChannelListDto.Package.Header;
+
             do
             {
-                var currentTick = DateTimeOffset.UtcNow;
+                if (stoppingToken.IsCancellationRequested)
+                    return;
 
-                var timeSeries = Simulate(
-                    currentTick,
-                    lastTick,
-                    header,
-                    dataChannels,
-                    sentData,
-                    out var simulatedIds
+                while (reader.Read())
+                {
+                    row++;
+
+                    if (row == 0)
+                        continue;
+
+                    var timeStr = reader.GetString(0);
+                    if (!DateTimeOffset.TryParse(timeStr, out var time))
+                        throw new Exception("Couldnt parse time from excel timeseries file");
+                    var quality = reader.GetString(1);
+                    var value = reader.GetString(3);
+                    var localId = reader.GetString(11);
+
+                    if (row == 1)
+                    {
+                        var now = DateTimeOffset.UtcNow;
+                        lastTick = now;
+                        lastTime = time;
+
+                        await CreatePackage(now, value, quality, localId);
+                    }
+                    else
+                    {
+                        var diff = time - lastTime;
+                        var now = DateTimeOffset.UtcNow;
+                        var realDiff = now - lastTick;
+                        var simDiff = diff - realDiff;
+                        if (simDiff > realDiff)
+                        {
+                            var toWait = simDiff - realDiff;
+                            _logger.LogInformation("Waiting {wait} while simulating", toWait);
+                            await Task.Delay(toWait);
+                        }
+
+                        now = DateTimeOffset.UtcNow;
+                        lastTick = now;
+                        lastTime = time;
+
+                        await CreatePackage(now, value, quality, localId);
+                    }
+
+                    if (stoppingToken.IsCancellationRequested)
+                        return;
+                }
+
+                if (stoppingToken.IsCancellationRequested)
+                    return;
+            } while (reader.NextResult());
+
+            async Task CreatePackage(
+                DateTimeOffset now,
+                string value,
+                string quality,
+                string localId
+            )
+            {
+                var tableData = new Vista.SDK.Transport.TimeSeries.TabularDataSet(
+                    now,
+                    new[] { value },
+                    new[] { quality }
+                );
+                var table = new Vista.SDK.Transport.TimeSeries.TabularData(
+                    "1",
+                    "1",
+                    new[] { localId },
+                    new[] { tableData }
                 );
 
-                if (simulatedIds.Count > 0)
-                    await Send(timeSeries.ToJsonDto());
-
-                lastTick = currentTick;
-            } while (await timer.WaitForNextTickAsync(stoppingToken));
+                var h = new Vista.SDK.Transport.TimeSeries.Header(
+                    header.ShipID,
+                    new Vista.SDK.Transport.TimeSeries.TimeSpan(now, now),
+                    now,
+                    now,
+                    "DNV",
+                    null,
+                    new Dictionary<string, object>()
+                );
+                var result = new Vista.SDK.Transport.TimeSeries.TimeSeriesDataPackage(
+                    new Vista.SDK.Transport.TimeSeries.Package(
+                        h,
+                        new[]
+                        {
+                            new Vista.SDK.Transport.TimeSeries.TimeSeriesData(
+                                null,
+                                new[] { table },
+                                null,
+                                new Dictionary<string, object>()
+                            )
+                        }
+                    )
+                );
+                await Send(result.ToJsonDto());
+            }
         }
 
         Vista.SDK.Transport.TimeSeries.TimeSeriesDataPackage Simulate(

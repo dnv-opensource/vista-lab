@@ -1,4 +1,4 @@
-﻿using Vista.SDK.Transport.Json.DataChannel;
+using Vista.SDK.Transport.Json.DataChannel;
 
 namespace Simulator
 {
@@ -6,6 +6,7 @@ namespace Simulator
     {
         Task SimulateDataChannel(
             DataChannelListPackage dataChannelListDto,
+            ExcelTimeSeriesFile? timeSeriesFile,
             CancellationToken stoppingToken
         );
     }

@@ -1,5 +1,7 @@
 using Simulator;
 
+System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
 const string clientId = "simulator-client";
 var programTasks = new List<Task>();
 

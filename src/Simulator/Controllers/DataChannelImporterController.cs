@@ -14,7 +14,7 @@ namespace Simulator.Controllers
         [Route("api/data-channel/import-and-simulate")]
         public ActionResult Post(DataChannelListPackage file, CancellationToken cancellationToken)
         {
-            _simulator.SimulateDataChannel(file, cancellationToken);
+            _simulator.SimulateDataChannel(file, null, cancellationToken);
             return Ok();
         }
     }

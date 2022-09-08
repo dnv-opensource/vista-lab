@@ -17,7 +17,11 @@ const Tooltip: React.FC<Props> = ({ params, dataChannels, queries }) => {
   const item = tooltipData?.nearestDatum;
 
   const resolveUnitSymbols = (item: Query | DataChannelWithShipData): string[] => {
-    if (isDataChannelQueryItem(item)) return [`${item.Property.Unit.UnitSymbol} (${item.Property.Unit.QuantityName})`];
+    if (isDataChannelQueryItem(item)) {
+        if (!item.Property?.Unit?.UnitSymbol || !item.Property?.Unit?.QuantityName)
+            return [];
+        return [`${item.Property.Unit.UnitSymbol} (${item.Property.Unit.QuantityName})`];
+    }
     return item.items.flatMap(i => resolveUnitSymbols(i));
   }
 
@@ -29,7 +33,7 @@ const Tooltip: React.FC<Props> = ({ params, dataChannels, queries }) => {
     const query = queries.find(q => q.name === item?.key);
     if (query) {
       const units = resolveUnitSymbols(query);
-      unit = Array.from(new Set<string>(units)).join(' | ');
+      unit = units.length > 0 ? Array.from(new Set<string>(units)).join(' | ') : undefined;
     }
   }
 
