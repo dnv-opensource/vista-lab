@@ -78,22 +78,22 @@ export const routesList: RouteProp[] = [
 const Routes: React.FC = () => {
   return (
     <VISContextProvider>
-      <PanelContextProvider>
         <BrowserRouter>
-          <Layout>
-            <Suspense fallback={<div>Loading page</div>}>
-              <BrowserRoutes>
-                {routesList.map(route => (
-                  <Route key={route.path} path={route.path} element={route.element}>
-                    {route.routes}
-                  </Route>
-                ))}
-                <Route path={RoutePath.Home} element={<Home />} />
-              </BrowserRoutes>
-            </Suspense>
-          </Layout>
+            <PanelContextProvider>
+                <Layout>
+                    <Suspense fallback={<div>Loading page</div>}>
+                    <BrowserRoutes>
+                        {routesList.map(route => (
+                        <Route key={route.path} path={route.path} element={route.element}>
+                            {route.routes}
+                        </Route>
+                        ))}
+                        <Route path={RoutePath.Home} element={<Home />} />
+                    </BrowserRoutes>
+                    </Suspense>
+                </Layout>
+            </PanelContextProvider>
         </BrowserRouter>
-      </PanelContextProvider>
     </VISContextProvider>
   );
 };

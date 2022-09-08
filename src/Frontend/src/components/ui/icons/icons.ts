@@ -90,6 +90,7 @@ export enum IconName {
   Expand = 'expand',
   Marker = 'map-marker-alt',
   LeftArrow = 'long-arrow-alt-left',
+  RightArrow = 'long-arrow-alt-right',
   RightDownArrow = 'arrow-right',
   Tag = 'tag',
   Microchip = 'microchip',

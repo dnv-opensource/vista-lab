@@ -65,7 +65,7 @@ a {
     animation: slidein 0.1s linear;
     border-radius: 0.2em;
     box-shadow: $intense-drop-shadow;
-    max-width: 13em;
+    max-width: 30em;
     word-wrap: break-word;
 
     & > * {
@@ -73,7 +73,7 @@ a {
     }
 
     &.success {
-      background-color: $good;
+      background-color: $green-4;
       border: 1px solid $green;
 
       .toast-title {

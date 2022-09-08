@@ -1,12 +1,17 @@
 import { Codebooks, Gmod, UniversalId } from 'dnv-vista-sdk';
 import { isString } from 'lodash';
 import React, { createContext, useCallback, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { VistaLabApi } from '../apiConfig';
 import { AggregatedQueryResult, DataChannel, Property, Query as QueryDto, QueryOperator, TimeRange } from '../client';
+import DataChannelCard, { CardMode } from '../components/explore/data-channel-card/DataChannelCard';
 import { Operator } from '../components/monitor/query-generator/operator-selection/OperatorSelection';
+import Icon from '../components/ui/icons/Icon';
+import { IconName } from '../components/ui/icons/icons';
 import { RelativeTimeRange } from '../components/ui/time-pickers/relative-time-range-picker/types';
 import useLocalStorage, { LocalStorageSerializer } from '../hooks/use-localstorage';
 import useToast, { ToastType } from '../hooks/use-toast';
+import { RoutePath } from '../pages/Routes';
 import { nextChar } from '../util/string';
 import { DataChannelWithShipData } from './ExploreContext';
 import { useVISContext } from './VISContext';
@@ -120,6 +125,7 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
   const [timeRange, setTimeRange] = useLocalStorage<RelativeTimeRange>('vista-lab-time-range', DEFAULT_TIME_RANGE);
   const { gmod, codebooks } = useVISContext();
   const { addToast } = useToast();
+  const navigate = useNavigate();
 
   const serializer: LocalStorageSerializer<Panel[]> | undefined = useMemo(() => {
     return {
@@ -295,13 +301,18 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
           return panels;
         }
 
+        const dataChannelEl =
+            <span style={{ fontSize: '0.75em' }} >
+                <DataChannelCard dataChannel={dataChannel} mode={CardMode.LegacyNameCentric} extraNodes={<Icon icon={IconName.RightArrow} />} />
+            </span>;
+
         const panel = { ...newPanels[panelIndex] };
         if (panel.dataChannels.some(d => d.Property.UniversalID.equals(dataChannel.Property.UniversalID))) {
-          addToast(ToastType.Warning, 'Duplicate data channel', <p>{dataChannel.Property.UniversalID.toString()}</p>);
+          addToast(ToastType.Warning, 'Duplicate data channel', dataChannelEl);
           return panels;
         }
 
-        addToast(ToastType.Success, 'DataChannel added', <p>{dataChannel.Property.UniversalID.toString()}</p>);
+        addToast(ToastType.Success, 'Data channel added', dataChannelEl, () => navigate(RoutePath.ViewAndBuild + `/${panelId}`));
 
         panel.dataChannels = [...panel.dataChannels, dataChannel];
         newPanels[panelIndex] = panel;
@@ -309,7 +320,7 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
         return newPanels;
       });
     },
-    [addToast, setPanels]
+    [addToast, setPanels, navigate]
   );
 
   const removeDataChannelFromPanel = useCallback(

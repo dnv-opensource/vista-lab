@@ -34,7 +34,7 @@ const DataChannelSelection: React.FC<Props> = ({ panel }) => {
               );
           })
         ) : (
-          <ButtonWithLink to="/explore" type={ButtonType.Subtle}>
+          <ButtonWithLink to="/search" type={ButtonType.Subtle}>
             Explore
           </ButtonWithLink>
         )}

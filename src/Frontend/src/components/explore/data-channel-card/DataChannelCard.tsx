@@ -1,6 +1,5 @@
 import { CodebookNames, MetadataTag } from 'dnv-vista-sdk';
 import React, { useEffect, useMemo, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import { VistaLabApi } from '../../../apiConfig';
 import { TimeSeriesDataWithProps } from '../../../client';
 import { DataChannelWithShipData } from '../../../context/ExploreContext';
@@ -11,6 +10,7 @@ interface Props {
   dataChannel: DataChannelWithShipData;
   mode: CardMode;
   extraNodes?: React.ReactNode;
+  onClick?: { (): void; }
 }
 
 export enum CardMode {
@@ -18,7 +18,7 @@ export enum CardMode {
 }
 
 const DataChannelCard: React.FC<Props> = (props: Props) => {
-  const { dataChannel, extraNodes } = props;
+  const { dataChannel, extraNodes, onClick } = props;
   const [loading, setLoading] = useState(false);
   const [latestEventData, setLatestEventData] = useState<TimeSeriesDataWithProps>();
 
@@ -81,7 +81,7 @@ const DataChannelCard: React.FC<Props> = (props: Props) => {
   }
 
   return (
-    <div className={`data-channel-card compact`}>
+    <div className={`data-channel-card compact`} onClick={onClick}>
         <div className={'data-channel-card-c-titles'}>
             <div className={'data-channel-card-c-title-tiny'}>
                 {getTinyTitle()}
