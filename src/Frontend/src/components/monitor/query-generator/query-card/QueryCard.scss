@@ -33,7 +33,7 @@
       font-size: 0.8em;
       color: $bg-grey;
 
-      .excluded {
+      &.excluded {
         opacity: 0.4;
       }
     }

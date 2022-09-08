@@ -1,0 +1,52 @@
+@import 'src/styles/variables';
+@import 'src/styles/colors';
+.vista-import {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .import-title {
+    margin: 0;
+    font-size: 1.2em;
+  }
+  input {
+    display: none;
+  }
+  .import-area {
+    background-color: $white;
+    border: dashed 2px $grey;
+    border-radius: 0.5em;
+    width: max(50%, 30em);
+    cursor: pointer;
+    @include withResponsiveHeightToWidthScale(54%);
+
+    &:hover,
+    &.has-file {
+      border-color: $dark-blue;
+      .content {
+        .value {
+          opacity: 1;
+        }
+      }
+    }
+
+    &.dragging {
+      border-color: $dark-blue;
+      background-color: $subtle;
+    }
+
+    .content {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      align-items: center;
+      padding-bottom: 20%;
+
+      p {
+        opacity: 0.5;
+      }
+    }
+  }
+}

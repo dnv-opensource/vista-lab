@@ -35,6 +35,8 @@ export enum ChartType {
 interface LineChartProps<T extends object> {
   accessors: Accessors<T>;
   axisFormatter?: AxisFormatter<T>;
+  topOffset: number;
+  bottomOffset: number;
   dataset: {
     data: T[];
     key: string;
@@ -53,6 +55,8 @@ const LineChart = <T extends object>({
   children,
   type = ChartType.Line,
   className,
+  topOffset,
+  bottomOffset,
 }: LineChartProps<T>) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -86,7 +90,7 @@ const LineChart = <T extends object>({
     <div className={clsx('graph-container', className)} ref={wrapperRef}>
       <XYChart<ScaleConfig<AxisScaleOutput>, ScaleConfig<AxisScaleOutput>, T>
         xScale={{ type: 'band' }}
-        yScale={{ type: 'linear' }}
+        yScale={{ type: 'linear', domain: [bottomOffset, topOffset] }}
       >
         <AnimatedAxis orientation="left" tickFormat={axisFormatter?.yAxis} />
         <AnimatedAxis orientation="bottom" numTicks={4} tickFormat={axisFormatter?.xAxis} />

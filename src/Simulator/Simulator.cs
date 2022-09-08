@@ -121,6 +121,8 @@ namespace Simulator
                         if (simDiff > realDiff)
                         {
                             var toWait = simDiff - realDiff;
+                            if (toWait > System.TimeSpan.FromSeconds(5))
+                                toWait = toWait * 0.1;
                             _logger.LogInformation("Waiting {wait} while simulating", toWait);
                             await Task.Delay(toWait);
                         }

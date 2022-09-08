@@ -23,7 +23,8 @@ public sealed class DataChannelController : ControllerBase
         [property: DefaultValue(
             "/dnv-v2/vis-3-4a/411.1-4/C101.31-3/meta/qty-temperature/pos-inlet"
         )]
-            string LocalId
+            string LocalId,
+        string? VesselId
     );
 
     public sealed record PanelQueryDto(TimeRange TimeRange, IEnumerable<Query> Queries);
@@ -94,6 +95,7 @@ public sealed class DataChannelController : ControllerBase
     {
         var result = await _dataChannelRepository.GetLatestTimeSeriesForDataChannel(
             request.LocalId,
+            request.VesselId,
             cancellationToken
         );
         return Ok(result);

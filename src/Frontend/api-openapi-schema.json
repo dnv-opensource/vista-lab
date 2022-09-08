@@ -1035,6 +1035,10 @@
           "localId": {
             "type": "string",
             "default": "/dnv-v2/vis-3-4a/411.1-4/C101.31-3/meta/qty-temperature/pos-inlet"
+          },
+          "vesselId": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
