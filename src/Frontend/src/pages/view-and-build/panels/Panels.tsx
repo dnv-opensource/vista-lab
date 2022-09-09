@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import PanelCard from '../../../components/monitor/panel-card/PanelCard';
-import CombinedTimePickers from '../../../components/monitor/panel-pickers/combined-time-pickers/CombinedTimePickers';
+import PanelCard from '../../../components/view-and-build/panel-card/PanelCard';
+import CombinedTimePickers from '../../../components/view-and-build/panel-pickers/combined-time-pickers/CombinedTimePickers';
 import { IconName } from '../../../components/ui/icons/icons';
 import Input from '../../../components/ui/input/Input';
 import ScrollableField from '../../../components/ui/scrollable-field/ScrollableField';

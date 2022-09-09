@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import DataChannelSelection from '../../../components/monitor/data-channel-selection/DataChannelSelection';
-import CombinedTimePickers from '../../../components/monitor/panel-pickers/combined-time-pickers/CombinedTimePickers';
-import QueryGenerator from '../../../components/monitor/query-generator/QueryGenerator';
-import ResultEllipsisMenu from '../../../components/monitor/query-generator/result-ellipsis-menu/ResultEllipsisMenu';
+import DataChannelSelection from '../../../components/view-and-build/data-channel-selection/DataChannelSelection';
+import CombinedTimePickers from '../../../components/view-and-build/panel-pickers/combined-time-pickers/CombinedTimePickers';
+import QueryGenerator from '../../../components/view-and-build/query-generator/QueryGenerator';
+import ResultEllipsisMenu from '../../../components/view-and-build/query-generator/result-ellipsis-menu/ResultEllipsisMenu';
 import ResultBar from '../../../components/shared/result-bar/ResultBar';
 import Checkbox from '../../../components/ui/checkbox/Checkbox';
 import Icon from '../../../components/ui/icons/Icon';
@@ -11,7 +11,7 @@ import { IconName } from '../../../components/ui/icons/icons';
 import { usePanelContext } from '../../../context/PanelContext';
 import { RoutePath } from '../../Routes';
 import './Panel.scss';
-const QueryResults = React.lazy(() => import('../../../components/monitor/query-results/QueryResults'));
+const QueryResults = React.lazy(() => import('../../../components/view-and-build/query-results/QueryResults'));
 
 const Panel: React.FC = () => {
   const navigate = useNavigate();

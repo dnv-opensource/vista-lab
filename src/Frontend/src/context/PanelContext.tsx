@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { VistaLabApi } from '../apiConfig';
 import { AggregatedQueryResult, DataChannel, Property, Query as QueryDto, QueryOperator, TimeRange } from '../client';
 import DataChannelCard, { CardMode } from '../components/search/data-channel-card/DataChannelCard';
-import { Operator } from '../components/monitor/query-generator/operator-selection/OperatorSelection';
+import { Operator } from '../components/view-and-build/query-generator/operator-selection/OperatorSelection';
 import Icon from '../components/ui/icons/Icon';
 import { IconName } from '../components/ui/icons/icons';
 import { RelativeTimeRange } from '../components/ui/time-pickers/relative-time-range-picker/types';

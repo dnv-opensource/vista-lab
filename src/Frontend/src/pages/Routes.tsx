@@ -7,13 +7,13 @@ import Vessel from './shared/vessel/Vessel';
 import { VISContextProvider } from '../context/VISContext';
 import { PanelContextProvider } from '../context/PanelContext';
 import { IconName } from '../components/ui/icons/icons';
-import Panel from './monitor/panel/Panel';
-import Panels from './monitor/panels/Panels';
+import Panel from './view-and-build/panel/Panel';
+import Panels from './view-and-build/panels/Panels';
 import ResultsTable from './report/results-table/ResultsTable';
 
 const Home = React.lazy(() => import('./home/Home'));
 const Search = React.lazy(() => import('./search/Search'));
-const Monitor = React.lazy(() => import('./monitor/Monitor'));
+const ViewAndBuild = React.lazy(() => import('./view-and-build/ViewAndBuild'));
 const Report = React.lazy(() => import('./report/Report'));
 const Import = React.lazy(() => import('./import/Import'));
 
@@ -58,7 +58,7 @@ export const routesList: RouteProp[] = [
   },
   {
     path: RoutePath.ViewAndBuild,
-    element: <Monitor />,
+    element: <ViewAndBuild />,
     title: 'View&Build',
     icon: IconName.ChartColumn,
     routes: (
