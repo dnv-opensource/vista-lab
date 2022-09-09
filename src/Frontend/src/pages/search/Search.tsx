@@ -1,15 +1,15 @@
 import { LocalIdBuilder, UniversalIdBuilder } from 'dnv-vista-sdk';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Outlet, useSearchParams } from 'react-router-dom';
-import MapContainer from '../../components/explore/map/MapContainer';
-import SearchBar from '../../components/explore/search-bar/SearchBar';
-import { DataChannelWithShipData, useExploreContext } from '../../context/ExploreContext';
+import MapContainer from '../../components/search/map/MapContainer';
+import SearchBar from '../../components/search/search-bar/SearchBar';
+import { DataChannelWithShipData, useSearchContext } from '../../context/SearchContext';
 import { useVISContext } from '../../context/VISContext';
 import { isNullOrWhitespace, getImoNumberFromString } from '../../util/string';
-import './Explore.scss';
+import './Search.scss';
 
-const Explore: React.FC = () => {
-  const { setDataChannelListPackages, fetchFilteredDataChannels } = useExploreContext();
+const Search: React.FC = () => {
+  const { setDataChannelListPackages, fetchFilteredDataChannels } = useSearchContext();
   const [searchParams, setSearchParam] = useSearchParams();
   const [loading, setLoading] = useState(false);
   const queryParam = useMemo(() => searchParams.get('query') ?? undefined, [searchParams]);
@@ -58,7 +58,7 @@ const Explore: React.FC = () => {
   );
 
   return (
-    <div className={'vista-explore'}>
+    <div className={'vista-search'}>
       <SearchBar text={queryParam} onSubmit={handleSearchSubmit} loading={loading} />
       <MapContainer />
       <Outlet />
@@ -66,4 +66,4 @@ const Explore: React.FC = () => {
   );
 };
 
-export default Explore;
+export default Search;

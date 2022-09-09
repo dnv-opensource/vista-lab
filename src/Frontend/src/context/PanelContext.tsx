@@ -4,7 +4,7 @@ import React, { createContext, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { VistaLabApi } from '../apiConfig';
 import { AggregatedQueryResult, DataChannel, Property, Query as QueryDto, QueryOperator, TimeRange } from '../client';
-import DataChannelCard, { CardMode } from '../components/explore/data-channel-card/DataChannelCard';
+import DataChannelCard, { CardMode } from '../components/search/data-channel-card/DataChannelCard';
 import { Operator } from '../components/monitor/query-generator/operator-selection/OperatorSelection';
 import Icon from '../components/ui/icons/Icon';
 import { IconName } from '../components/ui/icons/icons';
@@ -13,7 +13,7 @@ import useLocalStorage, { LocalStorageSerializer } from '../hooks/use-localstora
 import useToast, { ToastType } from '../hooks/use-toast';
 import { RoutePath } from '../pages/Routes';
 import { nextChar } from '../util/string';
-import { DataChannelWithShipData } from './ExploreContext';
+import { DataChannelWithShipData } from './SearchContext';
 import { useVISContext } from './VISContext';
 
 export type PanelContextType = {

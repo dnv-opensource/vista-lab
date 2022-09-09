@@ -6,7 +6,7 @@ import { DataChannel, DataChannelListPackage, Property } from '../client';
 import { VesselMode } from '../pages/shared/vessel/Vessel';
 import { useVISContext } from './VISContext';
 
-export type ExploreContextType = {
+export type SearchContextType = {
   dataChannelListPackages?: DataChannelListPackage[];
   setDataChannelListPackages: React.Dispatch<React.SetStateAction<DataChannelListPackage[] | undefined>>;
   fetchFilteredDataChannels: (query?: string) => Promise<DataChannelListPackage[]>;
@@ -18,15 +18,15 @@ export type ExploreContextType = {
   setMode: (value: VesselMode) => void;
 };
 
-type ExploreContextProviderProps = React.PropsWithChildren<{}>;
+type SearchContextProviderProps = React.PropsWithChildren<{}>;
 
-const ExploreContext = createContext<ExploreContextType | undefined>(undefined);
+const SearchContext = createContext<SearchContextType | undefined>(undefined);
 
 export type DataChannelWithShipData = DataChannel & {
   Property: Property & { ShipID: string; UniversalID: UniversalId };
 };
 
-const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
+const SearchContextProvider = ({ children }: SearchContextProviderProps) => {
   const [universalIds, setUniversalIds] = useState<UniversalId[]>();
   const { visVersion } = useVISContext();
   const [dataChannelListPackages, setDataChannelListPackages] = useState<DataChannelListPackage[]>();
@@ -49,7 +49,7 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
     async (query?: string) => {
       const clientVersion = Object.values(VisVersion).indexOf(visVersion);
 
-      if (clientVersion === -1) throw new Error('ExploreContext: Invalid VisVersion');
+      if (clientVersion === -1) throw new Error('SearchContext: Invalid VisVersion');
 
       const scope = {
         [VesselMode.Any]: 0,
@@ -162,7 +162,7 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
   );
 
   return (
-    <ExploreContext.Provider
+    <SearchContext.Provider
       value={{
         dataChannelListPackages,
         setDataChannelListPackages,
@@ -176,16 +176,16 @@ const ExploreContextProvider = ({ children }: ExploreContextProviderProps) => {
       }}
     >
       {children}
-    </ExploreContext.Provider>
+    </SearchContext.Provider>
   );
 };
 
-const useExploreContext = () => {
-  const context = React.useContext(ExploreContext);
+const useSearchContext = () => {
+  const context = React.useContext(SearchContext);
   if (context === undefined) {
-    throw new Error('useExploreContext must be used within a ExploreContextProvider');
+    throw new Error('usSearchContext must be used within a SearchContextProvider');
   }
   return context;
 };
 
-export { useExploreContext, ExploreContextProvider };
+export { useSearchContext, SearchContextProvider };

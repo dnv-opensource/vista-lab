@@ -1,8 +1,8 @@
 import { Pmod } from 'dnv-vista-sdk';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import GmodViewer from '../../../components/explore/gmod-viewer/GmodViewer';
-import TreeButtons from '../../../components/explore/tree-buttons/TreeButtons';
+import GmodViewer from '../../../components/search/gmod-viewer/GmodViewer';
+import TreeButtons from '../../../components/search/tree-buttons/TreeButtons';
 import ResultBar from '../../../components/shared/result-bar/ResultBar';
 import Icon from '../../../components/ui/icons/Icon';
 import { IconName } from '../../../components/ui/icons/icons';
@@ -11,7 +11,7 @@ import Loader from '../../../components/ui/loader/Loader';
 import RadioSelection from '../../../components/ui/radio/radio-selection/RadioSelection';
 import ScrollableField from '../../../components/ui/scrollable-field/ScrollableField';
 import StatusIcon, { StatusVariant } from '../../../components/ui/status-icon/StatusIcon';
-import { useExploreContext } from '../../../context/ExploreContext';
+import { useSearchContext } from '../../../context/SearchContext';
 import { RoutePath } from '../../Routes';
 import './Vessel.scss';
 
@@ -29,7 +29,7 @@ export enum VesselMode {
 }
 
 const VesselComp: React.FC = () => {
-  const { getVmodForVessel, mode, setMode } = useExploreContext();
+  const { getVmodForVessel, mode, setMode } = useSearchContext();
   const { vesselId } = useParams();
   const [loading, setLoading] = useState(false);
   const [vmod, setVmod] = useState<Pmod>();

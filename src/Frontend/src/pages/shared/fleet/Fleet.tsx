@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { useExploreContext } from '../../../context/ExploreContext';
+import { useSearchContext } from '../../../context/SearchContext';
 import { Vessel } from '../vessel/Vessel';
 import ResultBar from '../../../components/shared/result-bar/ResultBar';
 import ScrollableField from '../../../components/ui/scrollable-field/ScrollableField';
@@ -7,7 +7,7 @@ import VesselCard from '../../../components/shared/vessel-card/VesselCard';
 import './Fleet.scss';
 
 const FleetGrid: React.FC = () => {
-  const { dataChannelListPackages } = useExploreContext();
+  const { dataChannelListPackages } = useSearchContext();
   const vessels = useMemo<Vessel[]>(
     () =>
       dataChannelListPackages?.map(d => {

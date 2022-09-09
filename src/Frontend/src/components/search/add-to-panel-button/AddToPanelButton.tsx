@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { DataChannelWithShipData } from '../../../context/ExploreContext';
+import { DataChannelWithShipData } from '../../../context/SearchContext';
 import { usePanelContext } from '../../../context/PanelContext';
 import Dropdown from '../../ui/dropdown/Dropdown';
 import Icon from '../../ui/icons/Icon';

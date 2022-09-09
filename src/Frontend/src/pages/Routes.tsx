@@ -2,7 +2,7 @@ import React, { Suspense } from 'react';
 import { BrowserRouter, Routes as BrowserRoutes, Route } from 'react-router-dom';
 import FleetGrid from './shared/fleet/Fleet';
 import Layout from '../components/layout/Layout';
-import { ExploreContextProvider } from '../context/ExploreContext';
+import { SearchContextProvider } from '../context/SearchContext';
 import Vessel from './shared/vessel/Vessel';
 import { VISContextProvider } from '../context/VISContext';
 import { PanelContextProvider } from '../context/PanelContext';
@@ -12,7 +12,7 @@ import Panels from './monitor/panels/Panels';
 import ResultsTable from './report/results-table/ResultsTable';
 
 const Home = React.lazy(() => import('./home/Home'));
-const Explore = React.lazy(() => import('./explore/Explore'));
+const Search = React.lazy(() => import('./search/Search'));
 const Monitor = React.lazy(() => import('./monitor/Monitor'));
 const Report = React.lazy(() => import('./report/Report'));
 const Import = React.lazy(() => import('./import/Import'));
@@ -43,9 +43,9 @@ export const routesList: RouteProp[] = [
   {
     path: RoutePath.Search,
     element: (
-      <ExploreContextProvider>
-        <Explore />
-      </ExploreContextProvider>
+      <SearchContextProvider>
+        <Search />
+      </SearchContextProvider>
     ),
     title: 'Search',
     routes: (
@@ -71,9 +71,9 @@ export const routesList: RouteProp[] = [
   {
     path: RoutePath.Report,
     element: (
-      <ExploreContextProvider>
+      <SearchContextProvider>
         <Report />
-      </ExploreContextProvider>
+      </SearchContextProvider>
     ),
     title: 'Report',
     routes: (

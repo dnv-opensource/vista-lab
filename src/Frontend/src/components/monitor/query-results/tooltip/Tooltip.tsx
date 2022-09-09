@@ -1,6 +1,6 @@
 import { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
 import React from 'react';
-import { DataChannelWithShipData } from '../../../../context/ExploreContext';
+import { DataChannelWithShipData } from '../../../../context/SearchContext';
 import { isDataChannelQueryItem, Query } from '../../../../context/PanelContext';
 import { Accessors } from '../../../graph/LineChart';
 import { TimeSeries } from '../QueryResults';

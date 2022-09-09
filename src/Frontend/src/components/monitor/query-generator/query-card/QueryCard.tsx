@@ -1,9 +1,9 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { DataChannelWithShipData } from '../../../../context/ExploreContext';
+import { DataChannelWithShipData } from '../../../../context/SearchContext';
 import { isDataChannelQueryItem, Panel, Query, usePanelContext } from '../../../../context/PanelContext';
 import useToast, { ToastType } from '../../../../hooks/use-toast';
 import { isNullOrWhitespace } from '../../../../util/string';
-import DataChannelCard, { CardMode } from '../../../explore/data-channel-card/DataChannelCard';
+import DataChannelCard, { CardMode } from '../../../search/data-channel-card/DataChannelCard';
 import Icon from '../../../ui/icons/Icon';
 import { IconName } from '../../../ui/icons/icons';
 import Input from '../../../ui/input/Input';

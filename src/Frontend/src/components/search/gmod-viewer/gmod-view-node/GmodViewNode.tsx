@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import { GmodNode, GmodPath } from 'dnv-vista-sdk';
 import React, { useMemo } from 'react';
-import { useExploreContext } from '../../../../context/ExploreContext';
+import { useSearchContext } from '../../../../context/SearchContext';
 import Icon from '../../../ui/icons/Icon';
 import { IconName } from '../../../ui/icons/icons';
 import AddToPanelButton from '../../add-to-panel-button/AddToPanelButton';
@@ -28,7 +28,7 @@ const GmodViewNode: React.FC<Props> = ({ node, mergedChild, skippedParent, paren
     [initPath, mergedChild, parents, node]
   );
 
-  const { getDataChannelsFromGmodPath } = useExploreContext();
+  const { getDataChannelsFromGmodPath } = useSearchContext();
 
   const dataChannels = useMemo(() => {
     return getDataChannelsFromGmodPath(path);

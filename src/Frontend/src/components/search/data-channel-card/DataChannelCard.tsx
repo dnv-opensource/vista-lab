@@ -2,7 +2,7 @@ import { CodebookNames, MetadataTag } from 'dnv-vista-sdk';
 import React, { useEffect, useMemo, useState } from 'react';
 import { VistaLabApi } from '../../../apiConfig';
 import { TimeSeriesDataWithProps } from '../../../client';
-import { DataChannelWithShipData } from '../../../context/ExploreContext';
+import { DataChannelWithShipData } from '../../../context/SearchContext';
 import Loader from '../../ui/loader/Loader';
 import './DataChannelCard.scss';
 
