@@ -36,9 +36,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlertManager", "src\AlertMa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChannelStreamer", "src\ChannelStreamer\ChannelStreamer.csproj", "{FD545A08-9A9C-4D77-A63B-DAAC4FEDB24C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Search.Api", "src\Search.Api\Search.Api.csproj", "{DB92FDE0-8D61-4DE8-B674-E1B08D7F3A96}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SearchApi", "src\SearchApi\SearchApi.csproj", "{DB92FDE0-8D61-4DE8-B674-E1B08D7F3A96}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Search.Client", "src\Search.Client\Search.Client.csproj", "{5A043F8E-1D13-452D-A490-ACF7383DDA2D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SearchClient", "src\SearchClient\SearchClient.csproj", "{5A043F8E-1D13-452D-A490-ACF7383DDA2D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

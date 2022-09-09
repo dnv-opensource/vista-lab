@@ -1,4 +1,4 @@
-namespace Search.Api;
+namespace SearchApi;
 
 internal static class DIExtensions
 {

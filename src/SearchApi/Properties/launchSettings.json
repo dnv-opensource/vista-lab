@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/launchsettings.json",
   "profiles": {
-    "Search.Api": {
+    "SearchApi": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": false,

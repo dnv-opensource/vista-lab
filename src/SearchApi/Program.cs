@@ -1,6 +1,6 @@
 using Vista.SDK;
 
-using Search.Api;
+using SearchApi;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);

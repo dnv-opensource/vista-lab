@@ -16,17 +16,14 @@ interface Props<T extends TreeNodeType<T>> {
 }
 
 function getAllNodes<T extends TreeNodeType<T>>(rootNode: T, nodes: T[]) {
-    nodes.push(rootNode);
+  nodes.push(rootNode);
 
-    if (!rootNode.children.length)
-        return;
+  if (!rootNode.children.length) return;
 
-    rootNode.children.forEach(c => getAllNodes(c, nodes));
+  rootNode.children.forEach(c => getAllNodes(c, nodes));
 }
 
-function Tree<T extends TreeNodeType<T>>(
-  { rootNode, formatElement, formatNode, className }: Props<T>
-) {
+function Tree<T extends TreeNodeType<T>>({ rootNode, formatElement, formatNode, className }: Props<T>) {
   const root = formatNode(rootNode, [], rootNode.children);
   const [expandedNodes, setExpandedNodes] = useStateWithPromise<T[]>([]);
   const [allNodesStatus, setAllNodesStatus] = useState<TreeAllNodesStatus>(null);
@@ -40,16 +37,16 @@ function Tree<T extends TreeNodeType<T>>(
   useBus(
     BusEvents.TreeAllNodesStatus,
     e => {
-        const event = e as TreeAllNodesStatusEvent;
-        const newStatus = event.action;
-        setAllNodesStatus(newStatus);
-        if (newStatus === 'expanded') {
-            setExpandedNodes(allNodes);
-        } else if (newStatus === 'collapsed') {
-            setExpandedNodes([]);
-        }
+      const event = e as TreeAllNodesStatusEvent;
+      const newStatus = event.action;
+      setAllNodesStatus(newStatus);
+      if (newStatus === 'expanded') {
+        setExpandedNodes(allNodes);
+      } else if (newStatus === 'collapsed') {
+        setExpandedNodes([]);
+      }
     },
-    [],
+    []
   );
 
   const setExpanded = useCallback(
@@ -61,32 +58,25 @@ function Tree<T extends TreeNodeType<T>>(
         // Already expanded, collapse node
         const newNodes = [...expandedNodes];
         newNodes.splice(foundNodeIndex, 1);
-        if (newNodes.length === 0)
-            dispatch({ type: BusEvents.TreeAllNodesStatus, action: 'collapsed' });
+        if (newNodes.length === 0) dispatch({ type: BusEvents.TreeAllNodesStatus, action: 'collapsed' });
         else {
-            if (allNodesStatus !== null)
-                dispatch({ type: BusEvents.TreeAllNodesStatus, action: null });
-            setExpandedNodes(newNodes);
+          if (allNodesStatus !== null) dispatch({ type: BusEvents.TreeAllNodesStatus, action: null });
+          setExpandedNodes(newNodes);
         }
       } else {
         // Collapsed, expand node
         const newNodes = [...prev, node];
-        if (prev.length + 1 === allNodes.length)
-            dispatch({ type: BusEvents.TreeAllNodesStatus, action: 'expanded' });
+        if (prev.length + 1 === allNodes.length) dispatch({ type: BusEvents.TreeAllNodesStatus, action: 'expanded' });
         else {
-            if (allNodesStatus !== null)
-                dispatch({ type: BusEvents.TreeAllNodesStatus, action: null });
-            setExpandedNodes(newNodes);
+          if (allNodesStatus !== null) dispatch({ type: BusEvents.TreeAllNodesStatus, action: null });
+          setExpandedNodes(newNodes);
         }
       }
     },
     [allNodes, expandedNodes, setExpandedNodes, allNodesStatus]
   );
 
-  const isExpanded = useCallback(
-    (node: T) => !!expandedNodes.find(n => n.id === node.id),
-    [expandedNodes]
-  );
+  const isExpanded = useCallback((node: T) => !!expandedNodes.find(n => n.id === node.id), [expandedNodes]);
 
   return (
     <div className={clsx('tree-view', className)}>

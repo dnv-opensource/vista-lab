@@ -43,7 +43,7 @@
             "wrapResponses": false,
             "generateResponseClasses": true,
             "responseClass": "SearchApiResponse",
-            "namespace": "Search.Client",
+            "namespace": "SearchClient",
             "requiredPropertiesMustBeDefined": true,
             "dateType": "System.DateTimeOffset",
             "dateTimeType": "System.DateTimeOffset",
@@ -62,7 +62,7 @@
             "handleReferences": false,
             "generateImmutableArrayProperties": true,
             "generateImmutableDictionaryProperties": true,
-            "output": "../../Search.Client/Client.g.cs",
+            "output": "../../SearchClient/Client.g.cs",
             "jsonLibrary": "SystemTextJson",
             "generateNullableReferenceTypes": true,
             "generateOptionalPropertiesAsNullable": true

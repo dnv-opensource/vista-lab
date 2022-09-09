@@ -7,5 +7,5 @@ export type TreeNode<T extends { children: T[]; id: string }> = {
   skip?: boolean;
   merge?: boolean;
   hideExpander?: boolean;
-  extra?: { [key: string]: any; }
+  extra?: { [key: string]: any };
 };

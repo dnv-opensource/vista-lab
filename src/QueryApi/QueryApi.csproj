@@ -32,7 +32,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Search.Client\Search.Client.csproj" />
+        <ProjectReference Include="..\SearchClient\SearchClient.csproj" />
         <ProjectReference Include="..\Common\Common.csproj" />
     </ItemGroup>
 

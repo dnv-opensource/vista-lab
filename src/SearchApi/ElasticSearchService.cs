@@ -1,4 +1,4 @@
-namespace Search.Api;
+namespace SearchApi;
 
 using Elasticsearch.Net;
 using MQTTnet;
@@ -228,7 +228,7 @@ public sealed class ElasticSearchService : IHostedService
                     if (entity is null)
                         continue;
 
-                    var index = _esClient.Index(
+                    var index = await _esClient.IndexAsync(
                         new DataChannelDocument(
                             entity.VesselId,
                             entity.LocalId,

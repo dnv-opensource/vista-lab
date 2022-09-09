@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using Vista.SDK;
 
-namespace Search.Api;
+namespace SearchApi;
 
 public static class Diagnostics
 {

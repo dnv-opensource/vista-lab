@@ -23,14 +23,14 @@
   }
 
   .tags {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      gap: 0.5em;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5em;
   }
 
   svg {
-      color: rgb(78, 78, 78);
+    color: rgb(78, 78, 78);
   }
 
   .data-channel-card-c-titles {
@@ -41,34 +41,34 @@
   }
 
   .data-channel-card-c-title {
-      display: flex;
-      align-items: center;
+    display: flex;
+    align-items: center;
   }
 
   .data-channel-card-c-title-tiny {
-      display: flex;
-      // left: 0.6em;
-      font-size: 0.75em;
-      color: #999;
+    display: flex;
+    // left: 0.6em;
+    font-size: 0.75em;
+    color: #999;
   }
 
   .data-channel-card-c-value {
-      display: flex;
-      margin-left: auto;
-      font-size: 0.75em;
-      font-weight: bold;
+    display: flex;
+    margin-left: auto;
+    font-size: 0.75em;
+    font-weight: bold;
   }
 
   .separator {
-      font-size: 1em;
-      // color: #999;
-      font-weight: bold;
-      // padding-left: 0.25em;
-      padding-right: 0.25em;
+    font-size: 1em;
+    // color: #999;
+    font-weight: bold;
+    // padding-left: 0.25em;
+    padding-right: 0.25em;
   }
 
   .name {
-      color: #999;
+    color: #999;
   }
 }
 

@@ -3,7 +3,7 @@ using Common;
 using Vista.SDK;
 using Serilog;
 using QueryApi.Repository;
-using Search.Client;
+using SearchClient;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;

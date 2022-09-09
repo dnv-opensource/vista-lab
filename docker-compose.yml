@@ -39,7 +39,7 @@ services:
             - "5053:5053"
         build:
             context: .
-            dockerfile: src/Search.Api/Dockerfile
+            dockerfile: src/SearchApi/Dockerfile
         environment:
             BROKER_SERVER: "vista-lab-broker"
             ES_API_URL: "vista-lab-elasticsearch"
@@ -123,7 +123,7 @@ services:
             - "5601:5601"
     # Database
     questdb:
-        image: questdb/questdb
+        image: questdb/questdb:6.5.2
         container_name: vista-lab-db
         restart: unless-stopped
         ports:

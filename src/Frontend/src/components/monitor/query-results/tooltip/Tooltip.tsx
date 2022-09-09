@@ -18,12 +18,11 @@ const Tooltip: React.FC<Props> = ({ params, dataChannels, queries }) => {
 
   const resolveUnitSymbols = (item: Query | DataChannelWithShipData): string[] => {
     if (isDataChannelQueryItem(item)) {
-        if (!item.Property?.Unit?.UnitSymbol || !item.Property?.Unit?.QuantityName)
-            return [];
-        return [`${item.Property.Unit.UnitSymbol} (${item.Property.Unit.QuantityName})`];
+      if (!item.Property?.Unit?.UnitSymbol || !item.Property?.Unit?.QuantityName) return [];
+      return [`${item.Property.Unit.UnitSymbol} (${item.Property.Unit.QuantityName})`];
     }
     return item.items.flatMap(i => resolveUnitSymbols(i));
-  }
+  };
 
   let unit: string | undefined = undefined;
   const dataChannel = dataChannels.find(dc => dc.Property.UniversalID.toString() === item?.key);
@@ -40,7 +39,10 @@ const Tooltip: React.FC<Props> = ({ params, dataChannels, queries }) => {
   return (
     <div className={'chart-tooltip'}>
       <p>{item?.key}</p>
-      <p>{item?.datum.value.toFixed(2)}{unit && <b> {unit}</b>}</p>
+      <p>
+        {item?.datum.value.toFixed(2)}
+        {unit && <b> {unit}</b>}
+      </p>
     </div>
   );
 };

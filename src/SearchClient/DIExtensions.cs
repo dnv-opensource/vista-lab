@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Search.Client;
+namespace SearchClient;
 
 public static class DIExtensions
 {

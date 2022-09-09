@@ -24,14 +24,21 @@ const DataChannelSelection: React.FC<Props> = ({ panel }) => {
             const isExcludedFromGraph = panel.queryItemsExcludedFromGraph.has(d.Property.UniversalID.toString());
 
             return (
-                <span key={d.Property.UniversalID.toString()} className={'data-channel-card-wrapper'}>
-                  <DataChannelCard
-                    dataChannel={d}
-                    key={d.Property.UniversalID.toString()}
-                    mode={CardMode.LegacyNameCentric}
-                    extraNodes={<Icon icon={IconName.Eye} className={isExcludedFromGraph ? 'excluded' : ''} onClick={() => toggleQueryItemInPanel(panel.id, d)} />} />
-                </span>
-              );
+              <span key={d.Property.UniversalID.toString()} className={'data-channel-card-wrapper'}>
+                <DataChannelCard
+                  dataChannel={d}
+                  key={d.Property.UniversalID.toString()}
+                  mode={CardMode.LegacyNameCentric}
+                  extraNodes={
+                    <Icon
+                      icon={IconName.Eye}
+                      className={isExcludedFromGraph ? 'excluded' : ''}
+                      onClick={() => toggleQueryItemInPanel(panel.id, d)}
+                    />
+                  }
+                />
+              </span>
+            );
           })
         ) : (
           <ButtonWithLink to="/search" type={ButtonType.Subtle}>

@@ -13,15 +13,17 @@ interface Props {
 }
 
 function getAllChannels(rootNode: GmodNode, nodes: GmodNode[]) {
-    nodes.push(rootNode);
+  nodes.push(rootNode);
 
-    if (!rootNode.children.length)
-        return;
+  if (!rootNode.children.length) return;
 
-    rootNode.children.forEach(c => getAllChannels(c, nodes));
+  rootNode.children.forEach(c => getAllChannels(c, nodes));
 }
 
-export type GmodViewerNodeExtra = { isExpanded: { (node: GmodNode): boolean }, setExpanded: { (node: GmodNode): void; } }
+export type GmodViewerNodeExtra = {
+  isExpanded: { (node: GmodNode): boolean };
+  setExpanded: { (node: GmodNode): void };
+};
 
 const GmodViewer: React.FC<Props> = ({ pmod }: Props) => {
   const [expandedChannels, setExpandedChannels] = useStateWithPromise<GmodNode[]>([]);
@@ -36,16 +38,16 @@ const GmodViewer: React.FC<Props> = ({ pmod }: Props) => {
   useBus(
     BusEvents.TreeAllDataChannelsStatus,
     e => {
-        const event = e as TreeAllDataChannelsStatusEvent;
-        const newStatus = event.action;
-        setAllChannelsStatus(newStatus);
-        if (newStatus === 'expanded') {
-            setExpandedChannels(allChannels);
-        } else if (newStatus === 'collapsed') {
-            setExpandedChannels([]);
-        }
+      const event = e as TreeAllDataChannelsStatusEvent;
+      const newStatus = event.action;
+      setAllChannelsStatus(newStatus);
+      if (newStatus === 'expanded') {
+        setExpandedChannels(allChannels);
+      } else if (newStatus === 'collapsed') {
+        setExpandedChannels([]);
+      }
     },
-    [],
+    []
   );
 
   const setExpanded = useCallback(
@@ -57,22 +59,19 @@ const GmodViewer: React.FC<Props> = ({ pmod }: Props) => {
         // Already expanded, collapse node
         const newNodes = [...expandedChannels];
         newNodes.splice(foundChannelIndex, 1);
-        if (newNodes.length === 0)
-            dispatch({ type: BusEvents.TreeAllDataChannelsStatus, action: 'collapsed' });
+        if (newNodes.length === 0) dispatch({ type: BusEvents.TreeAllDataChannelsStatus, action: 'collapsed' });
         else {
-            if (allChannelsStatus !== null)
-                dispatch({ type: BusEvents.TreeAllDataChannelsStatus, action: null });
-            setExpandedChannels(newNodes);
+          if (allChannelsStatus !== null) dispatch({ type: BusEvents.TreeAllDataChannelsStatus, action: null });
+          setExpandedChannels(newNodes);
         }
       } else {
         // Collapsed, expand node
         const newNodes = [...prev, node];
         if (prev.length + 1 === allChannels.length)
-            dispatch({ type: BusEvents.TreeAllDataChannelsStatus, action: 'expanded' });
+          dispatch({ type: BusEvents.TreeAllDataChannelsStatus, action: 'expanded' });
         else {
-            if (allChannelsStatus !== null)
-                dispatch({ type: BusEvents.TreeAllDataChannelsStatus, action: null });
-            setExpandedChannels(newNodes);
+          if (allChannelsStatus !== null) dispatch({ type: BusEvents.TreeAllDataChannelsStatus, action: null });
+          setExpandedChannels(newNodes);
         }
       }
     },
@@ -94,7 +93,7 @@ const GmodViewer: React.FC<Props> = ({ pmod }: Props) => {
       skip: Gmod.isProductSelectionAssignment(parents[parents.length - 1]?.node.node, node.node),
       merge: Gmod.isProductTypeAssignment(parents[parents.length - 1]?.node.node, node.node),
       id: node.node.id,
-      extra
+      extra,
     }),
     [extra]
   );

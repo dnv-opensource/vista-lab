@@ -10,11 +10,11 @@ COPY ["global.json", "global.json"]
 COPY ["Directory.Build.props", "Directory.Build.props"]
 
 COPY ["src/Common/Common.csproj", "src/Common/"]
-COPY ["src/Search.Api/Search.Api.csproj", "src/Search.Api/"]
+COPY ["src/SearchApi/SearchApi.csproj", "src/SearchApi/"]
 
-RUN dotnet restore "src/Search.Api/"
+RUN dotnet restore "src/SearchApi/"
 COPY . .
-WORKDIR "src/Search.Api/"
+WORKDIR "src/SearchApi/"
 RUN dotnet build -c Release
 RUN dotnet publish -c Release -o /app/publish --no-restore --no-build
 
@@ -24,4 +24,4 @@ ENV ASPNETCORE_URLS=http://+:5053
 WORKDIR /app
 EXPOSE 5053
 COPY --from=build /app/publish ./
-ENTRYPOINT ["dotnet", "Search.Api.dll"]
+ENTRYPOINT ["dotnet", "SearchApi.dll"]

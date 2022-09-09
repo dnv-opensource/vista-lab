@@ -10,7 +10,7 @@ export enum ToastType {
 const useToast = () => {
   const timeoutRef = useRef<NodeJS.Timeout>();
 
-  const addToast = useCallback((type: ToastType, title: string, children: JSX.Element, onClick?: { (): void; }) => {
+  const addToast = useCallback((type: ToastType, title: string, children: JSX.Element, onClick?: { (): void }) => {
     const DURATION = 3000;
     const toastId = 'vista-toast-anchor';
     let anchor = document.getElementById(toastId);
@@ -34,29 +34,27 @@ const useToast = () => {
     );
 
     el.innerHTML = renderToString(jsx);
-    if (onClick)
-        el.onclick = onClick;
+    if (onClick) el.onclick = onClick;
 
     anchor!.appendChild(el);
 
     const tryRemoveToast = () => {
-        setTimeout(() => {
-            if (el && el.matches(':hover')) {
-                if (timeoutRef.current) clearTimeout(timeoutRef.current);
-                tryRemoveToast();
-                return;
-            }
-            anchor!.removeChild(el);
-        }, DURATION);
+      setTimeout(() => {
+        if (el && el.matches(':hover')) {
+          if (timeoutRef.current) clearTimeout(timeoutRef.current);
+          tryRemoveToast();
+          return;
+        }
+        anchor!.removeChild(el);
+      }, DURATION);
 
-        if (timeoutRef.current) clearTimeout(timeoutRef.current);
-        timeoutRef.current = setTimeout(() => {
-          document.body.removeChild(anchor!);
-        }, DURATION);
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      timeoutRef.current = setTimeout(() => {
+        document.body.removeChild(anchor!);
+      }, DURATION);
     };
 
     tryRemoveToast();
-
   }, []);
 
   return { addToast };

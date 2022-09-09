@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using Nest;
 using System.ComponentModel;
 using Vista.SDK;
-using static Search.Api.ElasticSearchService;
+using static SearchApi.ElasticSearchService;
 
-namespace Search.Api.Controllers;
+namespace SearchApi.Controllers;
 
 [ApiController]
 [Route("[controller]")]

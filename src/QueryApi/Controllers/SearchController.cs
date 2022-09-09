@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using QueryApi.Models;
 using QueryApi.Repository;
-using Search.Client;
+using SearchClient;
 using System.ComponentModel;
 using Vista.SDK;
 using Vista.SDK.Transport.Json.DataChannel;
@@ -81,7 +81,7 @@ public sealed class SearchController : ControllerBase
         var request = new SearchDto(body.Phrase, null, body.VesselId);
 
         var searchApiResultDto = await _searchClient.VISSearchAsync(
-            (Search.Client.VisVersion)visVersion,
+            (SearchClient.VisVersion)visVersion,
             request,
             cancellationToken
         );

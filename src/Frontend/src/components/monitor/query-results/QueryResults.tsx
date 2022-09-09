@@ -63,7 +63,7 @@ const QueryResults: React.FC<Props> = ({ panel }) => {
     const max = Math.max(...nums);
     const minDiff = Math.abs(min * 0.2);
     const maxDiff = Math.abs(max * 0.2);
-    const bounds = [min - minDiff, max + maxDiff]
+    const bounds = [min - minDiff, max + maxDiff];
     return bounds;
   }, [dataSet]);
 
