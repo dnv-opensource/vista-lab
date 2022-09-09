@@ -12,6 +12,7 @@ import RadioSelection from '../../../components/ui/radio/radio-selection/RadioSe
 import ScrollableField from '../../../components/ui/scrollable-field/ScrollableField';
 import StatusIcon, { StatusVariant } from '../../../components/ui/status-icon/StatusIcon';
 import { useExploreContext } from '../../../context/ExploreContext';
+import { RoutePath } from '../../Routes';
 import './Vessel.scss';
 
 export type Vessel = {
@@ -44,7 +45,7 @@ const VesselComp: React.FC = () => {
   return (
     <>
       <ResultBar className={'vessel-result-bar'}>
-        <LinkWithQuery className={'back'} to={'/search'} queryKey={['query', 'mode']}>
+        <LinkWithQuery className={'back'} to={RoutePath.Search} queryKey={['query', 'mode']}>
           <Icon icon={IconName.LeftArrow} />
           {vesselId}
         </LinkWithQuery>
@@ -55,15 +56,15 @@ const VesselComp: React.FC = () => {
       </ResultBar>
       <ScrollableField className={'vmod-container'}>
         <div className={'header'}>
-            <RadioSelection
-                className={'mode-selection'}
-                options={Object.entries(VesselMode).map((k, i) => ({ index: i, label: k[1] }))}
-                onChange={option => {
-                    setMode(option.label as VesselMode);
-                }}
-                selectedOption={{ index: Object.values(VesselMode).indexOf(mode), label: mode }}
-            />
-            <TreeButtons />
+          <RadioSelection
+            className={'mode-selection'}
+            options={Object.entries(VesselMode).map((k, i) => ({ index: i, label: k[1] }))}
+            onChange={option => {
+              setMode(option.label as VesselMode);
+            }}
+            selectedOption={{ index: Object.values(VesselMode).indexOf(mode), label: mode }}
+          />
+          <TreeButtons />
         </div>
         {loading ? <Loader /> : vmod ? <GmodViewer pmod={vmod} /> : <span>No available nodes</span>}
       </ScrollableField>

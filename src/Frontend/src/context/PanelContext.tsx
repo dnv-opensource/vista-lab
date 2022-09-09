@@ -43,11 +43,14 @@ type PanelContextProviderProps = React.PropsWithChildren<{}>;
 
 const PanelContext = createContext<PanelContextType | undefined>(undefined);
 
-export type Threshold = {
-  value: number;
-  /**@description Converted to percentage */
-  deviation?: number;
-  name: string;
+export type Panel = {
+  queries: Query[];
+  dataChannels: DataChannelWithShipData[];
+  queryItemsExcludedFromGraph: Set<string>;
+  id: string;
+  timeRange?: RelativeTimeRange;
+  interval?: string;
+  threshold?: Threshold;
 };
 
 export type Query = {
@@ -55,6 +58,27 @@ export type Query = {
   name: string;
   operator?: Operator;
   items: (Query | DataChannelWithShipData)[];
+};
+
+export type Threshold = {
+  value: number;
+  /**@description Converted to percentage */
+  deviation?: number;
+  name: string;
+};
+
+type SerializableDataChannelWithShipData = DataChannel & {
+  Property: Property & { ShipID: string; UniversalID: string };
+};
+
+type SerializableQuery = Omit<Query, 'items'> & {
+  items: (string | SerializableDataChannelWithShipData)[];
+};
+
+type SerializablePanel = Omit<Panel, 'dataChannels' | 'queries' | 'queryItemsExcludedFromGraph'> & {
+  queries: SerializableQuery[];
+  dataChannels: SerializableDataChannelWithShipData[];
+  queryItemsExcludedFromGraph: string[];
 };
 
 export function isDataChannelQueryItem(item: Query | DataChannelWithShipData): item is DataChannelWithShipData {
@@ -86,30 +110,6 @@ export function deserializeDataChannelWithShipData(
   };
   return dataChannel;
 }
-
-export type Panel = {
-  queries: Query[];
-  dataChannels: DataChannelWithShipData[];
-  queryItemsExcludedFromGraph: Set<string>;
-  id: string;
-  timeRange?: RelativeTimeRange;
-  interval?: string;
-  threshold?: Threshold;
-};
-
-export type SerializableDataChannelWithShipData = DataChannel & {
-  Property: Property & { ShipID: string; UniversalID: string };
-};
-
-export type SerializableQuery = Omit<Query, 'items'> & {
-  items: (string | SerializableDataChannelWithShipData)[];
-};
-
-export type SerializablePanel = Omit<Panel, 'dataChannels' | 'queries' | 'queryItemsExcludedFromGraph'> & {
-  queries: SerializableQuery[];
-  dataChannels: SerializableDataChannelWithShipData[];
-  queryItemsExcludedFromGraph: string[];
-};
 
 const DEFAULT_QUERY: Query = { id: Date.now() + '', name: 'A', items: [] };
 const DEFAULT_PANEL: Panel = {

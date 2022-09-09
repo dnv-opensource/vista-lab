@@ -40,7 +40,6 @@ const ResultEllipsisMenu: React.FC<Props> = ({ panel }) => {
                 <form
                   onSubmit={e => {
                     e.preventDefault();
-                    console.log('submit');
                     //@ts-ignore
                     const [{ value }, { value: deviation }] = e.target;
 
