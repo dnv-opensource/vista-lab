@@ -1,7 +1,6 @@
 import clsx from 'clsx';
 import React, { useCallback, useRef, useState } from 'react';
 import { VistaLabApi } from '../../apiConfig';
-import { SimulatorDataChannelListPackage } from '../../client';
 import { ButtonType } from '../../components/ui/button/Button';
 import ButtonWithLink from '../../components/ui/button/ButtonWithLink';
 import useToast, { ToastType } from '../../hooks/use-toast';

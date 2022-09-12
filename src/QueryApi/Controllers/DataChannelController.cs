@@ -40,22 +40,6 @@ public sealed class DataChannelController : ControllerBase
     }
 
     /// <summary>
-    /// Import datachannels and simulate
-    /// </summary>
-    /// <param name="body"></param>
-    /// <param name="cancellationToken"></param>
-    [HttpPost]
-    [Route("api/data-channel/import-and-simulate")]
-    public async Task<ActionResult> PostImportAndSimulate(
-        SimulatorClient.DataChannelListPackage body,
-        CancellationToken cancellationToken
-    )
-    {
-        await _simulatorClient.ImportDataChannelsAndSimulateAsync(body, cancellationToken);
-        return Ok();
-    }
-
-    /// <summary>
     /// Import datachannels file and simulate
     /// </summary>
     /// <param name="file"></param>

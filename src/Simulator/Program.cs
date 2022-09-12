@@ -67,21 +67,6 @@ app.Use(
 );
 
 app.MapPost(
-        "api/data-channel/import-and-simulate",
-        async (
-            DataChannelListPackage body,
-            [FromServices] Simulator simulator,
-            CancellationToken cancellationToken
-        ) =>
-        {
-            await simulator.SimulateDataChannel(body, null, cancellationToken);
-            return Results.Ok();
-        }
-    )
-    .WithName("ImportDataChannelsAndSimulate")
-    .WithDisplayName("Import datachannels and simulate");
-
-app.MapPost(
         "api/data-channel/import-file-and-simulate",
         async (
             HttpRequest request,

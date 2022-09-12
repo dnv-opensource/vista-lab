@@ -40,7 +40,6 @@ builder.Services.AddSwaggerGen(
             e =>
                 $"{e.ActionDescriptor.RouteValues["controller"]}{e.ActionDescriptor.RouteValues["action"]}"
         );
-        options.CustomSchemaIds(type => SwashbuckleSchemaHelper.GetSchemaId(type));
         var assembly = typeof(Program).Assembly;
 
         var xmlFilename = $"{assembly.GetName().Name}.xml";
@@ -58,14 +57,3 @@ app.UseCors();
 app.MapControllers();
 
 app.Run();
-
-internal static class SwashbuckleSchemaHelper
-{
-    public static string GetSchemaId(Type type)
-    {
-        if (type.Namespace == "SimulatorClient")
-            return $"Simulator{type.Name}";
-
-        return type.Name;
-    }
-}
