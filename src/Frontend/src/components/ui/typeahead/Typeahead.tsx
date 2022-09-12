@@ -61,7 +61,7 @@ const Typeahead = <T,>({
     return formattedOptions.filter(o => !!o.value?.toString().includes(value!.toString()));
   }, [formattedOptions, value]);
 
-  const showNames = useMemo(() => formattedOptions.every(o => o.name !== undefined), [formattedOptions]);
+  const showNames = useMemo(() => formattedOptions.some(o => o.name !== undefined), [formattedOptions]);
 
   return (
     <>
@@ -79,6 +79,9 @@ const Typeahead = <T,>({
           anchorRef={inputRef}
           open={showOptions}
           setOpen={setShowOptions}
+          onOutsideClick={() => {
+            setInputValue(inputValue);
+          }}
           fitAnchor
         >
           {filteredOptions.length > 0 ? (

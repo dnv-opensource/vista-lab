@@ -3,6 +3,7 @@ using QueryApi.Repository;
 using SearchClient;
 using Serilog;
 using SimulatorClient;
+using System.Text.Json.Serialization;
 using Vista.SDK;
 
 var builder = WebApplication.CreateBuilder(args);

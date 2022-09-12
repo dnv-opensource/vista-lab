@@ -1,14 +1,17 @@
 import clsx from 'clsx';
 import React from 'react';
-import { RoutePath, routesList } from '../../pages/Routes';
+import { useLabContext } from '../../context/LabContext';
+import { routesList } from '../../pages/Routes';
 import CustomLink from '../ui/router/CustomLink';
 import TextWithIcon from '../ui/text/TextWithIcon';
+import VesselSelector from '../vessel-selector/VesselSelector';
 import './Header.scss';
 
 const Header: React.FC = () => {
+  const { vessel } = useLabContext();
   return (
     <div className={'header-wrapper'}>
-      <CustomLink persistSearch to={RoutePath.Home} className={'dnv-logo'} />
+      <CustomLink persistSearch to={`/${vessel.id}`} className={'dnv-logo'} />
       <div className={'routes'}>
         {routesList.map(route => (
           <CustomLink
@@ -22,6 +25,9 @@ const Header: React.FC = () => {
             </TextWithIcon>
           </CustomLink>
         ))}
+      </div>
+      <div className={'vessel-selector-wrapper'}>
+        <VesselSelector />
       </div>
       <div className={'vista-info'}>
         <p className={'vista-logo'}>VISTA</p>

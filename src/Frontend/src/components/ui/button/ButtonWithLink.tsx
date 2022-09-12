@@ -1,16 +1,16 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import CustomLink, { CustomLinkProps } from '../router/CustomLink';
 import Button, { ButtonProps } from './Button';
 
 interface Props extends ButtonProps {
-  to: string;
+  linkProps: CustomLinkProps;
 }
 
-const ButtonWithLink: React.FC<Props> = ({ to, children, ...rest }) => {
+const ButtonWithLink: React.FC<Props> = ({ linkProps, children, ...rest }) => {
   return (
-    <Link to={to}>
+    <CustomLink {...linkProps}>
       <Button {...rest}>{children}</Button>
-    </Link>
+    </CustomLink>
   );
 };
 

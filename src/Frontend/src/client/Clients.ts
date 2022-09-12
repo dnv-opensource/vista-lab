@@ -96,6 +96,45 @@ export class Client extends AuthorizedApiBase {
     }
 
     /**
+     * Get distinct vessels with info
+     * @return Success
+     */
+    dataChannelGetVessels(): Promise<Vessel[]> {
+        let url_ = this.baseUrl + "/api/data-channel/vessels";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processDataChannelGetVessels(_response);
+        });
+    }
+
+    protected processDataChannelGetVessels(response: Response): Promise<Vessel[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            result200 = _responseText === "" ? null : <Vessel[]>JSON.parse(_responseText, this.jsonParseReviver);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Vessel[]>(<any>null);
+    }
+
+    /**
      * Search for data channels based in the given filters
      * @param body (optional) 
      * @return Success
@@ -654,6 +693,12 @@ export interface VersionInformation {
     NamingRule: string;
     NamingSchemeVersion: string;
     ReferenceURL: string | undefined;
+}
+
+export interface Vessel {
+    vesselId: string;
+    numberOfDataChannels: number;
+    name: string | undefined;
 }
 
 export enum VisVersion {

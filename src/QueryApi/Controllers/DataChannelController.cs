@@ -57,6 +57,21 @@ public sealed class DataChannelController : ControllerBase
     }
 
     /// <summary>
+    /// Get distinct vessels with info
+    /// </summary>
+    /// <param name="cancellationToken"></param>
+    [HttpGet]
+    [Route("api/data-channel/vessels")]
+    public async Task<ActionResult<IEnumerable<Vessel>>> GetVessels(
+        CancellationToken cancellationToken
+    )
+    {
+        var result = await _dataChannelRepository.GetVessels(cancellationToken);
+
+        return Ok(result);
+    }
+
+    /// <summary>
     /// Search for data channels based in the given filters
     /// </summary>
     /// <param name="filter"></param>

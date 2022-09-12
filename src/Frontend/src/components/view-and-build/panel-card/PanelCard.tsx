@@ -58,7 +58,11 @@ const PanelCard: React.FC<Props> = ({ panel }) => {
           {panel.dataChannels.length === 0 ? (
             <>
               <p className={'empty-subtitle'}>No data channels</p>
-              <ButtonWithLink to={RoutePath.Search} role={'button'} type={ButtonType.Subtle}>
+              <ButtonWithLink
+                linkProps={{ to: RoutePath.Search, persistRestOfUrl: true, persistSearch: true }}
+                role={'button'}
+                type={ButtonType.Subtle}
+              >
                 Search
               </ButtonWithLink>
             </>

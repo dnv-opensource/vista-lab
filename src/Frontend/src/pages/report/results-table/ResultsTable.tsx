@@ -1,22 +1,17 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
 import { AggregatedQueryResultAsReport } from '../../../client';
+import { useLabContext } from '../../../context/LabContext';
 import { toFormattedNumberString } from '../../../util/string';
-import { RoutePath } from '../../Routes';
 import { QueryReport } from './QueryReports';
 import './ResultsTable.scss';
 
 const ResultsTable: React.FC = () => {
-  const { vesselId } = useParams();
-  const navigate = useNavigate();
-  //   const [loading, setLoading] = useState(false);
+  const { vessel } = useLabContext();
   const [data, setData] = useState<AggregatedQueryResultAsReport[]>([]);
 
-  if (!vesselId) navigate(RoutePath.Report);
-  const queryReport = useMemo(() => new QueryReport(vesselId!), [vesselId]);
+  const queryReport = useMemo(() => new QueryReport(vessel.id), [vessel.id]);
 
   useEffect(() => {
-    console.info(queryReport);
     queryReport.getReport().then(setData);
   }, [queryReport]);
 

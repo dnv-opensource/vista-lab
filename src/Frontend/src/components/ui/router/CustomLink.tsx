@@ -1,13 +1,13 @@
 import React, { useMemo } from 'react';
 import { NavLink, NavLinkProps, useLocation, useMatch } from 'react-router-dom';
 
-interface Props extends NavLinkProps {
+export interface CustomLinkProps extends NavLinkProps {
   persistSearch?: boolean;
   /**@description Matches from a the param in the current context */
   persistRestOfUrl?: boolean;
 }
 
-const CustomLink: React.FC<Props> = ({
+const CustomLink: React.FC<CustomLinkProps> = ({
   children,
   persistRestOfUrl = false,
   persistSearch = false,

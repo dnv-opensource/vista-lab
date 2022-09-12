@@ -11,6 +11,7 @@ interface Props {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   className?: string;
   closeOnOutsideClick?: boolean;
+  onOutsideClick?: () => void;
   fitAnchor?: boolean;
 }
 
@@ -21,11 +22,13 @@ const Dropdown: React.FC<React.PropsWithChildren<Props>> = ({
   setOpen,
   className,
   closeOnOutsideClick = true,
+  onOutsideClick,
   fitAnchor = false,
 }) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   useOutsideClick([dropdownRef, anchorRef], undefined, () => {
-    closeOnOutsideClick && setOpen(false);
+    if (closeOnOutsideClick) setOpen(false);
+    onOutsideClick && onOutsideClick();
   });
   if (!anchorRef.current) return <></>;
 

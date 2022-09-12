@@ -8,6 +8,7 @@ export enum ButtonType {
   Success = 'success',
   Warning = 'warning',
   Danger = 'danger',
+  Plain = 'plain',
 }
 
 export interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'type'> {
