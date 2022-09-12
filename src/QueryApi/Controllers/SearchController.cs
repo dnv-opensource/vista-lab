@@ -78,10 +78,15 @@ public sealed class SearchController : ControllerBase
     {
         var gmod = _vis.GetGmod(visVersion);
 
-        var request = new SearchDto(body.Phrase, null, body.VesselId);
+        var request = new SearchDto(
+            body.Phrase,
+            (SearchClient.SearchScope?)body.Scope,
+            null,
+            body.VesselId
+        );
 
-        var searchApiResultDto = await _searchClient.VISSearchAsync(
-            (SearchClient.VisVersion)visVersion,
+        var searchApiResultDto = await _searchClient.SearchAsync(
+            visVersion.ToString(),
             request,
             cancellationToken
         );

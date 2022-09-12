@@ -61,7 +61,14 @@ public sealed record DataChannelEntity(
 {
     public static readonly string TableName = "DataChannel";
 
-    public static DataChannelEntity? FromSdkDataChannel(DataChannel dataChannel, Header header)
+    public static DataChannelEntity? FromSdkDataChannel(DataChannel dataChannel, Header header) =>
+        FromSdkDataChannel(dataChannel, header, out _);
+
+    public static DataChannelEntity? FromSdkDataChannel(
+        DataChannel dataChannel,
+        Header header,
+        out LocalIdBuilder? localIdBuilder
+    )
     {
         var dataChannelId = dataChannel.DataChannelID;
         var property = dataChannel.Property;
@@ -71,7 +78,7 @@ public sealed record DataChannelEntity(
         var range = property.Range;
         var unit = property.Unit;
 
-        if (!LocalIdBuilder.TryParse(dataChannelId.LocalID, out var localIdBuilder))
+        if (!LocalIdBuilder.TryParse(dataChannelId.LocalID, out localIdBuilder))
             return null;
         if (localIdBuilder.IsEmpty || !localIdBuilder.IsValid)
             return null;

@@ -1,6 +1,5 @@
 namespace SearchApi;
 
-using Elasticsearch.Net;
 using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Packets;
@@ -40,7 +39,9 @@ public sealed class ElasticSearchService : IHostedService
         string? LocalId_Detail,
         string? Unit_UnitSymbol,
         string? Unit_QuantityName,
-        string? name,
+        string? Name,
+        string? PrimaryCommonName,
+        string? SecondaryCommonName,
         string? Remarks,
         DateTime Timestamp
     );
@@ -102,6 +103,7 @@ public sealed class ElasticSearchService : IHostedService
 
     public async ValueTask<HitResults> Search(
         VisVersion version,
+        SearchScope scope,
         string? vesselId,
         string phrase,
         int? topResult,
@@ -110,9 +112,6 @@ public sealed class ElasticSearchService : IHostedService
     {
         if (string.IsNullOrWhiteSpace(phrase))
             return new HitResults(0, 0, 0, 0, 0, new List<HitResult>());
-
-        await _esClient.PingAsync(new PingRequest(), cancellationToken);
-        _logger.LogInformation("{cliendId} - Pinged ElasticSearch client successfully", clientId);
 
         var predicates =
             new List<Func<QueryContainerDescriptor<DataChannelDocument>, QueryContainer>>();
@@ -124,13 +123,18 @@ public sealed class ElasticSearchService : IHostedService
             filter => filter.MultiMatch(mu => mu.Type(TextQueryType.BestFields).Query(phrase))
         );
 
-        var searchResponse = _esClient.Search<DataChannelDocument>(
+        var searchResponse = await _esClient.SearchAsync<DataChannelDocument>(
             d =>
             {
                 if (topResult is not null) { }
-                return d.Index(version.ToString())
-                    .Query(q => q.Bool(b => b.Must(predicates)))
-                    .Size(100);
+
+                var q = d.Index(version.ToString());
+                if (scope == SearchScope.PrimaryItem)
+                    q = q.Source(s => s.Excludes(f => f.Field(d => d.SecondaryCommonName)));
+                else if (scope == SearchScope.SecondaryItem)
+                    q = q.Source(s => s.Excludes(f => f.Field(d => d.PrimaryCommonName)));
+
+                return q.Query(q => q.Bool(b => b.Must(predicates))).Size(100);
             }
         );
 
@@ -222,11 +226,21 @@ public sealed class ElasticSearchService : IHostedService
 
                     var entity = DataChannelEntity.FromSdkDataChannel(
                         dc,
-                        dataChannelListPackage.Package.Header
+                        dataChannelListPackage.Package.Header,
+                        out var localId
                     );
 
                     if (entity is null)
                         continue;
+
+                    var primaryItem = localId?.PrimaryItem;
+                    var secondaryItem = localId?.SecondaryItem;
+                    var primaryCommonNames = primaryItem is null
+                        ? null
+                        : string.Join(" / ", primaryItem.GetCommonNames().Select(c => c.Name));
+                    var secondaryCommonNames = secondaryItem is null
+                        ? null
+                        : string.Join(" / ", secondaryItem.GetCommonNames().Select(c => c.Name));
 
                     var index = await _esClient.IndexAsync(
                         new DataChannelDocument(
@@ -244,6 +258,8 @@ public sealed class ElasticSearchService : IHostedService
                             entity.Unit_UnitSymbol,
                             entity.Unit_QuantityName,
                             entity.Name,
+                            primaryCommonNames,
+                            secondaryCommonNames,
                             entity.Remarks,
                             DateTime.UtcNow
                         ),

@@ -23,12 +23,9 @@ namespace SearchClient
     {
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
-        /// Search for gmod paths.
-        /// </summary>
         /// <returns>Success</returns>
         /// <exception cref="SearchApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<HitResults> VISSearchAsync(VisVersion visVersion, SearchDto? body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<HitResults> SearchAsync(string visVersion, SearchDto body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
     }
 
@@ -68,18 +65,18 @@ namespace SearchClient
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>
-        /// Search for gmod paths.
-        /// </summary>
         /// <returns>Success</returns>
         /// <exception cref="SearchApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<HitResults> VISSearchAsync(VisVersion visVersion, SearchDto? body = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<HitResults> SearchAsync(string visVersion, SearchDto body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (visVersion == null)
                 throw new System.ArgumentNullException("visVersion");
 
+            if (body == null)
+                throw new System.ArgumentNullException("body");
+
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/VIS/search/{visVersion}");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/search/{visVersion}");
             urlBuilder_.Replace("{visVersion}", System.Uri.EscapeDataString(ConvertToString(visVersion, System.Globalization.CultureInfo.InvariantCulture)));
 
             var client_ = _httpClient;
@@ -92,7 +89,7 @@ namespace SearchClient
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -249,7 +246,7 @@ namespace SearchClient
     {
         [System.Text.Json.Serialization.JsonConstructor]
 
-        public DataChannelDocument(string? @localId, string? @localId_Calculation, string? @localId_Command, string? @localId_Content, string? @localId_Detail, string? @localId_Position, string? @localId_PrimaryItem, string? @localId_Quantity, string? @localId_SecondaryItem, string? @localId_Type, string? @name, string? @remarks, System.DateTimeOffset? @timestamp, string? @unit_QuantityName, string? @unit_UnitSymbol, string? @vesselId)
+        public DataChannelDocument(string? @localId, string? @localId_Calculation, string? @localId_Command, string? @localId_Content, string? @localId_Detail, string? @localId_Position, string? @localId_PrimaryItem, string? @localId_Quantity, string? @localId_SecondaryItem, string? @localId_Type, string? @name, string? @primaryCommonName, string? @remarks, string? @secondaryCommonName, System.DateTimeOffset? @timestamp, string? @unit_QuantityName, string? @unit_UnitSymbol, string? @vesselId)
 
         {
 
@@ -280,6 +277,10 @@ namespace SearchClient
             this.Unit_QuantityName = @unit_QuantityName;
 
             this.Name = @name;
+
+            this.PrimaryCommonName = @primaryCommonName;
+
+            this.SecondaryCommonName = @secondaryCommonName;
 
             this.Remarks = @remarks;
 
@@ -327,6 +328,12 @@ namespace SearchClient
 
         [System.Text.Json.Serialization.JsonPropertyName("name")]
         public string? Name { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("primaryCommonName")]
+        public string? PrimaryCommonName { get; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("secondaryCommonName")]
+        public string? SecondaryCommonName { get; }
 
         [System.Text.Json.Serialization.JsonPropertyName("remarks")]
         public string? Remarks { get; }
@@ -531,13 +538,15 @@ namespace SearchClient
     {
         [System.Text.Json.Serialization.JsonConstructor]
 
-        public SearchDto(string? @phrase, int? @topResults, string? @vesselId)
+        public SearchDto(string? @phrase, SearchScope? @scope, int? @topResults, string? @vesselId)
 
         {
 
             this.VesselId = @vesselId;
 
             this.Phrase = @phrase;
+
+            this.Scope = @scope;
 
             this.TopResults = @topResults;
 
@@ -548,18 +557,23 @@ namespace SearchClient
         [System.Text.Json.Serialization.JsonPropertyName("phrase")]
         public string? Phrase { get; }
 
+        [System.Text.Json.Serialization.JsonPropertyName("scope")]
+        public SearchScope? Scope { get; }
+
         [System.Text.Json.Serialization.JsonPropertyName("topResults")]
         public int? TopResults { get; }
 
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.15.5.0 (NJsonSchema v10.6.6.0 (Newtonsoft.Json v13.0.0.0))")]
-    public enum VisVersion
+    public enum SearchScope
     {
 
         _0 = 0,
 
         _1 = 1,
+
+        _2 = 2,
 
     }
 

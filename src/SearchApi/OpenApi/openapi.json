@@ -5,59 +5,37 @@
     "version": "1.0"
   },
   "paths": {
-    "/VIS/search/{visVersion}": {
+    "/search/{visVersion}": {
       "post": {
         "tags": [
-          "VIS"
+          "SearchApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
         ],
-        "summary": "Search for gmod paths.",
-        "operationId": "VISSearch",
+        "operationId": "Search",
         "parameters": [
           {
             "name": "visVersion",
             "in": "path",
-            "description": "",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/VisVersion"
+              "type": "string"
             }
           }
         ],
         "requestBody": {
-          "description": "",
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/SearchDto"
               }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/SearchDto"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/SearchDto"
-              }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "200": {
             "description": "Success",
             "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/HitResults"
-                }
-              },
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HitResults"
-                }
-              },
-              "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/HitResults"
                 }
@@ -123,6 +101,14 @@
             "nullable": true
           },
           "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "primaryCommonName": {
+            "type": "string",
+            "nullable": true
+          },
+          "secondaryCommonName": {
             "type": "string",
             "nullable": true
           },
@@ -302,6 +288,9 @@
             "type": "string",
             "default": "Main engine"
           },
+          "scope": {
+            "$ref": "#/components/schemas/SearchScope"
+          },
           "topResults": {
             "type": "integer",
             "format": "int32",
@@ -310,10 +299,11 @@
         },
         "additionalProperties": false
       },
-      "VisVersion": {
+      "SearchScope": {
         "enum": [
           0,
-          1
+          1,
+          2
         ],
         "type": "integer",
         "format": "int32"
