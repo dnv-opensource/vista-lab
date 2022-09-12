@@ -27,6 +27,7 @@ services:
         environment:
             DB_HOST: "vista-lab-db:9000"
             SEARCH_API_URL: "http://vista-lab-search-api:5053"
+            SIMULATOR_API_URL: "http://vista-lab-simulator:5054"
     search-api:
         depends_on:
             broker:

@@ -1,5 +1,7 @@
 import clsx from 'clsx';
 import React, { useCallback, useRef, useState } from 'react';
+import { VistaLabApi } from '../../apiConfig';
+import { SimulatorDataChannelListPackage } from '../../client';
 import { ButtonType } from '../../components/ui/button/Button';
 import ButtonWithLink from '../../components/ui/button/ButtonWithLink';
 import useToast, { ToastType } from '../../hooks/use-toast';
@@ -16,10 +18,7 @@ const Import: React.FC = () => {
   const postImportAndSimulateDataChannelFile = useCallback(
     (file: File) => {
       setFile(file);
-      fetch('http://localhost:5054/api/data-channel/import-and-simulate', {
-        method: 'POST',
-        body: file,
-      }).then(() => {
+      VistaLabApi.dataChannelPostImportFileAndSimulate({ fileName: file.name, data: file }).then(() => {
         addToast(ToastType.Success, 'Successfully imported', <p>Imported vessel {file.name}</p>);
       });
     },

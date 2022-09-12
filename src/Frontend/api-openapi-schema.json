@@ -5,6 +5,74 @@
     "version": "1.0"
   },
   "paths": {
+    "/api/data-channel/import-and-simulate": {
+      "post": {
+        "tags": [
+          "DataChannel"
+        ],
+        "summary": "Import datachannels and simulate",
+        "operationId": "DataChannelPostImportAndSimulate",
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SimulatorDataChannelListPackage"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SimulatorDataChannelListPackage"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SimulatorDataChannelListPackage"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/data-channel/import-file-and-simulate": {
+      "post": {
+        "tags": [
+          "DataChannel"
+        ],
+        "summary": "Import datachannels file and simulate",
+        "operationId": "DataChannelPostImportFileAndSimulate",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "file": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
     "/api/data-channel": {
       "post": {
         "tags": [
@@ -996,6 +1064,299 @@
         ],
         "type": "integer",
         "format": "int32"
+      },
+      "SimulatorConfigurationReference": {
+        "type": "object",
+        "properties": {
+          "ID": {
+            "type": "string",
+            "nullable": true
+          },
+          "Version": {
+            "type": "string",
+            "nullable": true
+          },
+          "TimeStamp": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SimulatorDataChannel": {
+        "type": "object",
+        "properties": {
+          "DataChannelID": {
+            "$ref": "#/components/schemas/SimulatorDataChannelID"
+          },
+          "Property": {
+            "$ref": "#/components/schemas/SimulatorProperty"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SimulatorDataChannelID": {
+        "type": "object",
+        "properties": {
+          "LocalID": {
+            "type": "string",
+            "nullable": true
+          },
+          "ShortID": {
+            "type": "string",
+            "nullable": true
+          },
+          "NameObject": {
+            "$ref": "#/components/schemas/SimulatorNameObject"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SimulatorDataChannelList": {
+        "type": "object",
+        "properties": {
+          "DataChannel": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SimulatorDataChannel"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SimulatorDataChannelListPackage": {
+        "type": "object",
+        "properties": {
+          "Package": {
+            "$ref": "#/components/schemas/SimulatorPackage"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SimulatorDataChannelType": {
+        "type": "object",
+        "properties": {
+          "Type": {
+            "type": "string",
+            "nullable": true
+          },
+          "UpdateCycle": {
+            "type": "string",
+            "nullable": true
+          },
+          "CalculationPeriod": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SimulatorFormat": {
+        "type": "object",
+        "properties": {
+          "Type": {
+            "type": "string",
+            "nullable": true
+          },
+          "Restriction": {
+            "$ref": "#/components/schemas/SimulatorRestriction"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SimulatorHeader": {
+        "type": "object",
+        "properties": {
+          "ShipID": {
+            "type": "string",
+            "nullable": true
+          },
+          "DataChannelListID": {
+            "$ref": "#/components/schemas/SimulatorConfigurationReference"
+          },
+          "VersionInformation": {
+            "$ref": "#/components/schemas/SimulatorVersionInformation"
+          },
+          "Author": {
+            "type": "string",
+            "nullable": true
+          },
+          "DateCreated": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": { }
+      },
+      "SimulatorNameObject": {
+        "type": "object",
+        "properties": {
+          "NamingRule": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": { }
+      },
+      "SimulatorPackage": {
+        "type": "object",
+        "properties": {
+          "Header": {
+            "$ref": "#/components/schemas/SimulatorHeader"
+          },
+          "DataChannelList": {
+            "$ref": "#/components/schemas/SimulatorDataChannelList"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SimulatorProperty": {
+        "type": "object",
+        "properties": {
+          "DataChannelType": {
+            "$ref": "#/components/schemas/SimulatorDataChannelType"
+          },
+          "Format": {
+            "$ref": "#/components/schemas/SimulatorFormat"
+          },
+          "Range": {
+            "$ref": "#/components/schemas/SimulatorRange"
+          },
+          "Unit": {
+            "$ref": "#/components/schemas/SimulatorUnit"
+          },
+          "QualityCoding": {
+            "type": "string",
+            "nullable": true
+          },
+          "AlertPriority": {
+            "type": "string",
+            "nullable": true
+          },
+          "Name": {
+            "type": "string",
+            "nullable": true
+          },
+          "Remarks": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": { }
+      },
+      "SimulatorRange": {
+        "type": "object",
+        "properties": {
+          "High": {
+            "type": "string",
+            "nullable": true
+          },
+          "Low": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SimulatorRestriction": {
+        "type": "object",
+        "properties": {
+          "Enumeration": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "FractionDigits": {
+            "type": "string",
+            "nullable": true
+          },
+          "Length": {
+            "type": "string",
+            "nullable": true
+          },
+          "MaxExclusive": {
+            "type": "string",
+            "nullable": true
+          },
+          "MaxInclusive": {
+            "type": "string",
+            "nullable": true
+          },
+          "MaxLength": {
+            "type": "string",
+            "nullable": true
+          },
+          "MinExclusive": {
+            "type": "string",
+            "nullable": true
+          },
+          "MinInclusive": {
+            "type": "string",
+            "nullable": true
+          },
+          "MinLength": {
+            "type": "string",
+            "nullable": true
+          },
+          "Pattern": {
+            "type": "string",
+            "nullable": true
+          },
+          "TotalDigits": {
+            "type": "string",
+            "nullable": true
+          },
+          "WhiteSpace": {
+            "$ref": "#/components/schemas/SimulatorRestrictionWhiteSpace"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SimulatorRestrictionWhiteSpace": {
+        "enum": [
+          0,
+          1,
+          2
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "SimulatorUnit": {
+        "type": "object",
+        "properties": {
+          "UnitSymbol": {
+            "type": "string",
+            "nullable": true
+          },
+          "QuantityName": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": { }
+      },
+      "SimulatorVersionInformation": {
+        "type": "object",
+        "properties": {
+          "NamingRule": {
+            "type": "string",
+            "nullable": true
+          },
+          "NamingSchemeVersion": {
+            "type": "string",
+            "nullable": true
+          },
+          "ReferenceURL": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
       },
       "TimeRange": {
         "type": "object",

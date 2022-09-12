@@ -25,10 +25,7 @@ public class Simulator : IHostedService
             var vessels = (await GetDataChannelLists(stoppingToken)).ToArray();
             var dataChannelCount = vessels.Length;
 
-            var maxThreads = Math.Min(
-                Math.Min(Environment.ProcessorCount, dataChannelCount),
-                16
-            );
+            var maxThreads = Math.Min(Math.Min(Environment.ProcessorCount, dataChannelCount), 16);
             var threads = new Task[maxThreads];
 
             _logger.LogInformation(
@@ -43,11 +40,7 @@ public class Simulator : IHostedService
                 var vessel = vessels[i];
                 threads[i] = Task.Run(
                     () =>
-                        SimulateDataChannel(
-                            vessel.DataChannels,
-                            vessel.TimeSeries,
-                            stoppingToken
-                        ),
+                        SimulateDataChannel(vessel.DataChannels, vessel.TimeSeries, stoppingToken),
                     stoppingToken
                 );
             }
@@ -185,12 +178,7 @@ public class Simulator : IHostedService
                 return;
         } while (reader.NextResult());
 
-        async Task CreatePackage(
-            DateTimeOffset now,
-            string value,
-            string quality,
-            string localId
-        )
+        async Task CreatePackage(DateTimeOffset now, string value, string quality, string localId)
         {
             var tableData = new Vista.SDK.Transport.TimeSeries.TabularDataSet(
                 now,
@@ -218,12 +206,12 @@ public class Simulator : IHostedService
                     h,
                     new[]
                     {
-                            new Vista.SDK.Transport.TimeSeries.TimeSeriesData(
-                                null,
-                                new[] { table },
-                                null,
-                                new Dictionary<string, object>()
-                            )
+                        new Vista.SDK.Transport.TimeSeries.TimeSeriesData(
+                            null,
+                            new[] { table },
+                            null,
+                            new Dictionary<string, object>()
+                        )
                     }
                 )
             );
@@ -248,8 +236,9 @@ public class Simulator : IHostedService
 
             var dataChannelId = dataChannel.Channel.DataChannelId;
             if (!sentData.TryGetValue(dataChannelId.LocalId, out var data))
-                sentData[dataChannelId.LocalId] = data =
-                    new List<(double Value, string? Quality)>(32);
+                sentData[dataChannelId.LocalId] = data = new List<(double Value, string? Quality)>(
+                    32
+                );
 
             var value = TryAddData(dataChannel, data);
             if (value is null)
@@ -293,12 +282,12 @@ public class Simulator : IHostedService
                 h,
                 new[]
                 {
-                        new Vista.SDK.Transport.TimeSeries.TimeSeriesData(
-                            null,
-                            new[] { table },
-                            null,
-                            new Dictionary<string, object>()
-                        )
+                    new Vista.SDK.Transport.TimeSeries.TimeSeriesData(
+                        null,
+                        new[] { table },
+                        null,
+                        new Dictionary<string, object>()
+                    )
                 }
             )
         );
@@ -321,13 +310,7 @@ public class Simulator : IHostedService
           ? noiseData.Boolean
               ? 0
               : (noiseData.High - noiseData.Low) / 2
-          : Noise(
-                noiseData.Low,
-                noiseData.High,
-                noiseData.NoiseFactor,
-                noiseData.Boolean,
-                data
-            );
+          : Noise(noiseData.Low, noiseData.High, noiseData.NoiseFactor, noiseData.Boolean, data);
 
         double Noise(
             double low,
@@ -352,8 +335,7 @@ public class Simulator : IHostedService
             // factor * (high - low) * random number between -1 and 1
             var nextValue = Math.Max(
                 Math.Min(
-                    prevValue
-                        + noiseFactor * (high - low) * (Random.Shared.NextDouble() * 2 - 1),
+                    prevValue + noiseFactor * (high - low) * (Random.Shared.NextDouble() * 2 - 1),
                     high
                 ),
                 low
@@ -558,7 +540,6 @@ public class Simulator : IHostedService
             )
             .ToArray();
     }
-
 
     private readonly record struct DataChannelInfo(
         bool LocalIdParsed,

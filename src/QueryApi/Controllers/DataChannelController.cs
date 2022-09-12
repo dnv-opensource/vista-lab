@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using Vista.SDK.Transport.Json.DataChannel;
-using Vista.SDK.Transport.Json.TimeSeriesData;
 using QueryApi.Models;
 using QueryApi.Repository;
 using System.ComponentModel;
+using Vista.SDK.Transport.Json.DataChannel;
+using Vista.SDK.Transport.Json.TimeSeriesData;
 using static QueryApi.Repository.DataChannelRepository;
 
 namespace QueryApi.Controllers;
@@ -12,6 +12,7 @@ namespace QueryApi.Controllers;
 public sealed class DataChannelController : ControllerBase
 {
     private readonly DataChannelRepository _dataChannelRepository;
+    private readonly SimulatorClient.ISimulatorClient _simulatorClient;
 
     public sealed record Coordinates(double Latitude, double Longitude);
 
@@ -29,9 +30,46 @@ public sealed class DataChannelController : ControllerBase
 
     public sealed record PanelQueryDto(TimeRange TimeRange, IEnumerable<Query> Queries);
 
-    public DataChannelController(DataChannelRepository dataChannelRepository)
+    public DataChannelController(
+        DataChannelRepository dataChannelRepository,
+        SimulatorClient.ISimulatorClient simulatorClient
+    )
     {
         _dataChannelRepository = dataChannelRepository;
+        _simulatorClient = simulatorClient;
+    }
+
+    /// <summary>
+    /// Import datachannels and simulate
+    /// </summary>
+    /// <param name="body"></param>
+    /// <param name="cancellationToken"></param>
+    [HttpPost]
+    [Route("api/data-channel/import-and-simulate")]
+    public async Task<ActionResult> PostImportAndSimulate(
+        SimulatorClient.DataChannelListPackage body,
+        CancellationToken cancellationToken
+    )
+    {
+        await _simulatorClient.ImportDataChannelsAndSimulateAsync(body, cancellationToken);
+        return Ok();
+    }
+
+    /// <summary>
+    /// Import datachannels file and simulate
+    /// </summary>
+    /// <param name="file"></param>
+    /// <param name="cancellationToken"></param>
+    [HttpPost]
+    [Route("api/data-channel/import-file-and-simulate")]
+    public async Task<ActionResult> PostImportFileAndSimulate(
+        IFormFile file,
+        CancellationToken cancellationToken
+    )
+    {
+        var stream = file.OpenReadStream();
+        await _simulatorClient.ImportDataChannelsFileAndSimulateAsync(stream, cancellationToken);
+        return Ok();
     }
 
     /// <summary>

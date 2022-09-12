@@ -1,0 +1,340 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Simulator, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+    "version": "1.0"
+  },
+  "paths": {
+    "/api/data-channel/import-and-simulate": {
+      "post": {
+        "tags": [
+          "Simulator, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+        ],
+        "operationId": "ImportDataChannelsAndSimulate",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DataChannelListPackage"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/data-channel/import-file-and-simulate": {
+      "post": {
+        "tags": [
+          "Simulator, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+        ],
+        "operationId": "ImportDataChannelsFileAndSimulate",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ConfigurationReference": {
+        "type": "object",
+        "properties": {
+          "ID": {
+            "type": "string"
+          },
+          "Version": {
+            "type": "string",
+            "nullable": true
+          },
+          "TimeStamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DataChannel": {
+        "type": "object",
+        "properties": {
+          "DataChannelID": {
+            "$ref": "#/components/schemas/DataChannelID"
+          },
+          "Property": {
+            "$ref": "#/components/schemas/Property"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DataChannelID": {
+        "type": "object",
+        "properties": {
+          "LocalID": {
+            "type": "string"
+          },
+          "ShortID": {
+            "type": "string",
+            "nullable": true
+          },
+          "NameObject": {
+            "$ref": "#/components/schemas/NameObject"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DataChannelList": {
+        "type": "object",
+        "properties": {
+          "DataChannel": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DataChannel"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "DataChannelListPackage": {
+        "type": "object",
+        "properties": {
+          "Package": {
+            "$ref": "#/components/schemas/Package"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DataChannelType": {
+        "type": "object",
+        "properties": {
+          "Type": {
+            "type": "string"
+          },
+          "UpdateCycle": {
+            "type": "string",
+            "nullable": true
+          },
+          "CalculationPeriod": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Format": {
+        "type": "object",
+        "properties": {
+          "Type": {
+            "type": "string"
+          },
+          "Restriction": {
+            "$ref": "#/components/schemas/Restriction"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Header": {
+        "type": "object",
+        "properties": {
+          "ShipID": {
+            "type": "string"
+          },
+          "DataChannelListID": {
+            "$ref": "#/components/schemas/ConfigurationReference"
+          },
+          "VersionInformation": {
+            "$ref": "#/components/schemas/VersionInformation"
+          },
+          "Author": {
+            "type": "string",
+            "nullable": true
+          },
+          "DateCreated": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": { }
+      },
+      "NameObject": {
+        "type": "object",
+        "properties": {
+          "NamingRule": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": { }
+      },
+      "Package": {
+        "type": "object",
+        "properties": {
+          "Header": {
+            "$ref": "#/components/schemas/Header"
+          },
+          "DataChannelList": {
+            "$ref": "#/components/schemas/DataChannelList"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Property": {
+        "type": "object",
+        "properties": {
+          "DataChannelType": {
+            "$ref": "#/components/schemas/DataChannelType"
+          },
+          "Format": {
+            "$ref": "#/components/schemas/Format"
+          },
+          "Range": {
+            "$ref": "#/components/schemas/Range"
+          },
+          "Unit": {
+            "$ref": "#/components/schemas/Unit"
+          },
+          "QualityCoding": {
+            "type": "string",
+            "nullable": true
+          },
+          "AlertPriority": {
+            "type": "string",
+            "nullable": true
+          },
+          "Name": {
+            "type": "string",
+            "nullable": true
+          },
+          "Remarks": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": { }
+      },
+      "Range": {
+        "type": "object",
+        "properties": {
+          "High": {
+            "type": "string"
+          },
+          "Low": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Restriction": {
+        "type": "object",
+        "properties": {
+          "Enumeration": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "FractionDigits": {
+            "type": "string",
+            "nullable": true
+          },
+          "Length": {
+            "type": "string",
+            "nullable": true
+          },
+          "MaxExclusive": {
+            "type": "string",
+            "nullable": true
+          },
+          "MaxInclusive": {
+            "type": "string",
+            "nullable": true
+          },
+          "MaxLength": {
+            "type": "string",
+            "nullable": true
+          },
+          "MinExclusive": {
+            "type": "string",
+            "nullable": true
+          },
+          "MinInclusive": {
+            "type": "string",
+            "nullable": true
+          },
+          "MinLength": {
+            "type": "string",
+            "nullable": true
+          },
+          "Pattern": {
+            "type": "string",
+            "nullable": true
+          },
+          "TotalDigits": {
+            "type": "string",
+            "nullable": true
+          },
+          "WhiteSpace": {
+            "$ref": "#/components/schemas/RestrictionWhiteSpace"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RestrictionWhiteSpace": {
+        "enum": [
+          0,
+          1,
+          2
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "Unit": {
+        "type": "object",
+        "properties": {
+          "UnitSymbol": {
+            "type": "string"
+          },
+          "QuantityName": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": { }
+      },
+      "VersionInformation": {
+        "type": "object",
+        "properties": {
+          "NamingRule": {
+            "type": "string"
+          },
+          "NamingSchemeVersion": {
+            "type": "string"
+          },
+          "ReferenceURL": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

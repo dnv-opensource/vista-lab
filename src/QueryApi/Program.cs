@@ -1,9 +1,9 @@
 using Common;
-
-using Vista.SDK;
-using Serilog;
 using QueryApi.Repository;
 using SearchClient;
+using Serilog;
+using SimulatorClient;
+using Vista.SDK;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -12,6 +12,7 @@ builder.Host.UseSerilog((context, logging) => logging.WriteTo.Console());
 
 builder.Services.AddVIS();
 builder.Services.AddSearchClient(configuration);
+builder.Services.AddSimulatorClient(configuration);
 
 builder.Services.AddSingleton<DataChannelRepository>();
 builder.Services.AddHttpClient<QuestDbClient>();
@@ -39,6 +40,7 @@ builder.Services.AddSwaggerGen(
             e =>
                 $"{e.ActionDescriptor.RouteValues["controller"]}{e.ActionDescriptor.RouteValues["action"]}"
         );
+        options.CustomSchemaIds(type => SwashbuckleSchemaHelper.GetSchemaId(type));
         var assembly = typeof(Program).Assembly;
 
         var xmlFilename = $"{assembly.GetName().Name}.xml";
@@ -56,3 +58,14 @@ app.UseCors();
 app.MapControllers();
 
 app.Run();
+
+internal static class SwashbuckleSchemaHelper
+{
+    public static string GetSchemaId(Type type)
+    {
+        if (type.Namespace == "SimulatorClient")
+            return $"Simulator{type.Name}";
+
+        return type.Name;
+    }
+}

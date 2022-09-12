@@ -40,6 +40,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SearchApi", "src\SearchApi\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SearchClient", "src\SearchClient\SearchClient.csproj", "{5A043F8E-1D13-452D-A490-ACF7383DDA2D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimulatorClient", "src\SimulatorClient\SimulatorClient.csproj", "{741D12CE-258F-47EA-82D2-A8B86C084F89}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -82,6 +84,10 @@ Global
 		{5A043F8E-1D13-452D-A490-ACF7383DDA2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A043F8E-1D13-452D-A490-ACF7383DDA2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A043F8E-1D13-452D-A490-ACF7383DDA2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{741D12CE-258F-47EA-82D2-A8B86C084F89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{741D12CE-258F-47EA-82D2-A8B86C084F89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{741D12CE-258F-47EA-82D2-A8B86C084F89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{741D12CE-258F-47EA-82D2-A8B86C084F89}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -97,6 +103,7 @@ Global
 		{FD545A08-9A9C-4D77-A63B-DAAC4FEDB24C} = {0A3D72B8-906E-47B5-A037-0E85A2E2FD39}
 		{DB92FDE0-8D61-4DE8-B674-E1B08D7F3A96} = {0A3D72B8-906E-47B5-A037-0E85A2E2FD39}
 		{5A043F8E-1D13-452D-A490-ACF7383DDA2D} = {0A3D72B8-906E-47B5-A037-0E85A2E2FD39}
+		{741D12CE-258F-47EA-82D2-A8B86C084F89} = {0A3D72B8-906E-47B5-A037-0E85A2E2FD39}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A0945772-7394-4A0D-BFC1-2B98CB6F215E}

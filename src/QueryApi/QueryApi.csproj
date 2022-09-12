@@ -34,6 +34,7 @@
     <ItemGroup>
         <ProjectReference Include="..\SearchClient\SearchClient.csproj" />
         <ProjectReference Include="..\Common\Common.csproj" />
+        <ProjectReference Include="..\SimulatorClient\SimulatorClient.csproj" />
     </ItemGroup>
 
     <Target Name="OpenApiDocGeneration" AfterTargets="PostBuildEvent" Condition="'$(CI_BUILD)' != 'True'">
