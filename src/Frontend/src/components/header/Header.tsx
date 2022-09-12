@@ -1,17 +1,18 @@
-import React from 'react';
-import './Header.scss';
-import { Link, NavLink } from 'react-router-dom';
-import { RoutePath, routesList } from '../../pages/Routes';
 import clsx from 'clsx';
+import React from 'react';
+import { RoutePath, routesList } from '../../pages/Routes';
+import CustomLink from '../ui/router/CustomLink';
 import TextWithIcon from '../ui/text/TextWithIcon';
+import './Header.scss';
 
 const Header: React.FC = () => {
   return (
     <div className={'header-wrapper'}>
-      <Link to={RoutePath.Home} className={'dnv-logo'} />
+      <CustomLink persistSearch to={RoutePath.Home} className={'dnv-logo'} />
       <div className={'routes'}>
         {routesList.map(route => (
-          <NavLink
+          <CustomLink
+            persistSearch
             key={route.path}
             to={route.path}
             className={({ isActive }) => clsx('route', isActive && 'active-route')}
@@ -19,7 +20,7 @@ const Header: React.FC = () => {
             <TextWithIcon icon={route.icon} iconClassName="route-icon">
               {route.title}
             </TextWithIcon>
-          </NavLink>
+          </CustomLink>
         ))}
       </div>
       <div className={'vista-info'}>

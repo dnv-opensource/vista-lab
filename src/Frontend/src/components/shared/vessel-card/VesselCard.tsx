@@ -3,7 +3,7 @@ import { Vessel } from '../../../pages/shared/vessel/Vessel';
 import FlipCard from '../../ui/flip-card/FlipCard';
 import Icon from '../../ui/icons/Icon';
 import { IconName } from '../../ui/icons/icons';
-import LinkWithQuery from '../../ui/link-with-query/LinkWithQuery';
+import CustomLink from '../../ui/router/CustomLink';
 import StatusIcon, { StatusVariant } from '../../ui/status-icon/StatusIcon';
 import TextWithIcon from '../../ui/text/TextWithIcon';
 import './VesselCard.scss';
@@ -14,7 +14,7 @@ interface Props {
 
 const VesselCard: React.FC<Props> = ({ vessel }) => {
   return (
-    <LinkWithQuery className={'vessel-card'} to={`${vessel.vesselId}`} queryKey={['query', 'mode']}>
+    <CustomLink persistSearch className={'vessel-card'} to={`${vessel.vesselId}`}>
       <FlipCard
         className="vessel-card-content"
         front={
@@ -35,7 +35,7 @@ const VesselCard: React.FC<Props> = ({ vessel }) => {
           </div>
         }
       />
-    </LinkWithQuery>
+    </CustomLink>
   );
 };
 

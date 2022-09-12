@@ -6,7 +6,6 @@ import TreeButtons from '../../../components/search/tree-buttons/TreeButtons';
 import ResultBar from '../../../components/shared/result-bar/ResultBar';
 import Icon from '../../../components/ui/icons/Icon';
 import { IconName } from '../../../components/ui/icons/icons';
-import LinkWithQuery from '../../../components/ui/link-with-query/LinkWithQuery';
 import Loader from '../../../components/ui/loader/Loader';
 import RadioSelection from '../../../components/ui/radio/radio-selection/RadioSelection';
 import ScrollableField from '../../../components/ui/scrollable-field/ScrollableField';
@@ -14,6 +13,7 @@ import StatusIcon, { StatusVariant } from '../../../components/ui/status-icon/St
 import { useSearchContext } from '../../../context/SearchContext';
 import { RoutePath } from '../../Routes';
 import './Vessel.scss';
+import CustomLink from '../../../components/ui/router/CustomLink';
 
 export type Vessel = {
   numDataChannels?: number;
@@ -45,10 +45,10 @@ const VesselComp: React.FC = () => {
   return (
     <>
       <ResultBar className={'vessel-result-bar'}>
-        <LinkWithQuery className={'back'} to={RoutePath.Search} queryKey={['query', 'mode']}>
+        <CustomLink persistSearch className={'back'} to={RoutePath.Search}>
           <Icon icon={IconName.LeftArrow} />
           {vesselId}
-        </LinkWithQuery>
+        </CustomLink>
         <div className={'status'}>
           <span>Status</span>
           <StatusIcon variant={StatusVariant.Good} />
