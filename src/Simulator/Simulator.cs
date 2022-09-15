@@ -3,6 +3,7 @@ using MQTTnet.Client;
 using System.Globalization;
 using System.Reflection;
 using Vista.SDK;
+using Vista.SDK.Transport;
 using Vista.SDK.Transport.Json;
 using Vista.SDK.Transport.Json.DataChannel;
 using Vista.SDK.Transport.Json.TimeSeriesData;
@@ -77,7 +78,7 @@ public class Simulator : IHostedService
                 var tickInterval = System.TimeSpan.FromSeconds(1);
                 var timer = new PeriodicTimer(tickInterval);
 
-                var sentData = new Dictionary<string, List<(double Value, string? Quality)>>();
+                var sentData = new Dictionary<LocalId, List<(double Value, string? Quality)>>();
 
                 var lastTick = DateTimeOffset.UtcNow.Subtract(tickInterval);
                 do
@@ -121,6 +122,8 @@ public class Simulator : IHostedService
         DateTimeOffset lastTime = default;
         var header = dataChannelListDto.Package.Header;
 
+        const int startAt = 11742;
+
         do
         {
             if (stoppingToken.IsCancellationRequested)
@@ -130,17 +133,18 @@ public class Simulator : IHostedService
             {
                 row++;
 
-                if (row == 0)
+                if (row < startAt)
                     continue;
 
                 var timeStr = reader.GetString(0);
                 if (!DateTimeOffset.TryParse(timeStr, out var time))
                     throw new Exception("Couldnt parse time from excel timeseries file");
+
                 var quality = reader.GetString(1);
                 var value = reader.GetString(3);
                 var localId = reader.GetString(11);
 
-                if (row == 1)
+                if (row == startAt)
                 {
                     var now = DateTimeOffset.UtcNow;
                     lastTick = now;
@@ -188,12 +192,12 @@ public class Simulator : IHostedService
             var table = new Vista.SDK.Transport.TimeSeries.TabularData(
                 "1",
                 "1",
-                new[] { localId },
+                new DataChannelId[] { LocalId.Parse(localId) },
                 new[] { tableData }
             );
 
             var h = new Vista.SDK.Transport.TimeSeries.Header(
-                header.ShipID,
+                new ImoNumber(header.ShipID),
                 new Vista.SDK.Transport.TimeSeries.TimeSpan(now, now),
                 now,
                 now,
@@ -223,18 +227,18 @@ public class Simulator : IHostedService
         DateTimeOffset currentTick,
         DateTimeOffset lastTick,
         Vista.SDK.Transport.DataChannel.Header header,
-        DataChannelInfo[] dataChannels,
-        Dictionary<string, List<(double Value, string? Quality)>> sentData,
-        out List<string> channelIds
+        Vista.SDK.Transport.DataChannel.DataChannel[] dataChannels,
+        Dictionary<LocalId, List<(double Value, string? Quality)>> sentData,
+        out List<LocalId> channelIds
     )
     {
         var values = new List<string>();
-        channelIds = new List<string>();
+        channelIds = new List<LocalId>();
         for (int i = 0; i < dataChannels.Length; i++)
         {
             ref readonly var dataChannel = ref dataChannels[i];
 
-            var dataChannelId = dataChannel.Channel.DataChannelId;
+            var dataChannelId = dataChannel.DataChannelId;
             if (!sentData.TryGetValue(dataChannelId.LocalId, out var data))
                 sentData[dataChannelId.LocalId] = data = new List<(double Value, string? Quality)>(
                     32
@@ -264,7 +268,7 @@ public class Simulator : IHostedService
         var table = new Vista.SDK.Transport.TimeSeries.TabularData(
             channelIds.Count.ToString(),
             channelIds.Count.ToString(),
-            channelIds,
+            channelIds.Select(l => (DataChannelId)l).ToArray(),
             new[] { tableData }
         );
 
@@ -294,16 +298,16 @@ public class Simulator : IHostedService
     }
 
     private double? TryAddData(
-        in DataChannelInfo dataChannel,
+        in Vista.SDK.Transport.DataChannel.DataChannel dataChannel,
         IReadOnlyList<(double Value, string? Quality)> data
     )
     {
-        var dataChannelId = dataChannel.Channel.DataChannelId;
-        var localId = dataChannel.LocalId;
+        var dataChannelId = dataChannel.DataChannelId;
+        var localId = dataChannelId.LocalId;
         if (localId is null)
             return null;
 
-        if (!TryGetDataChannelNoiseData(localId, dataChannel.Channel, out var noiseData))
+        if (!TryGetDataChannelNoiseData(localId, dataChannel, out var noiseData))
             return null;
 
         return data.Count == 0
@@ -345,7 +349,7 @@ public class Simulator : IHostedService
         }
 
         bool TryGetDataChannelNoiseData(
-            LocalIdBuilder localId,
+            LocalId localId,
             Vista.SDK.Transport.DataChannel.DataChannel dataChannel,
             out (double Low, double High, double NoiseFactor, bool Boolean) data
         )
@@ -519,31 +523,12 @@ public class Simulator : IHostedService
         await _mqttClient.PublishStringAsync("DataChannelLists", json);
     }
 
-    private DataChannelInfo[] GetDataChannelsForSimulation(
+    private Vista.SDK.Transport.DataChannel.DataChannel[] GetDataChannelsForSimulation(
         Vista.SDK.Transport.DataChannel.DataChannelListPackage dataChannelList
     )
     {
         return dataChannelList.Package.DataChannelList.DataChannel
-            .Select(
-                d =>
-                    new DataChannelInfo(
-                        LocalIdBuilder.TryParse(d.DataChannelId.LocalId, out var localId),
-                        localId,
-                        d
-                    )
-            )
-            .Where(
-                d =>
-                    d.LocalIdParsed
-                    && (d.LocalId?.IsValid ?? false)
-                    && !d.Channel.DataChannelId.LocalId.Contains("~", StringComparison.Ordinal)
-            )
+            .Where(d => !d.DataChannelId.LocalId.HasCustomTag)
             .ToArray();
     }
-
-    private readonly record struct DataChannelInfo(
-        bool LocalIdParsed,
-        LocalIdBuilder? LocalId,
-        Vista.SDK.Transport.DataChannel.DataChannel Channel
-    );
 }

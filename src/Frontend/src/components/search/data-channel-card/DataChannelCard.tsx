@@ -24,7 +24,7 @@ const DataChannelCard: React.FC<Props> = (props: Props) => {
 
   const universalId = useMemo(() => (dataChannel as DataChannelWithShipData).Property.UniversalID, [dataChannel]);
   const localId = useMemo(() => universalId.localId, [universalId]);
-  const vesselId = useMemo(() => `IMO${universalId.imoNumber.toString()}`, [universalId]);
+  const vesselId = useMemo(() => universalId.imoNumber.toString(), [universalId]);
 
   useEffect(() => {
     if (localId) {

@@ -20,7 +20,7 @@ export function getImoNumberFromString(vesselId: string) {
 
   const vesselImoNr = +(/\d+/.exec(vesselId)?.[0] ?? '');
   if (isNaN(vesselImoNr)) throw new Error('Invalid vesselId');
-  const imo = new ImoNumber(vesselImoNr);
+  const imo = ImoNumber.create(vesselImoNr);
   imoCache[vesselId] = imo;
   return imo;
 }
