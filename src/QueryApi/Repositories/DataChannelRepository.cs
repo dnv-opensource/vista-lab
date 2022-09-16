@@ -320,32 +320,6 @@ public sealed partial class DataChannelRepository
             .ToArray();
     }
 
-    public async Task<IEnumerable<EventDataSet>> GetTimeSeriesByInternalId(
-        Guid internalId,
-        CancellationToken cancellationToken
-    )
-    {
-        var response = await _client.Query(
-            SQLGenerator.MountTimeSeriesSQL(internalId),
-            cancellationToken
-        );
-
-        return ToTimeSeries(response);
-    }
-
-    public async Task<IEnumerable<EventDataSet>> GetTimeSeriesByFilter(
-        DataChannelFilter filter,
-        CancellationToken cancellationToken
-    )
-    {
-        var response = await _client.Query(
-            SQLGenerator.MountTimeSeriesSQL(filter),
-            cancellationToken
-        );
-
-        return ToTimeSeries(response);
-    }
-
     public async Task<TimeSeriesDataWithProps> GetLatestTimeSeriesForDataChannel(
         string localId,
         string? vesselId,
