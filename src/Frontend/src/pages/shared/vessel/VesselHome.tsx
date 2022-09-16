@@ -10,7 +10,7 @@ const VesselHome: React.FC = () => {
   return (
     <section className={'vista-vessel-home'}>
       <ResultBar>
-        <CustomLink className={'back-to-fleet'} to={RoutePath.Fleet} persistRestOfUrl persistSearch>
+        <CustomLink className={'back-to-fleet'} to={RoutePath.Fleet} persistSearch>
           <Icon icon={IconName.LeftArrow} />
           <p>Show fleet</p>
         </CustomLink>

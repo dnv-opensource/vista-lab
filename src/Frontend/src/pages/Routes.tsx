@@ -32,10 +32,6 @@ export enum RoutePath {
   Home = '',
 }
 
-export enum SearchParam {
-  Vessel = 'vessel',
-}
-
 export const routesList: RouteProp[] = [
   {
     path: RoutePath.Import,

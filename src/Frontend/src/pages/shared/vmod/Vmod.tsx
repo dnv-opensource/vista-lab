@@ -2,12 +2,12 @@ import { Pmod } from 'dnv-vista-sdk';
 import React, { useEffect, useState } from 'react';
 import GmodViewer from '../../../components/search/gmod-viewer/GmodViewer';
 import TreeButtons from '../../../components/search/tree-buttons/TreeButtons';
+import VesselLink from '../../../components/shared/link/VesselLink';
 import ResultBar from '../../../components/shared/result-bar/ResultBar';
 import Icon from '../../../components/ui/icons/Icon';
 import { IconName } from '../../../components/ui/icons/icons';
 import Loader from '../../../components/ui/loader/Loader';
 import RadioSelection from '../../../components/ui/radio/radio-selection/RadioSelection';
-import CustomLink from '../../../components/ui/router/CustomLink';
 import ScrollableField from '../../../components/ui/scrollable-field/ScrollableField';
 import Tooltip from '../../../components/ui/tooltip/Tooltip';
 import { useLabContext } from '../../../context/LabContext';
@@ -44,12 +44,12 @@ const VesselComp: React.FC = () => {
     <>
       <ResultBar className={'vessel-result-bar'}>
         {vessel.id !== 'fleet' ? (
-          <CustomLink persistSearch persistRestOfUrl className={'back'} to={RoutePath.Fleet}>
-            <Tooltip content={<div>Back to fleet</div>}>
+          <VesselLink persistSearch className={'back'} to={RoutePath.Home}>
+            <Tooltip content={<div>Back to {vessel.name}</div>}>
               <Icon icon={IconName.LeftArrow} />
             </Tooltip>
             {vessel.name}
-          </CustomLink>
+          </VesselLink>
         ) : (
           <p>Fleet</p>
         )}

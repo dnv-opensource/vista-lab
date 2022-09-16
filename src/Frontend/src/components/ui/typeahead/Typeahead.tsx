@@ -58,7 +58,9 @@ const Typeahead = <T,>({
       return formattedOptions;
     }
 
-    return formattedOptions.filter(o => !!o.value?.toString().includes(value!.toString()));
+    return formattedOptions.filter(
+      o => !!o.value?.toString().toLocaleLowerCase().includes(value!.toString().toLocaleLowerCase())
+    );
   }, [formattedOptions, value]);
 
   const showNames = useMemo(() => formattedOptions.some(o => o.name !== undefined), [formattedOptions]);

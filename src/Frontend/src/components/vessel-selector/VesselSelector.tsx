@@ -22,7 +22,7 @@ const VesselSelector: React.FC = () => {
 
   const onSelect = useCallback(
     (option: Vessel) => {
-      navigate(`/${option.id}`, { replace: true });
+      navigate(`/${option.id}`);
     },
     [navigate]
   );

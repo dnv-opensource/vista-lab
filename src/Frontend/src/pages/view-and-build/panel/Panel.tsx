@@ -1,13 +1,14 @@
 import React, { useMemo } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import DataChannelSelection from '../../../components/view-and-build/data-channel-selection/DataChannelSelection';
-import CombinedTimePickers from '../../../components/view-and-build/panel-pickers/combined-time-pickers/CombinedTimePickers';
-import QueryGenerator from '../../../components/view-and-build/query-generator/QueryGenerator';
-import ResultEllipsisMenu from '../../../components/view-and-build/query-generator/result-ellipsis-menu/ResultEllipsisMenu';
+import { useNavigate, useParams } from 'react-router-dom';
+import VesselLink from '../../../components/shared/link/VesselLink';
 import ResultBar from '../../../components/shared/result-bar/ResultBar';
 import Checkbox from '../../../components/ui/checkbox/Checkbox';
 import Icon from '../../../components/ui/icons/Icon';
 import { IconName } from '../../../components/ui/icons/icons';
+import DataChannelSelection from '../../../components/view-and-build/data-channel-selection/DataChannelSelection';
+import CombinedTimePickers from '../../../components/view-and-build/panel-pickers/combined-time-pickers/CombinedTimePickers';
+import QueryGenerator from '../../../components/view-and-build/query-generator/QueryGenerator';
+import ResultEllipsisMenu from '../../../components/view-and-build/query-generator/result-ellipsis-menu/ResultEllipsisMenu';
 import { usePanelContext } from '../../../context/PanelContext';
 import { RoutePath } from '../../Routes';
 import './Panel.scss';
@@ -27,10 +28,10 @@ const Panel: React.FC = () => {
   return (
     <>
       <ResultBar className={'panel-nav-bar'}>
-        <Link className={'back'} to={RoutePath.ViewAndBuild}>
+        <VesselLink className={'back'} to={RoutePath.ViewAndBuild} persistSearch>
           <Icon icon={IconName.LeftArrow} />
           {panelId}
-        </Link>
+        </VesselLink>
         <div className={'panel-time-pickers'}>
           <Checkbox
             label="Custom"
