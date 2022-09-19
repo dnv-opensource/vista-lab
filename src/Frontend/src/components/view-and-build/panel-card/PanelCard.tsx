@@ -1,16 +1,16 @@
 import React, { useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { Panel } from '../../../context/PanelContext';
 import { RoutePath } from '../../../pages/Routes';
-import { ButtonType } from '../../ui/button/Button';
-import ButtonWithLink from '../../ui/button/ButtonWithLink';
+import VesselLink from '../../shared/link/VesselLink';
+import Button, { ButtonType } from '../../ui/button/Button';
 import Dropdown from '../../ui/dropdown/Dropdown';
 import Icon from '../../ui/icons/Icon';
 import { IconName } from '../../ui/icons/icons';
+import CustomLink from '../../ui/router/CustomLink';
 import TextWithIcon from '../../ui/text/TextWithIcon';
 import VerifyDeleteModal from './delete-modal/DeleteModal';
-import RenameModal from './rename-modal/RenameModal';
 import './PanelCard.scss';
+import RenameModal from './rename-modal/RenameModal';
 
 interface Props {
   panel: Panel;
@@ -38,11 +38,11 @@ const PanelCard: React.FC<Props> = ({ panel }) => {
           setOpen={setMenuOpen}
           closeOnOutsideClick={!verifyingDelete && !renaming}
         >
-          <Link to={`${panel.id}`}>
+          <CustomLink to={`${panel.id}`} persistSearch>
             <TextWithIcon className={'panel-dropdown-item'} icon={IconName.Eye}>
               View
             </TextWithIcon>
-          </Link>
+          </CustomLink>
           <TextWithIcon className={'panel-dropdown-item'} icon={IconName.Pencil} onClick={() => setRenaming(true)}>
             Rename
           </TextWithIcon>
@@ -58,9 +58,9 @@ const PanelCard: React.FC<Props> = ({ panel }) => {
           {panel.dataChannels.length === 0 ? (
             <>
               <p className={'empty-subtitle'}>No data channels</p>
-              <ButtonWithLink to={RoutePath.Search} role={'button'} type={ButtonType.Subtle}>
-                Search
-              </ButtonWithLink>
+              <VesselLink to={RoutePath.Search} persistSearch>
+                <Button type={ButtonType.Subtle}>Explore</Button>
+              </VesselLink>
             </>
           ) : (
             <QueryResults panel={panel} />

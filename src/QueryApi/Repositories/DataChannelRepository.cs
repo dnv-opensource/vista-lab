@@ -25,6 +25,8 @@ public sealed partial class DataChannelRepository
     private readonly ILogger<DataChannelRepository> _logger;
     private readonly QuestDbClient _client;
 
+    public sealed record Vessel(string VesselId, int NumberOfDataChannels, string? Name);
+
     public sealed record TimeSeriesDataWithProps(
         EventDataSet? EventData,
         AdditionalTimeSeriesProperties? AdditionalProps
@@ -72,6 +74,19 @@ public sealed partial class DataChannelRepository
     {
         _client = client;
         _logger = logger;
+    }
+
+    public async Task<IEnumerable<Vessel>> GetVessels(CancellationToken cancellationToken)
+    {
+        var query =
+            @$"
+            SELECT DISTINCT {nameof(DataChannelEntity.VesselId)}, count() as {nameof(Vessel.NumberOfDataChannels)}, {nameof(DataChannelEntity.VesselName)}
+            FROM {DataChannelEntity.TableName}
+        ";
+
+        var response = await _client.Query(query, cancellationToken);
+
+        return ToVessels(response);
     }
 
     public async Task<IEnumerable<DataChannelListPackage>> GetDataChannelByFilter(
@@ -303,32 +318,6 @@ public sealed partial class DataChannelRepository
                 }
             )
             .ToArray();
-    }
-
-    public async Task<IEnumerable<EventDataSet>> GetTimeSeriesByInternalId(
-        Guid internalId,
-        CancellationToken cancellationToken
-    )
-    {
-        var response = await _client.Query(
-            SQLGenerator.MountTimeSeriesSQL(internalId),
-            cancellationToken
-        );
-
-        return ToTimeSeries(response);
-    }
-
-    public async Task<IEnumerable<EventDataSet>> GetTimeSeriesByFilter(
-        DataChannelFilter filter,
-        CancellationToken cancellationToken
-    )
-    {
-        var response = await _client.Query(
-            SQLGenerator.MountTimeSeriesSQL(filter),
-            cancellationToken
-        );
-
-        return ToTimeSeries(response);
     }
 
     public async Task<TimeSeriesDataWithProps> GetLatestTimeSeriesForDataChannel(

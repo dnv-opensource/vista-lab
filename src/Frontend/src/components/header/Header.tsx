@@ -1,17 +1,21 @@
-import React from 'react';
-import './Header.scss';
-import { Link, NavLink } from 'react-router-dom';
-import { RoutePath, routesList } from '../../pages/Routes';
 import clsx from 'clsx';
+import React from 'react';
+import { useLabContext } from '../../context/LabContext';
+import { routesList } from '../../pages/Routes';
+import CustomLink from '../ui/router/CustomLink';
 import TextWithIcon from '../ui/text/TextWithIcon';
+import VesselSelector from '../vessel-selector/VesselSelector';
+import './Header.scss';
 
 const Header: React.FC = () => {
+  const { vessel } = useLabContext();
   return (
     <div className={'header-wrapper'}>
-      <Link to={RoutePath.Home} className={'dnv-logo'} />
+      <CustomLink persistSearch to={`/${vessel.id}`} className={'dnv-logo'} />
       <div className={'routes'}>
         {routesList.map(route => (
-          <NavLink
+          <CustomLink
+            persistSearch
             key={route.path}
             to={route.path}
             className={({ isActive }) => clsx('route', isActive && 'active-route')}
@@ -19,8 +23,11 @@ const Header: React.FC = () => {
             <TextWithIcon icon={route.icon} iconClassName="route-icon">
               {route.title}
             </TextWithIcon>
-          </NavLink>
+          </CustomLink>
         ))}
+      </div>
+      <div className={'vessel-selector-wrapper'}>
+        <VesselSelector />
       </div>
       <div className={'vista-info'}>
         <p className={'vista-logo'}>VISTA</p>

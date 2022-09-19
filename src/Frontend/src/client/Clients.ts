@@ -96,58 +96,11 @@ export class Client extends AuthorizedApiBase {
     }
 
     /**
-     * Search for data channels based in the given filters
-     * @param body (optional) 
+     * Get distinct vessels with info
      * @return Success
      */
-    dataChannelGetDataChannelByFilter(body: DataChannelFilter | undefined): Promise<DataChannelListPackage[]> {
-        let url_ = this.baseUrl + "/api/data-channel";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_ = <RequestInit>{
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "text/plain"
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processDataChannelGetDataChannelByFilter(_response);
-        });
-    }
-
-    protected processDataChannelGetDataChannelByFilter(response: Response): Promise<DataChannelListPackage[]> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : <DataChannelListPackage[]>JSON.parse(_responseText, this.jsonParseReviver);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<DataChannelListPackage[]>(<any>null);
-    }
-
-    /**
-     * Search for time series given a data channel internalId
-     * @return Success
-     */
-    dataChannelGet(id: string): Promise<EventDataSet[]> {
-        let url_ = this.baseUrl + "/api/data-channel/{id}/time-series";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+    dataChannelGetVessels(): Promise<Vessel[]> {
+        let url_ = this.baseUrl + "/api/data-channel/vessels";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ = <RequestInit>{
@@ -160,17 +113,17 @@ export class Client extends AuthorizedApiBase {
         return this.transformOptions(options_).then(transformedOptions_ => {
             return this.http.fetch(url_, transformedOptions_);
         }).then((_response: Response) => {
-            return this.processDataChannelGet(_response);
+            return this.processDataChannelGetVessels(_response);
         });
     }
 
-    protected processDataChannelGet(response: Response): Promise<EventDataSet[]> {
+    protected processDataChannelGetVessels(response: Response): Promise<Vessel[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
-            result200 = _responseText === "" ? null : <EventDataSet[]>JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = _responseText === "" ? null : <Vessel[]>JSON.parse(_responseText, this.jsonParseReviver);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -178,51 +131,7 @@ export class Client extends AuthorizedApiBase {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<EventDataSet[]>(<any>null);
-    }
-
-    /**
-     * Search for time series given a data channel internalId
-     * @param body (optional) 
-     * @return Success
-     */
-    dataChannelPostSearchByFilter(body: DataChannelFilter | undefined): Promise<EventDataSet[]> {
-        let url_ = this.baseUrl + "/api/data-channel/time-series";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_ = <RequestInit>{
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "text/plain"
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processDataChannelPostSearchByFilter(_response);
-        });
-    }
-
-    protected processDataChannelPostSearchByFilter(response: Response): Promise<EventDataSet[]> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            result200 = _responseText === "" ? null : <EventDataSet[]>JSON.parse(_responseText, this.jsonParseReviver);
-            return result200;
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<EventDataSet[]>(<any>null);
+        return Promise.resolve<Vessel[]>(<any>null);
     }
 
     /**
@@ -486,14 +395,6 @@ export interface DataChannel {
     Property: Property;
 }
 
-export interface DataChannelFilter {
-    vesselId: string | undefined;
-    primaryItem: string[] | undefined;
-    secondaryItem: string[] | undefined;
-    meta: string[] | undefined;
-    readonly isEmpty: boolean;
-}
-
 export interface DataChannelID {
     LocalID: string;
     ShortID: string | undefined;
@@ -654,6 +555,12 @@ export interface VersionInformation {
     NamingRule: string;
     NamingSchemeVersion: string;
     ReferenceURL: string | undefined;
+}
+
+export interface Vessel {
+    vesselId: string;
+    numberOfDataChannels: number;
+    name: string | undefined;
 }
 
 export enum VisVersion {

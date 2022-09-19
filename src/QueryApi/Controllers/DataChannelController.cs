@@ -57,50 +57,17 @@ public sealed class DataChannelController : ControllerBase
     }
 
     /// <summary>
-    /// Search for data channels based in the given filters
+    /// Get distinct vessels with info
     /// </summary>
-    /// <param name="filter"></param>
-    /// <param name="cancellationToken"></param>
-    [HttpPost]
-    [Route("api/data-channel")]
-    public async Task<ActionResult<IEnumerable<DataChannelListPackage>>> GetDataChannelByFilter(
-        DataChannelFilter filter,
-        CancellationToken cancellationToken
-    )
-    {
-        var result = await _dataChannelRepository.GetDataChannelByFilter(filter, cancellationToken);
-        return Ok(result);
-    }
-
-    /// <summary>
-    /// Search for time series given a data channel internalId
-    /// </summary>
-    /// <param name="id"></param>
     /// <param name="cancellationToken"></param>
     [HttpGet]
-    [Route("api/data-channel/{id}/time-series")]
-    public async Task<ActionResult<IEnumerable<EventDataSet>>> Get(
-        Guid id,
+    [Route("api/data-channel/vessels")]
+    public async Task<ActionResult<IEnumerable<Vessel>>> GetVessels(
         CancellationToken cancellationToken
     )
     {
-        var result = await _dataChannelRepository.GetTimeSeriesByInternalId(id, cancellationToken);
-        return Ok(result);
-    }
+        var result = await _dataChannelRepository.GetVessels(cancellationToken);
 
-    /// <summary>
-    /// Search for time series given a data channel internalId
-    /// </summary>
-    /// <param name="filter"></param>
-    /// <param name="cancellationToken"></param>
-    [HttpPost]
-    [Route("api/data-channel/time-series")]
-    public async Task<ActionResult<IEnumerable<EventDataSet>>> PostSearchByFilter(
-        DataChannelFilter filter,
-        CancellationToken cancellationToken
-    )
-    {
-        var result = await _dataChannelRepository.GetTimeSeriesByFilter(filter, cancellationToken);
         return Ok(result);
     }
 

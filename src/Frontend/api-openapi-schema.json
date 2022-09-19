@@ -39,85 +39,13 @@
         }
       }
     },
-    "/api/data-channel": {
-      "post": {
-        "tags": [
-          "DataChannel"
-        ],
-        "summary": "Search for data channels based in the given filters",
-        "operationId": "DataChannelGetDataChannelByFilter",
-        "requestBody": {
-          "description": "",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DataChannelFilter"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DataChannelFilter"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/DataChannelFilter"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DataChannelListPackage"
-                  }
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DataChannelListPackage"
-                  }
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DataChannelListPackage"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/data-channel/{id}/time-series": {
+    "/api/data-channel/vessels": {
       "get": {
         "tags": [
           "DataChannel"
         ],
-        "summary": "Search for time series given a data channel internalId",
-        "operationId": "DataChannelGet",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
+        "summary": "Get distinct vessels with info",
+        "operationId": "DataChannelGetVessels",
         "responses": {
           "200": {
             "description": "Success",
@@ -126,7 +54,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/EventDataSet"
+                    "$ref": "#/components/schemas/Vessel"
                   }
                 }
               },
@@ -134,7 +62,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/EventDataSet"
+                    "$ref": "#/components/schemas/Vessel"
                   }
                 }
               },
@@ -142,67 +70,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/EventDataSet"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/data-channel/time-series": {
-      "post": {
-        "tags": [
-          "DataChannel"
-        ],
-        "summary": "Search for time series given a data channel internalId",
-        "operationId": "DataChannelPostSearchByFilter",
-        "requestBody": {
-          "description": "",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DataChannelFilter"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DataChannelFilter"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/DataChannelFilter"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/EventDataSet"
-                  }
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/EventDataSet"
-                  }
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/EventDataSet"
+                    "$ref": "#/components/schemas/Vessel"
                   }
                 }
               }
@@ -615,47 +483,6 @@
           },
           "Property": {
             "$ref": "#/components/schemas/Property"
-          }
-        },
-        "additionalProperties": false
-      },
-      "DataChannelFilter": {
-        "type": "object",
-        "properties": {
-          "vesselId": {
-            "type": "string",
-            "default": null,
-            "nullable": true
-          },
-          "primaryItem": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "default": [
-              "411/*/C101.31-*"
-            ],
-            "nullable": true
-          },
-          "secondaryItem": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "default": null,
-            "nullable": true
-          },
-          "meta": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "default": null,
-            "nullable": true
-          },
-          "isEmpty": {
-            "type": "boolean",
-            "readOnly": true
           }
         },
         "additionalProperties": false
@@ -1100,6 +927,23 @@
             "type": "string"
           },
           "ReferenceURL": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Vessel": {
+        "type": "object",
+        "properties": {
+          "vesselId": {
+            "type": "string"
+          },
+          "numberOfDataChannels": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
             "type": "string",
             "nullable": true
           }

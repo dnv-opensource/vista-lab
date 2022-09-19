@@ -1,15 +1,13 @@
 import React, { Suspense } from 'react';
-import { BrowserRouter, Routes as BrowserRoutes, Route } from 'react-router-dom';
-import FleetGrid from './shared/fleet/Fleet';
+import { BrowserRouter, Navigate, Outlet, Route, Routes as BrowserRoutes } from 'react-router-dom';
 import Layout from '../components/layout/Layout';
-import { SearchContextProvider } from '../context/SearchContext';
-import Vessel from './shared/vessel/Vessel';
-import { VISContextProvider } from '../context/VISContext';
-import { PanelContextProvider } from '../context/PanelContext';
 import { IconName } from '../components/ui/icons/icons';
+import { LabContextProvider } from '../context/LabContext';
+import { PanelContextProvider } from '../context/PanelContext';
+import { SearchContextProvider } from '../context/SearchContext';
+import { VISContextProvider } from '../context/VISContext';
 import Panel from './view-and-build/panel/Panel';
 import Panels from './view-and-build/panels/Panels';
-import ResultsTable from './report/results-table/ResultsTable';
 
 const Home = React.lazy(() => import('./home/Home'));
 const Search = React.lazy(() => import('./search/Search'));
@@ -26,11 +24,12 @@ type RouteProp = {
 };
 
 export enum RoutePath {
-  Import = '/import',
-  Search = '/search',
-  ViewAndBuild = '/view',
-  Report = '/report',
-  Home = '*',
+  Fleet = '/fleet',
+  Import = 'import',
+  Search = 'search',
+  ViewAndBuild = 'view',
+  Report = 'report',
+  Home = '',
 }
 
 export const routesList: RouteProp[] = [
@@ -48,12 +47,6 @@ export const routesList: RouteProp[] = [
       </SearchContextProvider>
     ),
     title: 'Search',
-    routes: (
-      <>
-        <Route path={':vesselId'} element={<Vessel />} />
-        <Route path="" element={<FleetGrid />} />
-      </>
-    ),
     icon: IconName.Search,
   },
   {
@@ -76,12 +69,6 @@ export const routesList: RouteProp[] = [
       </SearchContextProvider>
     ),
     title: 'Report',
-    routes: (
-      <>
-        <Route path={':vesselId'} element={<ResultsTable />} />
-        <Route path="" element={<FleetGrid />} />
-      </>
-    ),
     icon: IconName.FileLines,
   },
 ];
@@ -91,18 +78,31 @@ const Routes: React.FC = () => {
     <VISContextProvider>
       <BrowserRouter>
         <PanelContextProvider>
-          <Layout>
-            <Suspense fallback={<div>Loading page</div>}>
-              <BrowserRoutes>
+          <Suspense fallback={<div>Loading page</div>}>
+            <BrowserRoutes>
+              <Route
+                path={':vessel'}
+                element={
+                  <>
+                    <LabContextProvider>
+                      <Layout>
+                        <Outlet />
+                      </Layout>
+                    </LabContextProvider>
+                  </>
+                }
+              >
                 {routesList.map(route => (
                   <Route key={route.path} path={route.path} element={route.element}>
                     {route.routes}
                   </Route>
                 ))}
-                <Route path={RoutePath.Home} element={<Home />} />
-              </BrowserRoutes>
-            </Suspense>
-          </Layout>
+                <Route path={''} element={<Home />} />
+                <Route path={'*'} element={<Home />} />
+              </Route>
+              <Route path={'*'} element={<Navigate to={'fleet'} />} />
+            </BrowserRoutes>
+          </Suspense>
         </PanelContextProvider>
       </BrowserRouter>
     </VISContextProvider>

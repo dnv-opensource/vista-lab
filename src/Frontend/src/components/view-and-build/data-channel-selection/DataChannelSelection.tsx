@@ -2,8 +2,8 @@ import React from 'react';
 import { Panel, usePanelContext } from '../../../context/PanelContext';
 import { RoutePath } from '../../../pages/Routes';
 import DataChannelCard, { CardMode } from '../../search/data-channel-card/DataChannelCard';
-import { ButtonType } from '../../ui/button/Button';
-import ButtonWithLink from '../../ui/button/ButtonWithLink';
+import VesselLink from '../../shared/link/VesselLink';
+import Button, { ButtonType } from '../../ui/button/Button';
 import Icon from '../../ui/icons/Icon';
 import { IconName } from '../../ui/icons/icons';
 import FlexScrollableField from '../../ui/scrollable-field/FlexScrollableField';
@@ -42,9 +42,9 @@ const DataChannelSelection: React.FC<Props> = ({ panel }) => {
             );
           })
         ) : (
-          <ButtonWithLink to={RoutePath.Search} type={ButtonType.Subtle}>
-            Explore
-          </ButtonWithLink>
+          <VesselLink to={RoutePath.Search} persistSearch>
+            <Button type={ButtonType.Subtle}>Explore</Button>
+          </VesselLink>
         )}
       </FlexScrollableField>
     </>

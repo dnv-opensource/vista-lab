@@ -15,7 +15,7 @@ const emptyFeatureCol: FeatureCollection<Point, FeatureProps> = { features: [], 
 const MapContainer: React.FC = () => {
   const { dataChannelListPackages } = useSearchContext();
   const [features, setFeatures] = useState(emptyFeatureCol);
-  const [isVisible, setVisible] = useState(true);
+  const [isVisible, setVisible] = useState(false);
 
   useEffect(() => {
     if (!dataChannelListPackages || dataChannelListPackages.length === 0) return;

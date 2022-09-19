@@ -83,7 +83,10 @@ const Import: React.FC = () => {
         }}
       />
       {file && (
-        <ButtonWithLink to={`${RoutePath.Search}`} type={ButtonType.Subtle}>
+        <ButtonWithLink
+          linkProps={{ to: RoutePath.Search, persistRestOfUrl: true, persistSearch: true }}
+          type={ButtonType.Subtle}
+        >
           View vessels
         </ButtonWithLink>
       )}

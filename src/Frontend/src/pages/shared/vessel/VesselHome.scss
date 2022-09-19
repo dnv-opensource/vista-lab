@@ -1,0 +1,9 @@
+@import 'src/styles/colors';
+.vista-vessel-home {
+  .back-to-fleet {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    color: $grey;
+  }
+}

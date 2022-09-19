@@ -1,11 +1,12 @@
 import { LocalIdBuilder, UniversalIdBuilder } from 'dnv-vista-sdk';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Outlet, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import MapContainer from '../../components/search/map/MapContainer';
 import SearchBar from '../../components/search/search-bar/SearchBar';
 import { DataChannelWithShipData, useSearchContext } from '../../context/SearchContext';
 import { useVISContext } from '../../context/VISContext';
-import { isNullOrWhitespace, getImoNumberFromString } from '../../util/string';
+import { getImoNumberFromString, isNullOrWhitespace } from '../../util/string';
+import Vmod from '../shared/vmod/Vmod';
 import './Search.scss';
 
 const Search: React.FC = () => {
@@ -61,7 +62,7 @@ const Search: React.FC = () => {
     <div className={'vista-search'}>
       <SearchBar text={queryParam} onSubmit={handleSearchSubmit} loading={loading} />
       <MapContainer />
-      <Outlet />
+      <Vmod />
     </div>
   );
 };

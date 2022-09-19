@@ -18,6 +18,24 @@ partial class DataChannelRepository
         string? VesselId
     );
 
+    private IEnumerable<Vessel> ToVessels(DbResponse response)
+    {
+        var vessels = new List<Vessel>();
+
+        for (int i = 0; i < response.Count; i++)
+        {
+            var vessel = new Vessel(
+                response.GetValue(i, nameof(DataChannelEntity.VesselId)).GetStringNonNull(),
+                response.GetValue(i, nameof(Vessel.NumberOfDataChannels)).GetIntNonNull(),
+                response.GetValue(i, nameof(DataChannelEntity.VesselName)).GetString()
+            );
+
+            vessels.Add(vessel);
+        }
+
+        return vessels;
+    }
+
     private IEnumerable<EventDataSet> ToTimeSeries(DbResponse response)
     {
         var timeSeriesData = new List<EventDataSet>();

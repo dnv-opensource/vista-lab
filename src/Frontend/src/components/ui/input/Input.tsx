@@ -40,11 +40,10 @@ const Input = React.forwardRef<HTMLDivElement, InputProps>(
     const onChange = useCallback(
       (e?: React.ChangeEvent<any>) => {
         if (!e) {
-          onInputChange?.(e) ?? setValue(undefined);
-
+          onInputChange ? onInputChange(e) : setValue(undefined);
           return;
         }
-        onInputChange?.(e) ?? setValue(e.target.value);
+        onInputChange ? onInputChange(e) : setValue(e.target.value);
       },
       [onInputChange, setValue]
     );

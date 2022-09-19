@@ -1,26 +1,19 @@
 import { Pmod } from 'dnv-vista-sdk';
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import GmodViewer from '../../../components/search/gmod-viewer/GmodViewer';
 import TreeButtons from '../../../components/search/tree-buttons/TreeButtons';
+import VesselLink from '../../../components/shared/link/VesselLink';
 import ResultBar from '../../../components/shared/result-bar/ResultBar';
 import Icon from '../../../components/ui/icons/Icon';
 import { IconName } from '../../../components/ui/icons/icons';
-import LinkWithQuery from '../../../components/ui/link-with-query/LinkWithQuery';
 import Loader from '../../../components/ui/loader/Loader';
 import RadioSelection from '../../../components/ui/radio/radio-selection/RadioSelection';
 import ScrollableField from '../../../components/ui/scrollable-field/ScrollableField';
-import StatusIcon, { StatusVariant } from '../../../components/ui/status-icon/StatusIcon';
+import Tooltip from '../../../components/ui/tooltip/Tooltip';
+import { useLabContext } from '../../../context/LabContext';
 import { useSearchContext } from '../../../context/SearchContext';
 import { RoutePath } from '../../Routes';
-import './Vessel.scss';
-
-export type Vessel = {
-  numDataChannels?: number;
-  vesselId?: string;
-  name?: string;
-  status?: number;
-};
+import './Vmod.scss';
 
 export enum VesselMode {
   Any = 'Any',
@@ -29,30 +22,37 @@ export enum VesselMode {
 }
 
 const VesselComp: React.FC = () => {
+  const { vessel } = useLabContext();
   const { getVmodForVessel, mode, setMode } = useSearchContext();
-  const { vesselId } = useParams();
   const [loading, setLoading] = useState(false);
   const [vmod, setVmod] = useState<Pmod>();
 
   useEffect(() => {
-    if (!vesselId) return;
     setLoading(true);
-    getVmodForVessel(vesselId)
-      .then(setVmod)
-      .finally(() => setLoading(false));
-  }, [vesselId, getVmodForVessel, setLoading, setVmod]);
+    if ('vessels' in vessel) {
+      getVmodForVessel(vessel.vessels.map(v => v.id))
+        .then(setVmod)
+        .finally(() => setLoading(false));
+    } else {
+      getVmodForVessel([vessel.id])
+        .then(setVmod)
+        .finally(() => setLoading(false));
+    }
+  }, [vessel, getVmodForVessel, setLoading, setVmod]);
 
   return (
     <>
       <ResultBar className={'vessel-result-bar'}>
-        <LinkWithQuery className={'back'} to={RoutePath.Search} queryKey={['query', 'mode']}>
-          <Icon icon={IconName.LeftArrow} />
-          {vesselId}
-        </LinkWithQuery>
-        <div className={'status'}>
-          <span>Status</span>
-          <StatusIcon variant={StatusVariant.Good} />
-        </div>
+        {vessel.id !== 'fleet' ? (
+          <VesselLink persistSearch className={'back'} to={RoutePath.Home}>
+            <Tooltip content={<div>Back to {vessel.name}</div>}>
+              <Icon icon={IconName.LeftArrow} />
+            </Tooltip>
+            {vessel.name}
+          </VesselLink>
+        ) : (
+          <p>Fleet</p>
+        )}
       </ResultBar>
       <ScrollableField className={'vmod-container'}>
         <div className={'header'}>
