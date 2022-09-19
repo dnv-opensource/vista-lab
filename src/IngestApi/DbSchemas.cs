@@ -54,6 +54,8 @@ public sealed class DbSchemas
             {nameof(DataChannelEntity.LocalId_Type)} SYMBOL capacity 1024 cache index capacity 8192,
             {nameof(DataChannelEntity.LocalId_Detail)} SYMBOL capacity 1024 cache index capacity 8192,
 
+            {nameof(DataChannelEntity.CalculationInfo)} STRING,
+
             {nameof(DataChannelEntity.Timestamp)} TIMESTAMP NOT NULL
         ) timestamp({nameof(DataChannelEntity.Timestamp)})
         PARTITION BY YEAR;

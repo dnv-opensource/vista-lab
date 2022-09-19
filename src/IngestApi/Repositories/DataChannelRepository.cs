@@ -175,6 +175,7 @@ public sealed class DataChannelRepository : IHostedService
                     .TryColumn(nameof(DataChannelEntity.AlertPriority), dataChannel.AlertPriority)
                     .TryColumn(nameof(DataChannelEntity.Name), dataChannel.Name)
                     .TryColumn(nameof(DataChannelEntity.Remarks), dataChannel.Remarks)
+                    .TryColumn(nameof(DataChannelEntity.CalculationInfo), default(string))
                     .At(dataChannel.Timestamp);
 
                 client
