@@ -1,0 +1,51 @@
+{
+  "Package": {
+    "Header": {
+      "ShipID": "IMO9368314",
+      "DataChannelListID": {
+        "ID": "export-9368314",
+        "Version": "1",
+        "TimeStamp": "2022-04-04T20:44:41.843+00:00"
+      },
+      "VersionInformation": {
+        "NamingRule": "dnv",
+        "NamingSchemeVersion": "v2",
+        "ReferenceURL": "https://vista.dnv.com/docs"
+      },
+      "Author": "DNV",
+      "DateCreated": "2022-04-04T20:44:41.843+00:00",
+      "ShipName": "Event vessel"
+    },
+    "DataChannelList": {
+      "DataChannel": [
+        {
+          "DataChannelID": {
+            "LocalID": "/dnv-v2/vis-3-4a/087/meta/qty-time",
+            "ShortID": "e919e0b0-ed6e-5c22-b064-123",
+            "NameObject": null
+          },
+          "Property": {
+            "DataChannelType": {
+              "Type": "Inst",
+              "UpdateCycle": "1",
+              "CalculationPeriod": null
+            },
+            "Format": {
+              "Type": "Decimal",
+              "Restriction": null
+            },
+            "Range": {
+              "High": "100",
+              "Low": "0"
+            },
+            "Unit": null,
+            "QualityCoding": null,
+            "AlertPriority": null,
+            "Name": "Events | Quantity | time",
+            "Remarks": null
+          }
+        }
+      ]
+    }
+  }
+}
