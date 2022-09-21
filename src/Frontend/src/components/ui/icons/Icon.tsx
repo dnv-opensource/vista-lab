@@ -18,7 +18,7 @@ const Icon: React.FC<Props> = ({ icon, variant = IconVariant.Solid, className, o
       {...restProps}
       id="ui-icon-component"
       ref={iconRef}
-      className={clsx('ui-icon', onClick && 'clickable', className)}
+      className={clsx('ui-icon', 'icon', onClick && 'clickable', className)}
       //@ts-ignore
       icon={`fa-${variant} fa-${icon}`}
       onClick={e => {

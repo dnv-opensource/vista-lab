@@ -366,6 +366,7 @@ export interface AggregatedQueryResult {
     timeseries: AggregatedTimeseries[];
     id: string;
     name: string;
+    vesselId: string;
 }
 
 export interface AggregatedQueryResultAsReport {

@@ -5,6 +5,8 @@ import { Accessors } from '../../../graph/LineChart';
 import { TimeSeries } from '../QueryResults';
 import './Tooltip.scss';
 import { DataChannelList } from 'dnv-vista-sdk';
+import Icon from '../../../ui/icons/Icon';
+import { IconName } from '../../../ui/icons/icons';
 
 interface Props {
   params: RenderTooltipParams<TimeSeries> & { accessors: Accessors<TimeSeries> };
@@ -38,7 +40,13 @@ const Tooltip: React.FC<Props> = ({ params, dataChannels, queries }) => {
 
   return (
     <div className={'chart-tooltip'}>
-      <p>{item?.key}</p>
+      {item?.datum.vesselId && (
+        <div className={'vessel-tooltip-info'}>
+          <Icon icon={IconName.Ship} />
+          <p>{item.datum.vesselId}</p>
+        </div>
+      )}
+      <p>{item?.datum.name}</p>
       <p>
         {item?.datum.value.toFixed(2)}
         {unit && <b> {unit}</b>}

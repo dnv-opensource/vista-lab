@@ -117,9 +117,9 @@ partial class DataChannelRepository
         return features;
     }
 
-    public IEnumerable<AggregatedTimeseries> ToAggregatedTimeseries(DbResponse response)
+    private IEnumerable<AggregatedTimeseriesDto> ToAggregatedTimeseriesDto(DbResponse response)
     {
-        var queryResults = new List<AggregatedTimeseries>();
+        var queryResults = new List<AggregatedTimeseriesDto>();
 
         for (var i = 0; i < response.Count; i++)
         {
@@ -127,8 +127,11 @@ partial class DataChannelRepository
             var timestamp = response
                 .GetValue(i, nameof(TimeSeriesEntity.Timestamp))
                 .GetDateTimeOffset();
+            var vesselId = response
+                .GetValue(i, nameof(TimeSeriesEntity.VesselId))
+                .GetStringNonNull();
 
-            queryResults.Add(new AggregatedTimeseries(value, timestamp));
+            queryResults.Add(new AggregatedTimeseriesDto(value, timestamp, vesselId));
         }
 
         return queryResults;

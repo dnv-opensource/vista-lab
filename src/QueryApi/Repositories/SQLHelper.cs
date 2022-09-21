@@ -138,7 +138,7 @@ public static class SQLGenerator
                 var q =
                     @$"
                 SELECT {(!getReport ? "avg" : "sum")}(CAST({nameof(TimeSeriesEntity.Value)} as double)) as {nameof(TimeSeriesEntity.Value)},
-                    {nameof(TimeSeriesEntity.Timestamp)}
+                    {nameof(TimeSeriesEntity.Timestamp)}, {nameof(TimeSeriesEntity.VesselId)}
                 FROM {TimeSeriesEntity.TableName}
                 WHERE {nameof(TimeSeriesEntity.DataChannelId)} = '{id}'
                 {(!isFleet ? $"AND {nameof(TimeSeriesEntity.VesselId)} = '{query.VesselId}'" : '\n')}
@@ -166,7 +166,7 @@ public static class SQLGenerator
         var subQueryIndex = 0;
 
         var generatedQuery =
-            $@"SELECT ({aggregation}) as {nameof(TimeSeriesEntity.Value)}, q{incrementer}.Timestamp
+            $@"SELECT ({aggregation}) as {nameof(TimeSeriesEntity.Value)}, q{incrementer}.Timestamp, q{incrementer}.{nameof(TimeSeriesEntity.VesselId)}
             FROM
             {subQueries.Aggregate("", (prev, q) => { if (string.IsNullOrWhiteSpace(prev)) return $"({q.Query}) as q{subQueries[subQueryIndex++].As}"; return @$"{prev}
             INNER JOIN (

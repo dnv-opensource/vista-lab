@@ -2,6 +2,7 @@ import { CodebookNames, DataChannelList, MetadataTag, ShipId } from 'dnv-vista-s
 import React, { useEffect, useMemo, useState } from 'react';
 import { VistaLabApi } from '../../../apiConfig';
 import { TimeSeriesDataWithProps } from '../../../client';
+import { useLabContext } from '../../../context/LabContext';
 import Icon from '../../ui/icons/Icon';
 import { IconName } from '../../ui/icons/icons';
 import Loader from '../../ui/loader/Loader';
@@ -24,27 +25,30 @@ const DataChannelCard: React.FC<Props> = (props: Props) => {
   const { dataChannel, shipId, extraNodes, onClick, disabled } = props;
   const [loading, setLoading] = useState(false);
   const [latestEventData, setLatestEventData] = useState<TimeSeriesDataWithProps>();
+  const { isFleet, vessel } = useLabContext();
 
   const localId = useMemo(() => dataChannel.dataChannelId.localId, [dataChannel]);
 
   useEffect(() => {
-    if (localId) {
+    if (localId && !isFleet) {
       setLoading(true);
 
       VistaLabApi.dataChannelGetLatestTimeSeriesValue({
-        vesselId: shipId?.toString(),
+        vesselId: shipId?.toString() ?? vessel.id,
         localId: localId.toString(),
       })
         .then(res => {
           if (res.eventData) {
             setLatestEventData(res);
+          } else {
+            setLatestEventData(undefined);
           }
         })
         .finally(() => {
           setLoading(false);
         });
     }
-  }, [localId, setLatestEventData, setLoading, shipId]);
+  }, [localId, setLatestEventData, setLoading, shipId, isFleet, vessel]);
 
   const parts: { key: string; noSep?: boolean; el: React.ReactNode }[] = [];
   if (shipId) {

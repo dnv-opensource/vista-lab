@@ -216,7 +216,7 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
           id: localIdStr,
           name: localIdStr,
           dataChannelIds: [localIdStr],
-          operator: QueryOperator._0,
+          operator: 0,
           subQueries: [],
           vesselId: vessel.id,
         };

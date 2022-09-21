@@ -410,6 +410,9 @@
           },
           "name": {
             "type": "string"
+          },
+          "vesselId": {
+            "type": "string"
           }
         },
         "additionalProperties": false

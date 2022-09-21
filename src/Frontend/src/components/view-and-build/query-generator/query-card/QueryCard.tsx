@@ -1,5 +1,6 @@
 import { DataChannelList } from 'dnv-vista-sdk';
 import React, { useCallback, useMemo, useState } from 'react';
+import { useLabContext } from '../../../../context/LabContext';
 import { isDataChannelQueryItem, Panel, Query, usePanelContext } from '../../../../context/PanelContext';
 import useToast, { ToastType } from '../../../../hooks/use-toast';
 import { isNullOrWhitespace } from '../../../../util/string';
@@ -20,6 +21,7 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
   const { addToast } = useToast();
   const { removeQueryFromPanel, editQuery, selectQueryItem, selectQueryOperator, toggleQueryItemInPanel } =
     usePanelContext();
+  const { hasDataChannel } = useLabContext();
 
   const [isCollapsed, setCollapsed] = useState(
     !(panel.queries.length === 1 || panel.queries.findIndex(q => q.id === query.id) === 0)
@@ -97,7 +99,7 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
               return false;
             })
         ),
-      ...panel.dataChannels.filter(
+      ...panel.dataChannels.filter(hasDataChannel).filter(
         dc =>
           !query.items.find(item => {
             if (isDataChannelQueryItem(item)) return item.dataChannelId.localId.equals(dc.dataChannelId.localId);
@@ -105,7 +107,7 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
           })
       ),
     ];
-  }, [panel.dataChannels, panel.queries, query]);
+  }, [panel.dataChannels, panel.queries, query, hasDataChannel]);
 
   const isQueryExcludedFromGraph = panel.queryItemsExcludedFromGraph.has(query.id);
 

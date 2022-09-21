@@ -10,7 +10,7 @@ import './Search.scss';
 
 const Search: React.FC = () => {
   const { fetchFilteredDataChannels } = useSearchContext();
-  const { setDataChannelListPackages } = useLabContext();
+  const { setDataChannelListPackages, fetchDataChannelListPackages } = useLabContext();
   const [searchParams, setSearchParam] = useSearchParams();
   const [loading, setLoading] = useState(false);
   const queryParam = useMemo(() => searchParams.get('query') ?? undefined, [searchParams]);
@@ -39,24 +39,9 @@ const Search: React.FC = () => {
       });
 
     return () => {
-      fetchFilteredDataChannels('').then(res => {
-        res.forEach(dclp => {
-          const channels = dclp.package.dataChannelList.dataChannel;
-          const shipId = dclp.package.header.shipId;
-          channels.forEach(dc => {
-            dc.property.customProperties = {
-              ...dc.property.customProperties,
-              shipId: shipId,
-            };
-          });
-
-          return channels;
-        });
-
-        setDataChannelListPackages(res);
-      });
+      fetchDataChannelListPackages();
     };
-  }, [queryParam, setLoading, setDataChannelListPackages, fetchFilteredDataChannels]);
+  }, [queryParam, setLoading, setDataChannelListPackages, fetchFilteredDataChannels, fetchDataChannelListPackages]);
 
   const handleSearchSubmit = useCallback(
     (value: string) => {

@@ -63,12 +63,19 @@ public sealed partial class DataChannelRepository
 
     public sealed record AggregatedTimeseries(double Value, DateTimeOffset Timestamp);
 
+    private sealed record AggregatedTimeseriesDto(
+        double Value,
+        DateTimeOffset Timestamp,
+        string VesselId
+    );
+
     public sealed record AggregatedQueryResultAsReport(double Value, string Id, string Name);
 
     public sealed record AggregatedQueryResult(
         IEnumerable<AggregatedTimeseries> Timeseries,
         string Id,
-        string Name
+        string Name,
+        string VesselId
     );
 
     public DataChannelRepository(QuestDbClient client, ILogger<DataChannelRepository> logger)
@@ -417,8 +424,19 @@ public sealed partial class DataChannelRepository
             );
 
             var response = await _client.Query(q, cancellationToken);
-            var timeseries = ToAggregatedTimeseries(response);
-            queryResults.Add(new AggregatedQueryResult(timeseries, query.Id, query.Name));
+            var timeseries = ToAggregatedTimeseriesDto(response);
+
+            var vesselGroupedQueries = timeseries.GroupBy(
+                t => t.VesselId,
+                t => new AggregatedTimeseries(t.Value, t.Timestamp)
+            );
+
+            foreach (var r in vesselGroupedQueries)
+            {
+                queryResults.Add(
+                    new AggregatedQueryResult(r, $"{r.Key}{query.Id}", query.Name, r.Key)
+                );
+            }
         }
 
         return queryResults;

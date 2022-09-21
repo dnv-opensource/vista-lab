@@ -1,4 +1,4 @@
-import { DataChannelList, VisVersion } from 'dnv-vista-sdk';
+import { DataChannelList, DataChannelListDto, JSONExtensions, VisVersion } from 'dnv-vista-sdk';
 import React, { createContext, useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { VistaLabApi } from '../apiConfig';
@@ -27,6 +27,7 @@ export type LabContextType = {
     React.SetStateAction<DataChannelList.DataChannelListPackage[] | undefined>
   >;
   hasDataChannel: (dc: DataChannelList.DataChannel) => boolean;
+  fetchDataChannelListPackages: () => void;
 };
 
 type LabContextProviderProps = React.PropsWithChildren<{}>;
@@ -49,14 +50,31 @@ const LabContextProvider = ({ children }: LabContextProviderProps) => {
         vessels: vessels.map(v => ({ id: v.vesselId, numberDataChannels: v.numberOfDataChannels, name: v.name })),
       })
     );
+  }, []);
 
+  const fetchDataChannelListPackages = useCallback(() => {
     const clientVersion = Object.values(VisVersion).indexOf(visVersion);
     VistaLabApi.searchSearch(clientVersion, {
       vesselId: undefined,
       scope: SearchScope._0,
       phrase: '',
+    }).then(async response => {
+      const domainResponse: DataChannelList.DataChannelListPackage[] = [];
+
+      for (let dclp of response) {
+        domainResponse.push(
+          await JSONExtensions.DataChannelList.toDomainModel(
+            dclp as unknown as DataChannelListDto.DataChannelListPackage
+          )
+        );
+      }
+      setDataChannelListPackages(domainResponse);
     });
   }, [visVersion]);
+
+  useEffect(() => {
+    fetchDataChannelListPackages();
+  }, [fetchDataChannelListPackages]);
 
   const isFleet = useMemo(() => {
     return vessel.id === 'fleet';
@@ -79,7 +97,15 @@ const LabContextProvider = ({ children }: LabContextProviderProps) => {
 
   return (
     <LabContext.Provider
-      value={{ dataChannelListPackages, setDataChannelListPackages, hasDataChannel, vessel, fleet, isFleet }}
+      value={{
+        dataChannelListPackages,
+        setDataChannelListPackages,
+        hasDataChannel,
+        fetchDataChannelListPackages,
+        vessel,
+        fleet,
+        isFleet,
+      }}
     >
       {children}
     </LabContext.Provider>

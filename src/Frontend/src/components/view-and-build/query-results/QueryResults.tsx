@@ -1,6 +1,7 @@
 import { AnimatedLineSeries } from '@visx/xychart';
 import React, { useEffect, useMemo, useState } from 'react';
 import { AggregatedQueryResult, AggregatedTimeseries } from '../../../client';
+import { useLabContext } from '../../../context/LabContext';
 import { Panel, usePanelContext } from '../../../context/PanelContext';
 import { removeDuplicateDates, toLocaleTimeRangeString } from '../../../util/date';
 import { isNullOrWhitespace } from '../../../util/string';
@@ -13,14 +14,18 @@ interface Props {
 }
 
 const FALLBACK_DATA: AggregatedQueryResult[] = [
-  { id: 'Nan', name: 'Nan', timeseries: [{ timestamp: new Date(), value: 0 }] },
+  { id: 'Nan', name: 'Nan', timeseries: [{ timestamp: new Date(), value: 0 }], vesselId: 'fleet' },
 ];
 
-export type TimeSeries = AggregatedTimeseries;
+export type TimeSeries = AggregatedTimeseries & {
+  name: string;
+  vesselId?: string;
+};
 
 const QueryResults: React.FC<Props> = ({ panel }) => {
   const [data, setData] = useState<AggregatedQueryResult[]>([]);
   const { getTimeseriesDataForPanel, timeRange } = usePanelContext();
+  const { isFleet } = useLabContext();
   useEffect(() => {
     getTimeseriesDataForPanel(panel).then(setData);
   }, [panel, getTimeseriesDataForPanel, setData]);
@@ -53,8 +58,14 @@ const QueryResults: React.FC<Props> = ({ panel }) => {
 
   const dataSet: { key: string; data: TimeSeries[] }[] =
     data.length > 0 && data.some(d => d.timeseries.length > 0)
-      ? data.map(d => ({ key: d.name, data: d.timeseries }))
-      : FALLBACK_DATA.map(d => ({ key: d.name, data: d.timeseries }));
+      ? data.map(d => ({
+          key: d.id,
+          data: d.timeseries.map(t => ({ ...t, name: d.name, vesselId: isFleet ? d.vesselId : undefined })),
+        }))
+      : FALLBACK_DATA.map(d => ({
+          key: d.id,
+          data: d.timeseries.map(t => ({ ...t, name: d.name })),
+        }));
 
   const bounds = useMemo(() => {
     const nums = dataSet.flatMap(d => d.data.map(dp => dp.value));
