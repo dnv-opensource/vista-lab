@@ -22,6 +22,23 @@
     cursor: pointer;
   }
 
+  &.disabled {
+    pointer-events: none;
+    background-color: $bg-grey;
+    opacity: 0.6;
+  }
+
+  .vessel-id-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+    margin-right: 0.8em;
+    .vessel-icon {
+      color: $grey;
+      font-size: 0.7em;
+    }
+  }
+
   .tags {
     display: flex;
     flex-direction: row;

@@ -23,7 +23,6 @@ const QueryResults: React.FC<Props> = ({ panel }) => {
   const { getTimeseriesDataForPanel, timeRange } = usePanelContext();
   useEffect(() => {
     getTimeseriesDataForPanel(panel).then(setData);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [panel, getTimeseriesDataForPanel, setData]);
 
   const dataChannels = panel.dataChannels;
@@ -53,7 +52,7 @@ const QueryResults: React.FC<Props> = ({ panel }) => {
   }, [activeTimerange]);
 
   const dataSet: { key: string; data: TimeSeries[] }[] =
-    data.length > 0
+    data.length > 0 && data.some(d => d.timeseries.length > 0)
       ? data.map(d => ({ key: d.name, data: d.timeseries }))
       : FALLBACK_DATA.map(d => ({ key: d.name, data: d.timeseries }));
 
@@ -78,7 +77,7 @@ const QueryResults: React.FC<Props> = ({ panel }) => {
         axisFormatter={axisFormatter}
         tooltipComponent={params => <Tooltip params={params} dataChannels={dataChannels} queries={queries} />}
       >
-        {data?.length > 0 &&
+        {dataSet?.length > 0 &&
           panel.threshold &&
           (!isNullOrWhitespace(panel.threshold.deviation) ? (
             <>

@@ -44,11 +44,12 @@ public sealed partial class DataChannelRepository
         [property: DefaultValue("Subtract")] string Name,
         [property: DefaultValue(QueryOperator.Subtract)] QueryOperator Operator,
         [property: DefaultValue(null)] IEnumerable<Query>? SubQueries,
+        [property: DefaultValue("IMO1234567")] string VesselId,
         [property: DefaultValue(
             new string[]
             {
-                "data.dnv.com/IMO1234567/dnv-v2/vis-3-4a/621.21/S90/sec/411.1/C101/meta/qty-mass/cnt-fuel.oil/pos-outlet",
-                "data.dnv.com/IMO1234567/dnv-v2/vis-3-4a/621.21/S90/sec/411.1/C101/meta/qty-mass/cnt-fuel.oil/pos-inlet"
+                "/dnv-v2/vis-3-4a/621.21/S90/sec/411.1/C101/meta/qty-mass/cnt-fuel.oil/pos-outlet",
+                "/dnv-v2/vis-3-4a/621.21/S90/sec/411.1/C101/meta/qty-mass/cnt-fuel.oil/pos-inlet"
             }
         )]
             IEnumerable<string>? DataChannelIds

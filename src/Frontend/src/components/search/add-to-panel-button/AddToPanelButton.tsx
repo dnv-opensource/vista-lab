@@ -1,5 +1,5 @@
+import { DataChannelList } from 'dnv-vista-sdk';
 import React, { useRef, useState } from 'react';
-import { DataChannelWithShipData } from '../../../context/SearchContext';
 import { usePanelContext } from '../../../context/PanelContext';
 import Dropdown from '../../ui/dropdown/Dropdown';
 import Icon from '../../ui/icons/Icon';
@@ -8,7 +8,7 @@ import Input from '../../ui/input/Input';
 import './AddToPanelButton.scss';
 
 interface Props {
-  dataChannel: DataChannelWithShipData;
+  dataChannel: DataChannelList.DataChannel;
 }
 
 const AddToPanelButton: React.FC<Props> = ({ dataChannel }) => {

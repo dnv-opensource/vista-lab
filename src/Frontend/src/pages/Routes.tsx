@@ -77,33 +77,33 @@ const Routes: React.FC = () => {
   return (
     <VISContextProvider>
       <BrowserRouter>
-        <PanelContextProvider>
-          <Suspense fallback={<div>Loading page</div>}>
-            <BrowserRoutes>
-              <Route
-                path={':vessel'}
-                element={
-                  <>
-                    <LabContextProvider>
+        <Suspense fallback={<div>Loading page</div>}>
+          <BrowserRoutes>
+            <Route
+              path={':vessel'}
+              element={
+                <>
+                  <LabContextProvider>
+                    <PanelContextProvider>
                       <Layout>
                         <Outlet />
                       </Layout>
-                    </LabContextProvider>
-                  </>
-                }
-              >
-                {routesList.map(route => (
-                  <Route key={route.path} path={route.path} element={route.element}>
-                    {route.routes}
-                  </Route>
-                ))}
-                <Route path={''} element={<Home />} />
-                <Route path={'*'} element={<Home />} />
-              </Route>
-              <Route path={'*'} element={<Navigate to={'fleet'} />} />
-            </BrowserRoutes>
-          </Suspense>
-        </PanelContextProvider>
+                    </PanelContextProvider>
+                  </LabContextProvider>
+                </>
+              }
+            >
+              {routesList.map(route => (
+                <Route key={route.path} path={route.path} element={route.element}>
+                  {route.routes}
+                </Route>
+              ))}
+              <Route path={''} element={<Home />} />
+              <Route path={'*'} element={<Home />} />
+            </Route>
+            <Route path={'*'} element={<Navigate to={'fleet'} />} />
+          </BrowserRoutes>
+        </Suspense>
       </BrowserRouter>
     </VISContextProvider>
   );

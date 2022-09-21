@@ -481,6 +481,7 @@ export interface Query {
     name: string;
     operator: QueryOperator;
     subQueries: Query[] | undefined;
+    vesselId: string;
     dataChannelIds: string[] | undefined;
 }
 

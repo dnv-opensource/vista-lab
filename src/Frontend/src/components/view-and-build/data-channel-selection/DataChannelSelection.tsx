@@ -1,4 +1,5 @@
 import React from 'react';
+import { useLabContext } from '../../../context/LabContext';
 import { Panel, usePanelContext } from '../../../context/PanelContext';
 import { RoutePath } from '../../../pages/Routes';
 import DataChannelCard, { CardMode } from '../../search/data-channel-card/DataChannelCard';
@@ -15,6 +16,7 @@ interface Props {
 
 const DataChannelSelection: React.FC<Props> = ({ panel }) => {
   const { toggleQueryItemInPanel } = usePanelContext();
+  const { hasDataChannel } = useLabContext();
 
   return (
     <>
@@ -22,13 +24,13 @@ const DataChannelSelection: React.FC<Props> = ({ panel }) => {
       <FlexScrollableField className={'data-channel-selection'}>
         {panel.dataChannels.length > 0 ? (
           panel.dataChannels.map(d => {
-            const isExcludedFromGraph = panel.queryItemsExcludedFromGraph.has(d.Property.UniversalID.toString());
+            const localIdStr = d.dataChannelId.localId.toString();
+            const isExcludedFromGraph = panel.queryItemsExcludedFromGraph.has(localIdStr);
 
             return (
-              <span key={d.Property.UniversalID.toString()} className={'data-channel-card-wrapper'}>
+              <span key={localIdStr} className={'data-channel-card-wrapper'}>
                 <DataChannelCard
                   dataChannel={d}
-                  key={d.Property.UniversalID.toString()}
                   mode={CardMode.LegacyNameCentric}
                   extraNodes={
                     <Icon
@@ -37,6 +39,7 @@ const DataChannelSelection: React.FC<Props> = ({ panel }) => {
                       onClick={() => toggleQueryItemInPanel(panel.id, d)}
                     />
                   }
+                  disabled={!hasDataChannel(d)}
                 />
               </span>
             );

@@ -1,5 +1,5 @@
+import { DataChannelList } from 'dnv-vista-sdk';
 import React, { useCallback, useMemo, useState } from 'react';
-import { DataChannelWithShipData } from '../../../../context/SearchContext';
 import { isDataChannelQueryItem, Panel, Query, usePanelContext } from '../../../../context/PanelContext';
 import useToast, { ToastType } from '../../../../hooks/use-toast';
 import { isNullOrWhitespace } from '../../../../util/string';
@@ -51,9 +51,9 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
   );
 
   const formatOption = useCallback(
-    (option: Query | DataChannelWithShipData): TypeaheadOption<Query | DataChannelWithShipData> => {
+    (option: Query | DataChannelList.DataChannel): TypeaheadOption<Query | DataChannelList.DataChannel> => {
       if (isDataChannelQueryItem(option)) {
-        return { name: 'DataChannel', value: `${option.Property.UniversalID.toString()}`, option };
+        return { name: 'DataChannel', value: `${option.dataChannelId.localId.toString()}`, option };
       }
       return { name: 'Query', value: option.name, option };
     },
@@ -61,7 +61,7 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
   );
 
   const onSelectedOption = useCallback(
-    (option: Query | DataChannelWithShipData) => {
+    (option: Query | DataChannelList.DataChannel) => {
       selectQueryItem(panel.id, query.id, option);
     },
     [selectQueryItem, panel.id, query.id]
@@ -75,7 +75,7 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
   );
 
   const deleteSelectedItem = useCallback(
-    (item: Query | DataChannelWithShipData) => {
+    (item: Query | DataChannelList.DataChannel) => {
       const newQuery = { ...query };
       const items = [...newQuery.items];
       const itemIndex = items.findIndex(i => item.toString() === i.toString());
@@ -86,7 +86,7 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
     [editQuery, panel, query]
   );
 
-  const availableOptions: (Query | DataChannelWithShipData)[] = useMemo(() => {
+  const availableOptions: (Query | DataChannelList.DataChannel)[] = useMemo(() => {
     return [
       ...panel.queries
         .filter(q => q.id !== query.id)
@@ -100,7 +100,7 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
       ...panel.dataChannels.filter(
         dc =>
           !query.items.find(item => {
-            if (isDataChannelQueryItem(item)) return item.Property.UniversalID.equals(dc.Property.UniversalID);
+            if (isDataChannelQueryItem(item)) return item.dataChannelId.localId.equals(dc.dataChannelId.localId);
             return false;
           })
       ),
@@ -157,7 +157,7 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
               let item = undefined;
               let key = '';
               if (isDataChannelQueryItem(i)) {
-                key = i.Property.UniversalID.toString();
+                key = i.dataChannelId.localId.toString();
                 item = <DataChannelCard dataChannel={i} mode={CardMode.LegacyNameCentric} />;
               } else {
                 key = i.id;

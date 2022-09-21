@@ -1,17 +1,15 @@
 import clsx from 'clsx';
 import React from 'react';
-import { useLabContext } from '../../context/LabContext';
-import { routesList } from '../../pages/Routes';
+import { RoutePath, routesList } from '../../pages/Routes';
 import CustomLink from '../ui/router/CustomLink';
 import TextWithIcon from '../ui/text/TextWithIcon';
 import VesselSelector from '../vessel-selector/VesselSelector';
 import './Header.scss';
 
 const Header: React.FC = () => {
-  const { vessel } = useLabContext();
   return (
     <div className={'header-wrapper'}>
-      <CustomLink persistSearch to={`/${vessel.id}`} className={'dnv-logo'} />
+      <CustomLink persistSearch to={RoutePath.Fleet} className={'dnv-logo'} />
       <div className={'routes'}>
         {routesList.map(route => (
           <CustomLink

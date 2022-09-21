@@ -1,14 +1,14 @@
 import { RenderTooltipParams } from '@visx/xychart/lib/components/Tooltip';
 import React from 'react';
-import { DataChannelWithShipData } from '../../../../context/SearchContext';
 import { isDataChannelQueryItem, Query } from '../../../../context/PanelContext';
 import { Accessors } from '../../../graph/LineChart';
 import { TimeSeries } from '../QueryResults';
 import './Tooltip.scss';
+import { DataChannelList } from 'dnv-vista-sdk';
 
 interface Props {
   params: RenderTooltipParams<TimeSeries> & { accessors: Accessors<TimeSeries> };
-  dataChannels: DataChannelWithShipData[];
+  dataChannels: DataChannelList.DataChannel[];
   queries: Query[];
 }
 
@@ -16,16 +16,16 @@ const Tooltip: React.FC<Props> = ({ params, dataChannels, queries }) => {
   const { tooltipData } = params;
   const item = tooltipData?.nearestDatum;
 
-  const resolveUnitSymbols = (item: Query | DataChannelWithShipData): string[] => {
+  const resolveUnitSymbols = (item: Query | DataChannelList.DataChannel): string[] => {
     if (isDataChannelQueryItem(item)) {
-      if (!item.Property?.Unit?.UnitSymbol || !item.Property?.Unit?.QuantityName) return [];
-      return [`${item.Property.Unit.UnitSymbol} (${item.Property.Unit.QuantityName})`];
+      if (!item.property?.unit?.unitSymbol || !item.property?.unit?.quantityName) return [];
+      return [`${item.property.unit.unitSymbol} (${item.property.unit.quantityName})`];
     }
     return item.items.flatMap(i => resolveUnitSymbols(i));
   };
 
   let unit: string | undefined = undefined;
-  const dataChannel = dataChannels.find(dc => dc.Property.UniversalID.toString() === item?.key);
+  const dataChannel = dataChannels.find(dc => dc.dataChannelId.localId.toString() === item?.key);
   if (dataChannel) {
     unit = resolveUnitSymbols(dataChannel)[0];
   } else {

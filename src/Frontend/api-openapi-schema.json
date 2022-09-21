@@ -729,14 +729,18 @@
             "default": null,
             "nullable": true
           },
+          "vesselId": {
+            "type": "string",
+            "default": "IMO1234567"
+          },
           "dataChannelIds": {
             "type": "array",
             "items": {
               "type": "string"
             },
             "default": [
-              "data.dnv.com/IMO1234567/dnv-v2/vis-3-4a/621.21/S90/sec/411.1/C101/meta/qty-mass/cnt-fuel.oil/pos-outlet",
-              "data.dnv.com/IMO1234567/dnv-v2/vis-3-4a/621.21/S90/sec/411.1/C101/meta/qty-mass/cnt-fuel.oil/pos-inlet"
+              "/dnv-v2/vis-3-4a/621.21/S90/sec/411.1/C101/meta/qty-mass/cnt-fuel.oil/pos-outlet",
+              "/dnv-v2/vis-3-4a/621.21/S90/sec/411.1/C101/meta/qty-mass/cnt-fuel.oil/pos-inlet"
             ],
             "nullable": true
           }

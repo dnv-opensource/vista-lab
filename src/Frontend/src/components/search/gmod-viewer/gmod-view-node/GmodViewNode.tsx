@@ -1,6 +1,7 @@
 import clsx from 'clsx';
-import { GmodNode, GmodPath } from 'dnv-vista-sdk';
+import { GmodNode, GmodPath, ShipId } from 'dnv-vista-sdk';
 import React, { useMemo } from 'react';
+import { useLabContext } from '../../../../context/LabContext';
 import { useSearchContext } from '../../../../context/SearchContext';
 import Icon from '../../../ui/icons/Icon';
 import { IconName } from '../../../ui/icons/icons';
@@ -23,6 +24,7 @@ interface Props {
 }
 
 const GmodViewNode: React.FC<Props> = ({ node, mergedChild, skippedParent, parents, path: initPath, extra }) => {
+  const { isFleet } = useLabContext();
   const path = useMemo(
     () => (mergedChild ? new GmodPath(parents.concat(node), mergedChild) : initPath),
     [initPath, mergedChild, parents, node]
@@ -87,6 +89,7 @@ const GmodViewNode: React.FC<Props> = ({ node, mergedChild, skippedParent, paren
               <div key={index} className={'data-channel-card-wrapper'}>
                 <DataChannelCard
                   dataChannel={dc}
+                  shipId={isFleet ? (dc.property.customProperties?.shipId as ShipId) : undefined}
                   mode={CardMode.LegacyNameCentric}
                   extraNodes={<AddToPanelButton dataChannel={dc} />}
                 />

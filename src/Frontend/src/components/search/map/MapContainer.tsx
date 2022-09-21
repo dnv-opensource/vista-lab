@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { VistaLabApi } from '../../../apiConfig';
 import { Feature, FeatureProps } from '../../../client';
-import { useSearchContext } from '../../../context/SearchContext';
+import { useLabContext } from '../../../context/LabContext';
 import Map from '../../map/Map';
 import Icon from '../../ui/icons/Icon';
 import { IconName } from '../../ui/icons/icons';
@@ -13,7 +13,7 @@ import './MapContainer.scss';
 const emptyFeatureCol: FeatureCollection<Point, FeatureProps> = { features: [], type: 'FeatureCollection' };
 
 const MapContainer: React.FC = () => {
-  const { dataChannelListPackages } = useSearchContext();
+  const { dataChannelListPackages } = useLabContext();
   const [features, setFeatures] = useState(emptyFeatureCol);
   const [isVisible, setVisible] = useState(false);
 

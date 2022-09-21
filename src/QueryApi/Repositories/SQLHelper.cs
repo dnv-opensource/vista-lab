@@ -129,19 +129,19 @@ public static class SQLGenerator
         List<(string Query, int As)> subQueries = new();
         var timeRangeSegment = TimeRangeToBetweenRange(timeRange, now, getReport);
 
+        var isFleet = query.VesselId == "fleet";
+
         if (query.DataChannelIds is not null)
         {
             foreach (var id in query.DataChannelIds)
             {
-                var universalId = UniversalIdBuilder.Parse(id);
-
                 var q =
                     @$"
                 SELECT {(!getReport ? "avg" : "sum")}(CAST({nameof(TimeSeriesEntity.Value)} as double)) as {nameof(TimeSeriesEntity.Value)},
                     {nameof(TimeSeriesEntity.Timestamp)}
                 FROM {TimeSeriesEntity.TableName}
-                WHERE {nameof(TimeSeriesEntity.DataChannelId)} = '{universalId.LocalId}'
-                {(universalId.ImoNumber is not null ? $"AND {nameof(TimeSeriesEntity.VesselId)} = '{universalId.ImoNumber}'" : '\n')}
+                WHERE {nameof(TimeSeriesEntity.DataChannelId)} = '{id}'
+                {(!isFleet ? $"AND {nameof(TimeSeriesEntity.VesselId)} = '{query.VesselId}'" : '\n')}
                 {timeRangeSegment}
             ";
 

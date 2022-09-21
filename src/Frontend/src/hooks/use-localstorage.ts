@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 export type LocalStorageSerializer<T> = {
   serialize: (state: T) => string;
-  deserialize: (str: string) => T;
+  deserialize: (str: string) => T | Promise<T>;
 };
 
 // Hook
@@ -36,7 +36,10 @@ const useLocalStorage = <T>(
       const item = window.localStorage.getItem(key);
       if (!item) return;
       // Parse stored json or if none return initialValue
-      setStoredValue(memoizedSerializer.deserialize(item));
+      const deserialize = async () => {
+        setStoredValue(await memoizedSerializer.deserialize(item));
+      };
+      deserialize();
     } catch (error) {
       // If error also return initialValue
       console.log(error);

@@ -17,9 +17,10 @@ export class QueryReport {
       operator: QueryOperator._0,
       subQueries: [],
       dataChannelIds: [
-        `data.dnv.com/${this.vesselId}/dnv-v2/vis-3-4a/621.21/S90/sec/411.1/C101/meta/qty-mass/cnt-fuel.oil/pos-outlet`,
-        `data.dnv.com/${this.vesselId}/dnv-v2/vis-3-4a/621.21/S90/sec/411.1/C101/meta/qty-mass/cnt-fuel.oil/pos-inlet`,
+        `/dnv-v2/vis-3-4a/621.21/S90/sec/411.1/C101/meta/qty-mass/cnt-fuel.oil/pos-outlet`,
+        `/dnv-v2/vis-3-4a/621.21/S90/sec/411.1/C101/meta/qty-mass/cnt-fuel.oil/pos-inlet`,
       ],
+      vesselId: this._vesselId,
     });
     this._queries.push({
       id: this._vesselId + 'fc2',
@@ -27,6 +28,7 @@ export class QueryReport {
       operator: QueryOperator._3,
       subQueries: [this._queries[0], this._queries[0]],
       dataChannelIds: [],
+      vesselId: this._vesselId,
     });
   }
   public get vesselId(): string {
