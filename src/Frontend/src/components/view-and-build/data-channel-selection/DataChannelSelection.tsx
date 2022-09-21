@@ -16,7 +16,7 @@ interface Props {
 
 const DataChannelSelection: React.FC<Props> = ({ panel }) => {
   const { toggleQueryItemInPanel } = usePanelContext();
-  const { hasDataChannel } = useLabContext();
+  const { hasDataChannel, isFleet } = useLabContext();
 
   return (
     <>
@@ -40,6 +40,7 @@ const DataChannelSelection: React.FC<Props> = ({ panel }) => {
                     />
                   }
                   disabled={!hasDataChannel(d)}
+                  withoutData={isFleet}
                 />
               </span>
             );

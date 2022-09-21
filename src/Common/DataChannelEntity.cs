@@ -56,9 +56,7 @@ public sealed record DataChannelEntity(
     string? LocalId_Command,
     string? LocalId_Type,
     string? LocalId_Detail,
-
     string? CalculationInfo,
-
     DateTime Timestamp
 )
 {
@@ -67,7 +65,7 @@ public sealed record DataChannelEntity(
     // /dnv-v2/vis-3-4a/621.21/S90/sec/411.1/C101/meta/qty-mass/cnt-fuel.oil/pos-outlet
 
     // /dnv-v2/vis-3-4a/621.21/S90/sec/411.1/C101/meta/qty-mass/cnt-fuel.oil/pos-inlet
-    // Simple: 
+    // Simple:
     //  Operator:
     //  DataChannelIds: [/dnv-v2/vis-3-4a/621.21/S90/sec/411.1/C101/meta/qty-mass/cnt-fuel.oil/pos-inlet]
 
@@ -92,20 +90,13 @@ public sealed record DataChannelEntity(
         Simple,
         Python
     }
-                                                            // SimpleCalculationConfig | PythonCalculationConfig
-    public sealed record CalculationInfoDto(CalculationType Type, string Configuration)
-    {
-    };
 
-    public sealed record SimpleCalculationConfig(
-        int? Operator,
-        IEnumerable<string> DataChannelIds
-    );
+    // SimpleCalculationConfig | PythonCalculationConfig
+    public sealed record CalculationInfoDto(CalculationType Type, string Configuration) { };
 
-    public sealed record PythonCalculationConfig(
-        string Code,
-        IEnumerable<string> DataChannelIds
-    );
+    public sealed record SimpleCalculationConfig(int? Operator, IEnumerable<string> DataChannelIds);
+
+    public sealed record PythonCalculationConfig(string Code, IEnumerable<string> DataChannelIds);
 
     public static DataChannelEntity? FromSdkDataChannel(
         DataChannel dataChannel,
