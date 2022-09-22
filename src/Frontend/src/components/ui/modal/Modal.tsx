@@ -26,8 +26,6 @@ const Modal: React.FC<React.PropsWithChildren<Props>> = ({
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
   useOutsideClick(modalRef, undefined, () => {
-    console.log('outside');
-
     closeOnOutsideClick && setOpen(false);
   });
 
@@ -41,7 +39,6 @@ const Modal: React.FC<React.PropsWithChildren<Props>> = ({
                 className={'ui-modal-exit-icon'}
                 icon={IconName.XMark}
                 onClick={() => {
-                  console.log('asdasd');
                   setOpen(false);
                 }}
               />

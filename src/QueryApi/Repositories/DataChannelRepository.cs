@@ -1,13 +1,16 @@
 using Common;
 using GeoJSON.Text.Feature;
 using GeoJSON.Text.Geometry;
+using MQTTnet.Client;
 using QueryApi.Models;
 using System.ComponentModel;
 using System.Globalization;
 using System.Text.Json;
 using Vista.SDK;
+using Vista.SDK.Transport.Json;
 using Vista.SDK.Transport.Json.DataChannel;
 using Vista.SDK.Transport.Json.TimeSeriesData;
+using static Common.DataChannelEntity;
 
 namespace QueryApi.Repository;
 
@@ -16,14 +19,14 @@ public enum QueryOperator
     Sum,
     Subtract,
     Times,
-    Divide,
-    Average
+    Divide
 }
 
 public sealed partial class DataChannelRepository
 {
     private readonly ILogger<DataChannelRepository> _logger;
     private readonly QuestDbClient _client;
+    private readonly IMqttClient _mqttClient;
 
     public sealed record Vessel(string VesselId, int NumberOfDataChannels, string? Name);
 
@@ -44,7 +47,6 @@ public sealed partial class DataChannelRepository
         [property: DefaultValue("Subtract")] string Name,
         [property: DefaultValue(QueryOperator.Subtract)] QueryOperator Operator,
         [property: DefaultValue(null)] IEnumerable<Query>? SubQueries,
-        [property: DefaultValue("IMO1234567")] string VesselId,
         [property: DefaultValue(
             new string[]
             {
@@ -53,7 +55,17 @@ public sealed partial class DataChannelRepository
             }
         )]
             IEnumerable<string>? DataChannelIds
-    );
+    )
+    {
+        public static SimpleCalculationConfig ToSimpleCalculationConfig(Query query)
+        {
+            return new SimpleCalculationConfig(
+                (int?)query.Operator,
+                query.DataChannelIds,
+                query.SubQueries?.Select(ToSimpleCalculationConfig)
+            );
+        }
+    };
 
     public sealed record TimeRange(
         [property: DefaultValue(900)] long From,
@@ -78,10 +90,15 @@ public sealed partial class DataChannelRepository
         string VesselId
     );
 
-    public DataChannelRepository(QuestDbClient client, ILogger<DataChannelRepository> logger)
+    public DataChannelRepository(
+        QuestDbClient client,
+        ILogger<DataChannelRepository> logger,
+        IMqttClient mqttClient
+    )
     {
         _client = client;
         _logger = logger;
+        _mqttClient = mqttClient;
     }
 
     public async Task<IEnumerable<Vessel>> GetVessels(CancellationToken cancellationToken)
@@ -402,6 +419,7 @@ public sealed partial class DataChannelRepository
     }
 
     public async Task<IEnumerable<AggregatedQueryResult>> GetTimeSeriesByQueries(
+        string vessel,
         TimeRange timeRange,
         IEnumerable<Query> queries,
         CancellationToken cancellationToken,
@@ -416,6 +434,7 @@ public sealed partial class DataChannelRepository
         foreach (var query in queries)
         {
             var q = SQLGenerator.GenerateQueryTimeseriesSQL(
+                vessel,
                 query,
                 timeRange,
                 now,
@@ -443,12 +462,14 @@ public sealed partial class DataChannelRepository
     }
 
     public async Task<IEnumerable<AggregatedQueryResultAsReport>> GetReportByQueries(
+        string vessel,
         TimeRange timeRange,
         IEnumerable<Query> queries,
         CancellationToken cancellationToken
     )
     {
         var queryResults = await GetTimeSeriesByQueries(
+            vessel,
             timeRange,
             queries,
             cancellationToken,
@@ -470,5 +491,52 @@ public sealed partial class DataChannelRepository
             }
         }
         return reports;
+    }
+
+    public async Task DispatchDataChannelFromQuery(
+        string vessel,
+        DataChannel dataChannel,
+        Query query,
+        CancellationToken cancellationToken
+    )
+    {
+        await _mqttClient.PingAsync();
+
+        var now = DateTimeOffset.UtcNow;
+        var localId = LocalId.Parse(dataChannel.DataChannelID.LocalID);
+
+        // Adding calculationInfo
+        dataChannel.Property.AdditionalProperties.Add(
+            nameof(DataChannelEntity.CalculationInfo),
+            new CalculationInfoDto(
+                CalculationType.Simple,
+                JsonSerializer.Serialize(Query.ToSimpleCalculationConfig(query))
+            )
+        );
+
+        var package = new DataChannelListPackage(
+            new Vista.SDK.Transport.Json.DataChannel.Package(
+                new DataChannelList(new[] { dataChannel }),
+                new Vista.SDK.Transport.Json.DataChannel.Header(
+                    "",
+                    new Vista.SDK.Transport.Json.DataChannel.ConfigurationReference(
+                        query.Id,
+                        now,
+                        VisVersionExtensions.ToVersionString(localId.VisVersion)
+                    ),
+                    now,
+                    vessel,
+                    null
+                )
+            )
+        );
+
+        await _mqttClient.PublishStringAsync(
+            "DataChannelLists",
+            Serializer.Serialize(package),
+            default,
+            default,
+            cancellationToken
+        );
     }
 }

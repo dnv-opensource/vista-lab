@@ -10,6 +10,7 @@ import { IconName } from '../../../ui/icons/icons';
 import Input from '../../../ui/input/Input';
 import Typeahead, { TypeaheadOption } from '../../../ui/typeahead/Typeahead';
 import OperatorSelection, { Operator } from '../operator-selection/OperatorSelection';
+import SaveQueryModal from '../save-query/SaveQueryModal';
 import './QueryCard.scss';
 
 interface Props {
@@ -22,6 +23,8 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
   const { removeQueryFromPanel, editQuery, selectQueryItem, selectQueryOperator, toggleQueryItemInPanel } =
     usePanelContext();
   const { hasDataChannel } = useLabContext();
+
+  const [saveModalOpen, setSaveModalOpen] = useState(false);
 
   const [isCollapsed, setCollapsed] = useState(
     !(panel.queries.length === 1 || panel.queries.findIndex(q => q.id === query.id) === 0)
@@ -127,7 +130,10 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
           onClick={() => toggleQueryItemInPanel(panel.id, query)}
           className={`query-card-action-button query-card-toggle-query ${isQueryExcludedFromGraph ? 'excluded' : ''}`}
         />
-
+        <Icon role={'button'} icon={IconName.FloppyDisk} onClick={() => setSaveModalOpen(true)} />
+        {saveModalOpen && (
+          <SaveQueryModal query={query} panelId={panel.id} open={saveModalOpen} setOpen={setSaveModalOpen} />
+        )}
         <Icon
           role={'button'}
           icon={IconName.Trash}

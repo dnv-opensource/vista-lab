@@ -306,6 +306,47 @@ export class Client extends AuthorizedApiBase {
     }
 
     /**
+     * Save data channel
+     * @param body (optional) 
+     * @return Success
+     */
+    dataChannelSavesDataChannelFromQuery(body: SaveNewDataChannelDto | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/data-channel/create/query";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processDataChannelSavesDataChannelFromQuery(_response);
+        });
+    }
+
+    protected processDataChannelSavesDataChannelFromQuery(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(<any>null);
+    }
+
+    /**
      * Search for gmod paths.
      * @param body (optional) 
      * @return Success
@@ -463,6 +504,7 @@ export interface Package {
 
 export interface PanelQueryDto {
     timeRange: TimeRange;
+    vesselId: string;
     queries: Query[];
 }
 
@@ -482,7 +524,6 @@ export interface Query {
     name: string;
     operator: QueryOperator;
     subQueries: Query[] | undefined;
-    vesselId: string;
     dataChannelIds: string[] | undefined;
 }
 
@@ -491,7 +532,6 @@ export enum QueryOperator {
     _1 = 1,
     _2 = 2,
     _3 = 3,
-    _4 = 4,
 }
 
 export interface Range {
@@ -518,6 +558,12 @@ export enum RestrictionWhiteSpace {
     _0 = 0,
     _1 = 1,
     _2 = 2,
+}
+
+export interface SaveNewDataChannelDto {
+    vessel: string;
+    dataChannel: DataChannel;
+    query: Query;
 }
 
 export interface SearchRequestDto {

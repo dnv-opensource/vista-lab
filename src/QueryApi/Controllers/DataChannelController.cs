@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using QueryApi.Models;
 using QueryApi.Repository;
 using System.ComponentModel;
+using Vista.SDK;
 using Vista.SDK.Transport.Json.DataChannel;
-using Vista.SDK.Transport.Json.TimeSeriesData;
 using static QueryApi.Repository.DataChannelRepository;
 
 namespace QueryApi.Controllers;
@@ -28,7 +27,13 @@ public sealed class DataChannelController : ControllerBase
         string? VesselId
     );
 
-    public sealed record PanelQueryDto(TimeRange TimeRange, IEnumerable<Query> Queries);
+    public sealed record PanelQueryDto(
+        TimeRange TimeRange,
+        string VesselId,
+        IEnumerable<Query> Queries
+    );
+
+    public sealed record SaveNewDataChannelDto(string Vessel, DataChannel DataChannel, Query Query);
 
     public DataChannelController(
         DataChannelRepository dataChannelRepository,
@@ -130,6 +135,7 @@ public sealed class DataChannelController : ControllerBase
     )
     {
         var result = await _dataChannelRepository.GetTimeSeriesByQueries(
+            query.VesselId,
             query.TimeRange,
             query.Queries,
             cancellationToken
@@ -150,10 +156,32 @@ public sealed class DataChannelController : ControllerBase
     > GetTimeSeriesDataByQueriesAsReport(PanelQueryDto query, CancellationToken cancellationToken)
     {
         var report = await _dataChannelRepository.GetReportByQueries(
+            query.VesselId,
             query.TimeRange,
             query.Queries,
             cancellationToken
         );
         return Ok(report);
+    }
+
+    /// <summary>
+    /// Save data channel
+    /// </summary>
+    /// <param name="query"></param>
+    /// <param name="cancellationToken"></param>
+    [HttpPost]
+    [Route("api/data-channel/create/query")]
+    public async Task<ActionResult> SavesDataChannelFromQuery(
+        SaveNewDataChannelDto query,
+        CancellationToken cancellationToken
+    )
+    {
+        await _dataChannelRepository.DispatchDataChannelFromQuery(
+            query.Vessel,
+            query.DataChannel,
+            query.Query,
+            cancellationToken
+        );
+        return Ok();
     }
 }

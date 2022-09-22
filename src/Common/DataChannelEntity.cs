@@ -56,7 +56,9 @@ public sealed record DataChannelEntity(
     string? LocalId_Command,
     string? LocalId_Type,
     string? LocalId_Detail,
+    // Calulations
     string? CalculationInfo,
+    // Timestamp
     DateTime Timestamp
 )
 {
@@ -94,7 +96,11 @@ public sealed record DataChannelEntity(
     // SimpleCalculationConfig | PythonCalculationConfig
     public sealed record CalculationInfoDto(CalculationType Type, string Configuration) { };
 
-    public sealed record SimpleCalculationConfig(int? Operator, IEnumerable<string> DataChannelIds);
+    public sealed record SimpleCalculationConfig(
+        int? Operator,
+        IEnumerable<string>? DataChannelIds,
+        IEnumerable<SimpleCalculationConfig>? SubQueries
+    );
 
     public sealed record PythonCalculationConfig(string Code, IEnumerable<string> DataChannelIds);
 
@@ -111,6 +117,9 @@ public sealed record DataChannelEntity(
         var formatRestriction = property.Format.Restriction;
         var range = property.Range;
         var unit = property.Unit;
+        var calulationInfo = JsonSerializer.Serialize(
+            property.AdditionalProperties[nameof(CalculationInfo)]
+        );
 
         if (!LocalIdBuilder.TryParse(dataChannelId.LocalID, out localIdBuilder))
             return null;
@@ -178,7 +187,7 @@ public sealed record DataChannelEntity(
             localId.Command,
             localId.Type,
             localId.Detail,
-            null,
+            calulationInfo,
             header.DataChannelListID.TimeStamp.DateTime
         );
     }

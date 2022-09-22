@@ -20,7 +20,6 @@ export class QueryReport {
         `/dnv-v2/vis-3-4a/621.21/S90/sec/411.1/C101/meta/qty-mass/cnt-fuel.oil/pos-outlet`,
         `/dnv-v2/vis-3-4a/621.21/S90/sec/411.1/C101/meta/qty-mass/cnt-fuel.oil/pos-inlet`,
       ],
-      vesselId: this._vesselId,
     });
     this._queries.push({
       id: this._vesselId + 'fc2',
@@ -28,7 +27,6 @@ export class QueryReport {
       operator: QueryOperator._3,
       subQueries: [this._queries[0], this._queries[0]],
       dataChannelIds: [],
-      vesselId: this._vesselId,
     });
   }
   public get vesselId(): string {
@@ -46,10 +44,11 @@ export class QueryReport {
       interval: '10s',
     };
 
-    const reportDto = {
+    const reportDto: PanelQueryDto = {
       timeRange: tr,
+      vesselId: this._vesselId,
       queries: this.queries,
-    } as PanelQueryDto;
+    };
     return VistaLabApi.dataChannelGetTimeSeriesDataByQueriesAsReport(reportDto);
   }
 }

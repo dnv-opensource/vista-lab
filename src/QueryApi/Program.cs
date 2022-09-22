@@ -1,9 +1,10 @@
 using Common;
+using MQTTnet;
+using MQTTnet.Client;
 using QueryApi.Repository;
 using SearchClient;
 using Serilog;
 using SimulatorClient;
-using System.Text.Json.Serialization;
 using Vista.SDK;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +18,26 @@ builder.Services.AddSimulatorClient(configuration);
 
 builder.Services.AddSingleton<DataChannelRepository>();
 builder.Services.AddHttpClient<QuestDbClient>();
+
+builder.Services.AddSingleton(
+    sp =>
+    {
+        var ingestHost = Environment.GetEnvironmentVariable("BROKER_SERVER") ?? "localhost";
+
+        const string clientId = "query-client";
+        var mqttOptions = new MqttClientOptionsBuilder()
+            .WithTcpServer(ingestHost, 5050)
+            .WithClientId(clientId)
+            .Build();
+        var mqttFactory = new MqttFactory();
+        var mqttClient = mqttFactory.CreateMqttClient();
+
+        mqttClient.ConnectAsync(mqttOptions).Wait();
+        mqttClient.PingAsync().Wait();
+
+        return mqttClient;
+    }
+);
 
 builder.Services.AddCors(
     options =>

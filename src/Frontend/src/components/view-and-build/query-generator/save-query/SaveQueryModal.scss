@@ -1,0 +1,46 @@
+@import 'src/styles/colors';
+@import 'src/styles/variables';
+
+.save-data-channel-modal {
+  .save-datachannel-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    width: 20em;
+
+    .has-error {
+      border-color: red;
+    }
+
+    .error {
+      font-style: italic;
+    }
+
+    .additional-properties-header {
+      padding: 0.3em 0.5em;
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+      border-radius: 0.1em;
+
+      background-color: $placeholder-grey;
+      color: $bg-grey;
+
+      @include without-text-mark;
+    }
+
+    .additional-properties {
+      padding: 0 0.3em 0.1em 0.3em;
+      max-height: 10em;
+
+      .multi-selection {
+        display: flex;
+        gap: 0.5em;
+      }
+    }
+    .save-button {
+      align-self: end;
+      width: fit-content;
+    }
+  }
+}

@@ -290,6 +290,40 @@
         }
       }
     },
+    "/api/data-channel/create/query": {
+      "post": {
+        "tags": [
+          "DataChannel"
+        ],
+        "summary": "Save data channel",
+        "operationId": "DataChannelSavesDataChannelFromQuery",
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveNewDataChannelDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveNewDataChannelDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveNewDataChannelDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
     "/api/search/{visVersion}": {
       "post": {
         "tags": [
@@ -667,6 +701,9 @@
           "timeRange": {
             "$ref": "#/components/schemas/TimeRange"
           },
+          "vesselId": {
+            "type": "string"
+          },
           "queries": {
             "type": "array",
             "items": {
@@ -732,10 +769,6 @@
             "default": null,
             "nullable": true
           },
-          "vesselId": {
-            "type": "string",
-            "default": "IMO1234567"
-          },
           "dataChannelIds": {
             "type": "array",
             "items": {
@@ -755,8 +788,7 @@
           0,
           1,
           2,
-          3,
-          4
+          3
         ],
         "type": "integer",
         "format": "int32"
@@ -837,6 +869,21 @@
         ],
         "type": "integer",
         "format": "int32"
+      },
+      "SaveNewDataChannelDto": {
+        "type": "object",
+        "properties": {
+          "vessel": {
+            "type": "string"
+          },
+          "dataChannel": {
+            "$ref": "#/components/schemas/DataChannel"
+          },
+          "query": {
+            "$ref": "#/components/schemas/Query"
+          }
+        },
+        "additionalProperties": false
       },
       "SearchRequestDto": {
         "type": "object",

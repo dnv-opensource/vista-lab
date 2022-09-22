@@ -119,6 +119,7 @@ public static class SQLGenerator
     }
 
     public static string GenerateQueryTimeseriesSQL(
+        string vessel,
         Query query,
         TimeRange timeRange,
         long now,
@@ -129,7 +130,7 @@ public static class SQLGenerator
         List<(string Query, int As)> subQueries = new();
         var timeRangeSegment = TimeRangeToBetweenRange(timeRange, now, getReport);
 
-        var isFleet = query.VesselId == "fleet";
+        var isFleet = vessel == "fleet";
 
         if (query.DataChannelIds is not null)
         {
@@ -141,7 +142,7 @@ public static class SQLGenerator
                     {nameof(TimeSeriesEntity.Timestamp)}, {nameof(TimeSeriesEntity.VesselId)}
                 FROM {TimeSeriesEntity.TableName}
                 WHERE {nameof(TimeSeriesEntity.DataChannelId)} = '{id}'
-                {(!isFleet ? $"AND {nameof(TimeSeriesEntity.VesselId)} = '{query.VesselId}'" : '\n')}
+                {(!isFleet ? $"AND {nameof(TimeSeriesEntity.VesselId)} = '{vessel}'" : '\n')}
                 {timeRangeSegment}
             ";
 
@@ -153,7 +154,8 @@ public static class SQLGenerator
         {
             foreach (var subQuery in query.SubQueries)
             {
-                var q = $"{GenerateQueryTimeseriesSQL(subQuery, timeRange, now, ref incrementer)}";
+                var q =
+                    $"{GenerateQueryTimeseriesSQL(vessel, subQuery, timeRange, now, ref incrementer)}";
                 subQueries.Add((q, ++incrementer));
             }
         }

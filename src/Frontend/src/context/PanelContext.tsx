@@ -3,7 +3,7 @@ import { isString } from 'lodash';
 import React, { createContext, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { VistaLabApi } from '../apiConfig';
-import { AggregatedQueryResult, Query as QueryDto, QueryOperator, TimeRange } from '../client';
+import { AggregatedQueryResult, DataChannel, Query as QueryDto, QueryOperator, TimeRange } from '../client';
 import DataChannelCard, { CardMode } from '../components/search/data-channel-card/DataChannelCard';
 import Icon from '../components/ui/icons/Icon';
 import { IconName } from '../components/ui/icons/icons';
@@ -37,6 +37,7 @@ export type PanelContextType = {
   interval: string;
   setInterval: React.Dispatch<React.SetStateAction<string>>;
   getTimeseriesDataForPanel: (panel: Panel) => Promise<AggregatedQueryResult[]>;
+  saveDataChannelFromQuery: (dataChannel: DataChannelList.DataChannel, query: Query) => Promise<void>;
 };
 
 type PanelContextProviderProps = React.PropsWithChildren<{}>;
@@ -83,6 +84,22 @@ export function isDataChannelQueryItem(
   return 'dataChannelId' in item;
 }
 
+const toQueryDto = (q: Query, vesselId: string): QueryDto => {
+  const operatorDto: QueryOperator = +Object.keys(QueryOperator)[
+    Object.values(Operator).indexOf(q.operator!)
+  ] as QueryOperator;
+
+  return {
+    name: q.name,
+    id: q.id,
+    dataChannelIds: (q.items.filter(q => isDataChannelQueryItem(q)) as DataChannelList.DataChannel[]).map(u =>
+      u.dataChannelId.localId.toString()
+    ),
+    subQueries: (q.items.filter(q => !isDataChannelQueryItem(q)) as Query[]).map(q => toQueryDto(q, vesselId)),
+    operator: operatorDto,
+  };
+};
+
 const DEFAULT_QUERY: Query = { id: Date.now() + '', name: 'A', items: [] };
 const DEFAULT_PANEL: Panel = {
   id: 'Default',
@@ -97,7 +114,7 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
   const [interval, setInterval] = useLocalStorage<string>('vista-lab-interval', DEFAULT_INTERVAL);
   const [timeRange, setTimeRange] = useLocalStorage<RelativeTimeRange>('vista-lab-time-range', DEFAULT_TIME_RANGE);
   const { gmod, codebooks } = useVISContext();
-  const { vessel } = useLabContext();
+  const { vessel, fleet } = useLabContext();
   const { addToast } = useToast();
   const navigate = useNavigate();
 
@@ -192,23 +209,6 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
         interval: panel.interval ?? interval,
       };
 
-      const toQueryDto = (q: Query): QueryDto => {
-        const operatorDto: QueryOperator = +Object.keys(QueryOperator)[
-          Object.values(Operator).indexOf(q.operator!)
-        ] as QueryOperator;
-
-        return {
-          name: q.name,
-          id: q.id,
-          dataChannelIds: (q.items.filter(q => isDataChannelQueryItem(q)) as DataChannelList.DataChannel[]).map(u =>
-            u.dataChannelId.localId.toString()
-          ),
-          subQueries: (q.items.filter(q => !isDataChannelQueryItem(q)) as Query[]).map(q => toQueryDto(q)),
-          operator: operatorDto,
-          vesselId: vessel.id,
-        };
-      };
-
       const toQueryDtoFromDataChannelId = (dataChannel: DataChannelList.DataChannel): QueryDto => {
         const localIdStr = dataChannel.dataChannelId.localId.toString();
 
@@ -218,7 +218,6 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
           dataChannelIds: [localIdStr],
           operator: 0,
           subQueries: [],
-          vesselId: vessel.id,
         };
       };
 
@@ -226,13 +225,14 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
         timeRange: tr,
         queries: panel.queries
           .filter(q => !panel.queryItemsExcludedFromGraph.has(q.id))
-          .map(q => toQueryDto(q))
+          .map(q => toQueryDto(q, vessel.id))
           .concat(
             ...panel.dataChannels
               .filter(d => !panel.queryItemsExcludedFromGraph.has(d.dataChannelId.localId.toString()))
               .map(toQueryDtoFromDataChannelId)
           )
           .filter(q => q.dataChannelIds?.length),
+        vesselId: vessel.id,
       };
 
       return VistaLabApi.dataChannelGetTimeSeriesDataByQueries(data);
@@ -315,6 +315,7 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
         );
 
         const panel = { ...newPanels[panelIndex] };
+
         if (panel.dataChannels.some(d => d.dataChannelId.localId.equals(dataChannel.dataChannelId.localId))) {
           addToast(ToastType.Warning, 'Duplicate data channel', dataChannelEl);
           return panels;
@@ -475,11 +476,33 @@ const PanelContextProvider = ({ children }: PanelContextProviderProps) => {
     [setPanels]
   );
 
+  const saveDataChannelFromQuery = useCallback(
+    async (dataChannel: DataChannelList.DataChannel, query: Query) => {
+      if (vessel.id === 'fleet') {
+        for (let vessel of fleet.vessels) {
+          await VistaLabApi.dataChannelSavesDataChannelFromQuery({
+            dataChannel: JSONExtensions.DataChannel.toJsonDto(dataChannel) as unknown as DataChannel,
+            query: toQueryDto(query, vessel.id),
+            vessel: vessel.id,
+          });
+        }
+        return Promise.resolve();
+      }
+      return VistaLabApi.dataChannelSavesDataChannelFromQuery({
+        dataChannel: JSONExtensions.DataChannel.toJsonDto(dataChannel) as unknown as DataChannel,
+        query: toQueryDto(query, vessel.id),
+        vessel: vessel.id,
+      });
+    },
+    [vessel, fleet]
+  );
+
   return (
     <PanelContext.Provider
       value={{
         timeRange,
         getTimeseriesDataForPanel,
+        saveDataChannelFromQuery,
         setTimeRange,
         interval,
         setInterval,
