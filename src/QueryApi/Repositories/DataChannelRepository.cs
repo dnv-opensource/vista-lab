@@ -10,7 +10,6 @@ using Vista.SDK;
 using Vista.SDK.Transport.Json;
 using Vista.SDK.Transport.Json.DataChannel;
 using Vista.SDK.Transport.Json.TimeSeriesData;
-using static Common.DataChannelEntity;
 
 namespace QueryApi.Repository;
 
@@ -61,8 +60,19 @@ public sealed partial class DataChannelRepository
         {
             return new SimpleCalculationConfig(
                 (int?)query.Operator,
-                query.DataChannelIds,
-                query.SubQueries?.Select(ToSimpleCalculationConfig)
+                query.DataChannelIds ?? Array.Empty<string>(),
+                query.SubQueries?.Select(ToSimpleCalculationConfig).ToArray()
+            );
+        }
+
+        public static Query ToQuery(SimpleCalculationConfig query)
+        {
+            return new Query(
+                "",
+                "",
+                (QueryOperator)(query.Operator ?? 0),
+                query.SubQueries?.Select(ToQuery).ToArray(),
+                query.DataChannelIds.Count() == 0 ? null : query.DataChannelIds
             );
         }
     };
@@ -347,10 +357,16 @@ public sealed partial class DataChannelRepository
 
     public async Task<TimeSeriesDataWithProps> GetLatestTimeSeriesForDataChannel(
         string localId,
-        string? vesselId,
+        string vesselId,
         CancellationToken cancellationToken
     )
     {
+        var dataChannels = await GetDataChannels(new[] { localId }, vesselId, cancellationToken);
+        var dataChannel = dataChannels.SingleOrDefault();
+
+        if (dataChannel is null)
+            return new TimeSeriesDataWithProps(null, null);
+
         var response = await _client.Query(
             @$"
                 SELECT t.*, d.Unit_UnitSymbol, d.Unit_QuantityName, d.Range_High, d.Range_Low, d.Name
@@ -418,6 +434,67 @@ public sealed partial class DataChannelRepository
         return geoJson.ToArray();
     }
 
+    static IEnumerable<string> GetQueryDataChannelIds(IEnumerable<Query> queries) =>
+        queries.SelectMany(
+            q =>
+                q.SubQueries?.Any() ?? false
+                    ? (q.DataChannelIds ?? Array.Empty<string>()).Concat(
+                          GetQueryDataChannelIds(q.SubQueries)
+                      )
+                    : q.DataChannelIds ?? Array.Empty<string>()
+        );
+
+    private async Task<
+        IReadOnlyDictionary<(string VesselId, string LocalId), IEnumerable<AggregatedTimeseries>?>
+    > ResolveCalculatedDataChannels(
+        string vessel,
+        TimeRange timeRange,
+        IEnumerable<Query> queries,
+        CancellationToken cancellationToken
+    )
+    {
+        var dataChannelIds = GetQueryDataChannelIds(queries).Distinct().ToArray();
+
+        var dataChannels = await GetDataChannels(dataChannelIds, vessel, cancellationToken);
+        var resolveCalculatedChannels = new Queue<DataChannelInfo>(dataChannels);
+
+        var resolved =
+            new Dictionary<(string VesselId, string LocalId), IEnumerable<AggregatedTimeseries>?>();
+
+        while (resolveCalculatedChannels.Count > 0)
+        {
+            var dataChannel = resolveCalculatedChannels.Dequeue();
+            var calculationInfoJson = dataChannel.CalculationInfo;
+            if (calculationInfoJson is null)
+            {
+                resolved[(dataChannel.VesselId, dataChannel.LocalId)] = null;
+                continue;
+            }
+
+            var calculationInfo = CalculationInfoDto.Deserialize(calculationInfoJson);
+            var calculationConfig = calculationInfo.GetConfigurationObject();
+            if (calculationConfig is SimpleCalculationConfig simpleConfig)
+            {
+                var query = Query.ToQuery(simpleConfig);
+                var results = await GetTimeSeriesByQueries(
+                    vessel,
+                    timeRange,
+                    new[] { query },
+                    cancellationToken
+                );
+                resolved[(dataChannel.VesselId, dataChannel.LocalId)] = results.Single().Timeseries;
+            }
+            else
+            {
+                throw new InvalidOperationException(
+                    "Invalid calculation config: " + calculationConfig.GetType()
+                );
+            }
+        }
+
+        return resolved;
+    }
+
     public async Task<IEnumerable<AggregatedQueryResult>> GetTimeSeriesByQueries(
         string vessel,
         TimeRange timeRange,
@@ -429,7 +506,16 @@ public sealed partial class DataChannelRepository
         var now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         var incrementer = 0;
 
+        var calculatedTimeseries = await ResolveCalculatedDataChannels(
+            vessel,
+            timeRange,
+            queries,
+            cancellationToken
+        );
+
         var queryResults = new List<AggregatedQueryResult>();
+
+        var isFleet = vessel is "fleet";
 
         foreach (var query in queries)
         {
@@ -438,16 +524,81 @@ public sealed partial class DataChannelRepository
                 query,
                 timeRange,
                 now,
+                calculatedTimeseries,
                 ref incrementer,
                 getReport
             );
+
+            var dataChannelIds = GetQueryDataChannelIds(new[] { query }).Distinct().ToArray();
+
+            var useCalculatedTimeseries = calculatedTimeseries
+                .Where(kvp => dataChannelIds.Contains(kvp.Key.LocalId) && kvp.Value is not null)
+                .GroupBy(
+                    kvp => kvp.Key.VesselId,
+                    kvp =>
+                        (
+                            Lookup: kvp.Value!.ToDictionary(v => v.Timestamp, v => v.Value),
+                            Timeseries: kvp.Value
+                        )
+                )
+                .ToDictionary(grp => grp.Key, grp => grp.ToArray());
+
+            if (q == string.Empty)
+            {
+                foreach (var r in useCalculatedTimeseries)
+                {
+                    if (r.Value.Length == 1)
+                    {
+                        queryResults.Add(
+                            new AggregatedQueryResult(
+                                r.Value[0].Timeseries!,
+                                $"{r.Key}{query.Id}",
+                                query.Name,
+                                r.Key
+                            )
+                        );
+                    }
+                }
+                continue;
+            }
 
             var response = await _client.Query(q, cancellationToken);
             var timeseries = ToAggregatedTimeseriesDto(response);
 
             var vesselGroupedQueries = timeseries.GroupBy(
                 t => t.VesselId,
-                t => new AggregatedTimeseries(t.Value, t.Timestamp)
+                t =>
+                {
+                    var value = t.Value;
+                    if (useCalculatedTimeseries.TryGetValue(t.VesselId, out var data))
+                    {
+                        foreach (var series in data)
+                        {
+                            if (
+                                series.Lookup is null
+                                || !series.Lookup.TryGetValue(t.Timestamp, out var subValue)
+                            )
+                                continue;
+
+                            switch (query.Operator)
+                            {
+                                case QueryOperator.Subtract:
+                                    value -= subValue;
+                                    break;
+                                case QueryOperator.Sum:
+                                    value += subValue;
+                                    break;
+                                case QueryOperator.Times:
+                                    value *= subValue;
+                                    break;
+                                case QueryOperator.Divide:
+                                    value /= subValue;
+                                    break;
+                            }
+                        }
+                    }
+                    return new AggregatedTimeseries(t.Value, t.Timestamp);
+                }
             );
 
             foreach (var r in vesselGroupedQueries)
@@ -459,6 +610,59 @@ public sealed partial class DataChannelRepository
         }
 
         return queryResults;
+    }
+
+    private sealed record DataChannelInfo(
+        string InternalId,
+        string VesselId,
+        string LocalId,
+        string? CalculationInfo
+    );
+
+    private async Task<IEnumerable<DataChannelInfo>> GetDataChannels(
+        IEnumerable<string> dataChannelIds,
+        string vessel,
+        CancellationToken cancellationToken
+    )
+    {
+        var isFleet = vessel is "fleet";
+
+        var localIds = string.Join(", ", dataChannelIds.Select(i => $"'{i}'"));
+        var sql =
+            @$"
+            SELECT
+                {nameof(DataChannelEntity.InternalId)},
+                {nameof(DataChannelEntity.VesselId)},
+                {nameof(DataChannelEntity.LocalId)},
+                {nameof(DataChannelEntity.CalculationInfo)}
+            FROM '{DataChannelEntity.TableName}'
+            WHERE
+            {(isFleet ? "" : $"{nameof(DataChannelEntity.VesselId)} = '{vessel}' AND ")}
+            {nameof(DataChannelEntity.LocalId)} IN ({localIds})
+        ";
+
+        var response = await _client.Query(sql, cancellationToken);
+
+        return response.DataSet
+            .Select(
+                (s, i) =>
+                {
+                    var internalId = response
+                        .GetValue(i, nameof(DataChannelEntity.InternalId))
+                        .GetStringNonNull();
+                    var vesselId = response
+                        .GetValue(i, nameof(DataChannelEntity.VesselId))
+                        .GetStringNonNull();
+                    var localId = response
+                        .GetValue(i, nameof(DataChannelEntity.LocalId))
+                        .GetStringNonNull();
+                    var calculationInfo = response
+                        .GetValue(i, nameof(DataChannelEntity.CalculationInfo))
+                        .GetString();
+                    return new DataChannelInfo(internalId, vesselId, localId, calculationInfo);
+                }
+            )
+            .ToArray();
     }
 
     public async Task<IEnumerable<AggregatedQueryResultAsReport>> GetReportByQueries(
@@ -508,10 +712,7 @@ public sealed partial class DataChannelRepository
         // Adding calculationInfo
         dataChannel.Property.AdditionalProperties.Add(
             nameof(DataChannelEntity.CalculationInfo),
-            new CalculationInfoDto(
-                CalculationType.Simple,
-                JsonSerializer.Serialize(Query.ToSimpleCalculationConfig(query))
-            )
+            CalculationInfoDto.CreateSimple(Query.ToSimpleCalculationConfig(query))
         );
 
         var package = new DataChannelListPackage(

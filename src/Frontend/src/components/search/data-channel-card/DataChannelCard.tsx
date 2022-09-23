@@ -33,7 +33,7 @@ const DataChannelCard: React.FC<Props> = (props: Props) => {
       setLoading(true);
 
       VistaLabApi.dataChannelGetLatestTimeSeriesValue({
-        vesselId: shipId?.toString(),
+        vesselId: shipId!.toString(),
         localId: localId.toString(),
       })
         .then(res => {

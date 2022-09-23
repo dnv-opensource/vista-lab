@@ -591,7 +591,7 @@ export interface TimeSeriesDataWithProps {
 
 export interface TimeSeriesRequestDto {
     localId: string;
-    vesselId: string | undefined;
+    vesselId: string;
 }
 
 export interface Unit {

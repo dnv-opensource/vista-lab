@@ -40,14 +40,16 @@ public sealed class DataChannelRepository : IHostedService
         //TODO          Upgrade it to the latest version and insert on DataChannel
         //TODO          Add all possible versions to DataChannel_InternalId
 
-        var dataChannels = dataChannelList.Package.DataChannelList.DataChannel
-            .Select(d => DataChannelEntity.FromSdkDataChannel(d, dataChannelList.Package.Header))
-            .Where(d => d is not null)
-            .Cast<DataChannelEntity>()
-            .ToArray();
-
         try
         {
+            var dataChannels = dataChannelList.Package.DataChannelList.DataChannel
+                .Select(
+                    d => DataChannelEntity.FromSdkDataChannel(d, dataChannelList.Package.Header)
+                )
+                .Where(d => d is not null)
+                .Cast<DataChannelEntity>()
+                .ToArray();
+
             _logger.LogInformation("Inserting data into DataChannel");
             var client = _questDbClient.Client;
 

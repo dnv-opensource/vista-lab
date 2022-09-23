@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using QueryApi.Repository;
 using System.ComponentModel;
-using Vista.SDK;
 using Vista.SDK.Transport.Json.DataChannel;
 using static QueryApi.Repository.DataChannelRepository;
 
@@ -24,7 +23,7 @@ public sealed class DataChannelController : ControllerBase
             "/dnv-v2/vis-3-4a/411.1-4/C101.31-3/meta/qty-temperature/pos-inlet"
         )]
             string LocalId,
-        string? VesselId
+        string VesselId
     );
 
     public sealed record PanelQueryDto(

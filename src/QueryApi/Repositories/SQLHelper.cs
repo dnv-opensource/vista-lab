@@ -123,6 +123,10 @@ public static class SQLGenerator
         Query query,
         TimeRange timeRange,
         long now,
+        IReadOnlyDictionary<
+            (string VesselId, string LocalId),
+            IEnumerable<AggregatedTimeseries>?
+        > calculatedTimeseries,
         ref int incrementer,
         bool getReport = false
     )
@@ -136,15 +140,18 @@ public static class SQLGenerator
         {
             foreach (var id in query.DataChannelIds)
             {
+                if (!calculatedTimeseries.Any(kvp => kvp.Key.LocalId == id && kvp.Value is null))
+                    continue;
+
                 var q =
                     @$"
-                SELECT {(!getReport ? "avg" : "sum")}(CAST({nameof(TimeSeriesEntity.Value)} as double)) as {nameof(TimeSeriesEntity.Value)},
-                    {nameof(TimeSeriesEntity.Timestamp)}, {nameof(TimeSeriesEntity.VesselId)}
-                FROM {TimeSeriesEntity.TableName}
-                WHERE {nameof(TimeSeriesEntity.DataChannelId)} = '{id}'
-                {(!isFleet ? $"AND {nameof(TimeSeriesEntity.VesselId)} = '{vessel}'" : '\n')}
-                {timeRangeSegment}
-            ";
+                    SELECT {(!getReport ? "avg" : "sum")}(CAST({nameof(TimeSeriesEntity.Value)} as double)) as {nameof(TimeSeriesEntity.Value)},
+                        {nameof(TimeSeriesEntity.Timestamp)}, {nameof(TimeSeriesEntity.VesselId)}
+                    FROM {TimeSeriesEntity.TableName}
+                    WHERE {nameof(TimeSeriesEntity.DataChannelId)} = '{id}'
+                    {(!isFleet ? $"AND {nameof(TimeSeriesEntity.VesselId)} = '{vessel}'" : '\n')}
+                    {timeRangeSegment}
+                ";
 
                 subQueries.Add((q, ++incrementer));
             }
@@ -155,10 +162,13 @@ public static class SQLGenerator
             foreach (var subQuery in query.SubQueries)
             {
                 var q =
-                    $"{GenerateQueryTimeseriesSQL(vessel, subQuery, timeRange, now, ref incrementer)}";
+                    $"{GenerateQueryTimeseriesSQL(vessel, subQuery, timeRange, now, calculatedTimeseries, ref incrementer)}";
                 subQueries.Add((q, ++incrementer));
             }
         }
+
+        if (subQueries.Count == 0)
+            return string.Empty;
 
         var aggregation = string.Join(
             ToOperatorString(query.Operator),
@@ -175,7 +185,7 @@ public static class SQLGenerator
                 {q.Query}
             ) as q{subQueries[subQueryIndex].As}
             ON q{subQueries[subQueryIndex - 1].As}.{nameof(TimeSeriesEntity.Timestamp)} = q{subQueries[subQueryIndex++].As}.{nameof(TimeSeriesEntity.Timestamp)}"; })}
-";
+        ";
 
         return generatedQuery;
     }

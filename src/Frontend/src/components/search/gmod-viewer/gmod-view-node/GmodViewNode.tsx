@@ -33,8 +33,8 @@ const GmodViewNode: React.FC<Props> = ({ node, mergedChild, skippedParent, paren
   const { getDataChannelsFromGmodPath } = useSearchContext();
 
   const dataChannels = useMemo(() => {
-    return getDataChannelsFromGmodPath(path, vessel.id);
-  }, [path, getDataChannelsFromGmodPath, vessel]);
+    return getDataChannelsFromGmodPath(path, isFleet ? undefined : vessel.id);
+  }, [path, getDataChannelsFromGmodPath, vessel, isFleet]);
 
   const items = useMemo(() => {
     const items: { node: GmodNode; parents: GmodNode[] }[] = [];
@@ -89,7 +89,7 @@ const GmodViewNode: React.FC<Props> = ({ node, mergedChild, skippedParent, paren
               <div key={index} className={'data-channel-card-wrapper'}>
                 <DataChannelCard
                   dataChannel={dc}
-                  shipId={isFleet ? (dc.property.customProperties?.shipId as ShipId) : undefined}
+                  shipId={dc.property.customProperties?.shipId as ShipId}
                   mode={CardMode.LegacyNameCentric}
                   extraNodes={<AddToExperimentButton dataChannel={dc} />}
                 />

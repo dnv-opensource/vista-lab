@@ -64,45 +64,8 @@ public sealed record DataChannelEntity(
 {
     public static readonly string TableName = "DataChannel";
 
-    // /dnv-v2/vis-3-4a/621.21/S90/sec/411.1/C101/meta/qty-mass/cnt-fuel.oil/pos-outlet
-
-    // /dnv-v2/vis-3-4a/621.21/S90/sec/411.1/C101/meta/qty-mass/cnt-fuel.oil/pos-inlet
-    // Simple:
-    //  Operator:
-    //  DataChannelIds: [/dnv-v2/vis-3-4a/621.21/S90/sec/411.1/C101/meta/qty-mass/cnt-fuel.oil/pos-inlet]
-
-    // Simple: /dnv-v2/vis-3-4a/620.1/M201.32/sec/411.1/C101/meta/qty-mass/cnt-low.sulphur.heavy.fuel.oil
-    //  Operator: -
-    //  DataChannelIds: [outlet, inlet]
-
-    // Python: /dnv-v2/vis-3-4a/620.1/M201.32/sec/411.1/C101/meta/detail-turbo-charger-efficiency
-    //  Code:
-    //   import from ...
-    //   def calculate(start, stop, data_channels):
-    //       outlet = data_channels["/dnv-v2/vis-3-4a/621.21/S90/sec/411.1/C101/meta/qty-mass/cnt-fuel.oil/pos-outlet"]
-    //       inlet = data_channels["/dnv-v2/vis-3-4a/621.21/S90/sec/411.1/C101/meta/qty-mass/cnt-fuel.oil/pos-inlet"]
-    //       return [o.value - i.value for ...]
-
-
     public static DataChannelEntity? FromSdkDataChannel(DataChannel dataChannel, Header header) =>
         FromSdkDataChannel(dataChannel, header, out _);
-
-    public enum CalculationType
-    {
-        Simple,
-        Python
-    }
-
-    // SimpleCalculationConfig | PythonCalculationConfig
-    public sealed record CalculationInfoDto(CalculationType Type, string Configuration) { };
-
-    public sealed record SimpleCalculationConfig(
-        int? Operator,
-        IEnumerable<string>? DataChannelIds,
-        IEnumerable<SimpleCalculationConfig>? SubQueries
-    );
-
-    public sealed record PythonCalculationConfig(string Code, IEnumerable<string> DataChannelIds);
 
     public static DataChannelEntity? FromSdkDataChannel(
         DataChannel dataChannel,
@@ -117,9 +80,16 @@ public sealed record DataChannelEntity(
         var formatRestriction = property.Format.Restriction;
         var range = property.Range;
         var unit = property.Unit;
-        var calulationInfo = JsonSerializer.Serialize(
-            property.AdditionalProperties[nameof(CalculationInfo)]
-        );
+        CalculationInfoDto? calculationInfo = null;
+        if (
+            property.AdditionalProperties.TryGetValue(
+                nameof(CalculationInfo),
+                out var calculationInfoObj
+            )
+        )
+            calculationInfo = CalculationInfoDto.Deserialize(
+                ((JsonElement)calculationInfoObj).GetRawText()
+            );
 
         if (!LocalIdBuilder.TryParse(dataChannelId.LocalID, out localIdBuilder))
             return null;
@@ -187,7 +157,7 @@ public sealed record DataChannelEntity(
             localId.Command,
             localId.Type,
             localId.Detail,
-            calulationInfo,
+            calculationInfo?.Serialize(),
             header.DataChannelListID.TimeStamp.DateTime
         );
     }
