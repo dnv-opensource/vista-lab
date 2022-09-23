@@ -1,23 +1,26 @@
 import React, { useCallback, useMemo } from 'react';
-import { Panel, usePanelContext } from '../../../../context/PanelContext';
+import { Experiment, useExperimentContext } from '../../../../context/ExperimentContext';
 import RelativeTimeRangePicker from '../../../ui/time-pickers/relative-time-range-picker/RelativeTimeRangePicker';
 import { RelativeTimeRange } from '../../../ui/time-pickers/relative-time-range-picker/types';
 import './TimeRangePicker.scss';
 
 interface Props {
-  panel?: Panel;
+  experiment?: Experiment;
 }
 
-const TimeRangePicker: React.FC<Props> = ({ panel }) => {
-  const { setTimeRange, timeRange, editPanel } = usePanelContext();
+const TimeRangePicker: React.FC<Props> = ({ experiment }) => {
+  const { setTimeRange, timeRange, editExperiment } = useExperimentContext();
 
-  const currentTimeRange = useMemo(() => (panel?.timeRange ? panel.timeRange : timeRange), [panel, timeRange]);
+  const currentTimeRange = useMemo(
+    () => (experiment?.timeRange ? experiment.timeRange : timeRange),
+    [experiment, timeRange]
+  );
   const currentTimeRangeSetter = useCallback(
     (range: RelativeTimeRange) => {
-      if (!panel) return setTimeRange(range);
-      return editPanel({ ...panel!, timeRange: range });
+      if (!experiment) return setTimeRange(range);
+      return editExperiment({ ...experiment!, timeRange: range });
     },
-    [panel, setTimeRange, editPanel]
+    [experiment, setTimeRange, editExperiment]
   );
 
   return (

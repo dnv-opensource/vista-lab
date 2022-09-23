@@ -6,59 +6,62 @@ import Checkbox from '../../../components/ui/checkbox/Checkbox';
 import Icon from '../../../components/ui/icons/Icon';
 import { IconName } from '../../../components/ui/icons/icons';
 import DataChannelSelection from '../../../components/view-and-build/data-channel-selection/DataChannelSelection';
-import CombinedTimePickers from '../../../components/view-and-build/panel-pickers/combined-time-pickers/CombinedTimePickers';
+import CombinedTimePickers from '../../../components/view-and-build/experiment-pickers/combined-time-pickers/CombinedTimePickers';
 import QueryGenerator from '../../../components/view-and-build/query-generator/QueryGenerator';
 import ResultEllipsisMenu from '../../../components/view-and-build/query-generator/result-ellipsis-menu/ResultEllipsisMenu';
-import { usePanelContext } from '../../../context/PanelContext';
+import { useExperimentContext } from '../../../context/ExperimentContext';
 import { RoutePath } from '../../Routes';
-import './Panel.scss';
+import './Experiment.scss';
 const QueryResults = React.lazy(() => import('../../../components/view-and-build/query-results/QueryResults'));
 
-const Panel: React.FC = () => {
+const Experiment: React.FC = () => {
   const navigate = useNavigate();
-  const { panelId } = useParams();
-  const { getPanel, editPanel, timeRange, interval } = usePanelContext();
-  const initPanel = useMemo(() => (panelId ? getPanel(panelId) : undefined), [getPanel, panelId]);
+  const { experimentId } = useParams();
+  const { getExperiment, editExperiment, timeRange, interval } = useExperimentContext();
+  const initExperiment = useMemo(
+    () => (experimentId ? getExperiment(experimentId) : undefined),
+    [getExperiment, experimentId]
+  );
 
-  if (!initPanel) navigate(RoutePath.ViewAndBuild);
-  const panel = initPanel!;
+  if (!initExperiment) navigate(RoutePath.ViewAndBuild);
+  const experiment = initExperiment!;
 
-  const isCustomTimeRange = !!panel.timeRange || !!panel.interval;
+  const isCustomTimeRange = !!experiment.timeRange || !!experiment.interval;
 
   return (
     <>
-      <ResultBar className={'panel-nav-bar'}>
+      <ResultBar className={'experiment-nav-bar'}>
         <VesselLink className={'back'} to={RoutePath.ViewAndBuild} persistSearch>
           <Icon icon={IconName.LeftArrow} />
-          {panelId}
+          {experimentId}
         </VesselLink>
-        <div className={'panel-time-pickers'}>
+        <div className={'experiment-time-pickers'}>
           <Checkbox
             label="Custom"
             className={'custom-time-range-checkbox'}
             checked={isCustomTimeRange}
             onChange={checked => {
-              if (checked) return editPanel({ ...panel, interval, timeRange });
-              return editPanel({ ...panel, interval: undefined, timeRange: undefined });
+              if (checked) return editExperiment({ ...experiment, interval, timeRange });
+              return editExperiment({ ...experiment, interval: undefined, timeRange: undefined });
             }}
           />
-          <CombinedTimePickers panel={isCustomTimeRange ? panel : undefined} />
+          <CombinedTimePickers experiment={isCustomTimeRange ? experiment : undefined} />
         </div>
       </ResultBar>
-      <div className={'vista-panel-container-grid'}>
-        <div className={'panel-result-graph-wrapper item'}>
-          <ResultEllipsisMenu panel={panel} />
-          <QueryResults panel={panel} />
+      <div className={'vista-experiment-container-grid'}>
+        <div className={'experiment-result-graph-wrapper item'}>
+          <ResultEllipsisMenu experiment={experiment} />
+          <QueryResults experiment={experiment} />
         </div>
         <div className={'available-data-channels item'}>
-          <DataChannelSelection panel={panel} />
+          <DataChannelSelection experiment={experiment} />
         </div>
         <div className={'query-selection item'}>
-          <QueryGenerator panel={panel} />
+          <QueryGenerator experiment={experiment} />
         </div>
       </div>
     </>
   );
 };
 
-export default Panel;
+export default Experiment;

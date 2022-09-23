@@ -1,8 +1,8 @@
 @import 'src/styles/global';
 @import 'src/styles/colors';
 
-.add-to-panel-wrapper {
-  .add-to-panel-icon {
+.add-to-experiment-wrapper {
+  .add-to-experiment-icon {
     padding: 0.5em;
     box-shadow: $drop-shadow;
     border: $drop-shadow-border;
@@ -13,7 +13,7 @@
     }
   }
 }
-.add-panel-dropdown {
+.add-experiment-dropdown {
   display: flex;
   flex-direction: column;
   gap: 0.4em;
@@ -23,7 +23,7 @@
     padding: 0 0.7em;
   }
 
-  .panel-list-item {
+  .experiment-list-item {
     padding: 0.3em 0.7em;
     display: flex;
     cursor: pointer;
@@ -32,13 +32,13 @@
       background-color: $bg-grey;
     }
 
-    .panel-list-item-id {
+    .experiment-list-item-id {
       font-weight: 500;
       flex: 1;
     }
   }
 
-  .empty-panels {
+  .empty-experiments {
     font-size: 0.8em;
     font-style: italic;
   }

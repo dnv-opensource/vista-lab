@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLabContext } from '../../../context/LabContext';
-import { Panel, usePanelContext } from '../../../context/PanelContext';
+import { Experiment, useExperimentContext } from '../../../context/ExperimentContext';
 import { RoutePath } from '../../../pages/Routes';
 import DataChannelCard, { CardMode } from '../../search/data-channel-card/DataChannelCard';
 import VesselLink from '../../shared/link/VesselLink';
@@ -11,21 +11,21 @@ import FlexScrollableField from '../../ui/scrollable-field/FlexScrollableField';
 import './DataChannelSelection.scss';
 
 interface Props {
-  panel: Panel;
+  experiment: Experiment;
 }
 
-const DataChannelSelection: React.FC<Props> = ({ panel }) => {
-  const { toggleQueryItemInPanel } = usePanelContext();
+const DataChannelSelection: React.FC<Props> = ({ experiment }) => {
+  const { toggleQueryItemInExperiment } = useExperimentContext();
   const { hasDataChannel, isFleet } = useLabContext();
 
   return (
     <>
       <p>Selected data channels</p>
       <FlexScrollableField className={'data-channel-selection'}>
-        {panel.dataChannels.length > 0 ? (
-          panel.dataChannels.map(d => {
+        {experiment.dataChannels.length > 0 ? (
+          experiment.dataChannels.map(d => {
             const localIdStr = d.dataChannelId.localId.toString();
-            const isExcludedFromGraph = panel.queryItemsExcludedFromGraph.has(localIdStr);
+            const isExcludedFromGraph = experiment.queryItemsExcludedFromGraph.has(localIdStr);
 
             return (
               <span key={localIdStr} className={'data-channel-card-wrapper'}>
@@ -36,7 +36,7 @@ const DataChannelSelection: React.FC<Props> = ({ panel }) => {
                     <Icon
                       icon={IconName.Eye}
                       className={isExcludedFromGraph ? 'excluded' : ''}
-                      onClick={() => toggleQueryItemInPanel(panel.id, d)}
+                      onClick={() => toggleQueryItemInExperiment(experiment.id, d)}
                     />
                   }
                   disabled={!hasDataChannel(d)}

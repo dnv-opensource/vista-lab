@@ -5,7 +5,7 @@ import { useLabContext } from '../../../../context/LabContext';
 import { useSearchContext } from '../../../../context/SearchContext';
 import Icon from '../../../ui/icons/Icon';
 import { IconName } from '../../../ui/icons/icons';
-import AddToPanelButton from '../../add-to-panel-button/AddToPanelButton';
+import AddToExperimentButton from '../../add-to-experiment-button/AddToExperimentButton';
 import DataChannelCard, { CardMode } from '../../data-channel-card/DataChannelCard';
 import { GmodViewerNodeExtra } from '../GmodViewer';
 import './GmodViewNode.scss';
@@ -91,7 +91,7 @@ const GmodViewNode: React.FC<Props> = ({ node, mergedChild, skippedParent, paren
                   dataChannel={dc}
                   shipId={isFleet ? (dc.property.customProperties?.shipId as ShipId) : undefined}
                   mode={CardMode.LegacyNameCentric}
-                  extraNodes={<AddToPanelButton dataChannel={dc} />}
+                  extraNodes={<AddToExperimentButton dataChannel={dc} />}
                 />
               </div>
             ))}

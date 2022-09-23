@@ -2,7 +2,7 @@
 @import 'src/styles/colors';
 
 // Card
-.panel-card {
+.experiment-card {
   position: relative;
   box-shadow: $drop-shadow;
   border-radius: 0.2em;
@@ -10,7 +10,7 @@
 
   background-color: white;
 
-  .panel-header {
+  .experiment-header {
     border-radius: 0.2em 0.2em 0 0;
     padding: 0.4em 0;
     cursor: pointer;
@@ -21,12 +21,12 @@
     align-items: center;
     justify-content: center;
 
-    .panel-dropdown-icon {
+    .experiment-dropdown-icon {
       font-size: 0.7em;
     }
   }
 
-  .panel-content-wrapper {
+  .experiment-content-wrapper {
     position: relative;
     &::before {
       content: '';
@@ -34,7 +34,7 @@
       padding-bottom: 55%;
     }
 
-    .panel-content {
+    .experiment-content {
       top: 0;
       left: 0;
       position: absolute;
@@ -57,11 +57,11 @@
   }
 }
 
-// Panel dropdown
-.panel-card-dropdown {
+// Experiment dropdown
+.experiment-card-dropdown {
   transform: translate(-50%);
 
-  .panel-dropdown-item {
+  .experiment-dropdown-item {
     padding: 0.7em 1.5em;
 
     cursor: pointer;
@@ -80,7 +80,7 @@
 }
 
 // Modal
-.modal-panel-card-input {
+.modal-experiment-card-input {
   margin: 0.5em 0;
 }
 .modal-content-wrapper {

@@ -1,5 +1,5 @@
 import { VistaLabApi } from '../../../apiConfig';
-import { AggregatedQueryResultAsReport, PanelQueryDto, Query, QueryOperator, TimeRange } from '../../../client';
+import { AggregatedQueryResultAsReport, Query, QueryOperator, TimeRange } from '../../../client';
 import { units } from '../../../util/date';
 
 export class QueryReport {
@@ -44,11 +44,10 @@ export class QueryReport {
       interval: '10s',
     };
 
-    const reportDto: PanelQueryDto = {
+    return VistaLabApi.dataChannelGetTimeSeriesDataByQueriesAsReport({
       timeRange: tr,
       vesselId: this._vesselId,
       queries: this.queries,
-    };
-    return VistaLabApi.dataChannelGetTimeSeriesDataByQueriesAsReport(reportDto);
+    });
   }
 }

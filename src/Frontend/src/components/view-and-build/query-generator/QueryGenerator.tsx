@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Panel, usePanelContext } from '../../../context/PanelContext';
+import { Experiment, useExperimentContext } from '../../../context/ExperimentContext';
 import ButtonWithIcon from '../../ui/button/ButtonWithIcon';
 import { IconName } from '../../ui/icons/icons';
 import FlexScrollableField from '../../ui/scrollable-field/FlexScrollableField';
@@ -7,13 +7,13 @@ import QueryCard from './query-card/QueryCard';
 import './QueryGenerator.scss';
 
 interface Props {
-  panel: Panel;
+  experiment: Experiment;
 }
 
-const QueryGenerator: React.FC<Props> = ({ panel }) => {
-  const { addNewQueryToPanel } = usePanelContext();
+const QueryGenerator: React.FC<Props> = ({ experiment }) => {
+  const { addNewQueryToExperiment } = useExperimentContext();
 
-  const queries = useMemo(() => panel.queries, [panel.queries]);
+  const queries = useMemo(() => experiment.queries, [experiment.queries]);
 
   return (
     <>
@@ -22,14 +22,14 @@ const QueryGenerator: React.FC<Props> = ({ panel }) => {
         <ButtonWithIcon
           icon={IconName.Plus}
           className={'query-generator-new-query'}
-          onClick={() => addNewQueryToPanel(panel.id)}
+          onClick={() => addNewQueryToExperiment(experiment.id)}
         >
           New calculation
         </ButtonWithIcon>
       </div>
       <FlexScrollableField className={'query-generator-queries'}>
         {queries.map(q => (
-          <QueryCard panel={panel} key={q.id} query={q} />
+          <QueryCard experiment={experiment} key={q.id} query={q} />
         ))}
       </FlexScrollableField>
     </>

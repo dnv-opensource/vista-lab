@@ -1,6 +1,6 @@
 import { LocalId, LocalIdBuilder, LocalIdParsingErrorBuilder } from 'dnv-vista-sdk';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Query, usePanelContext } from '../../../../context/PanelContext';
+import { Query, useExperimentContext } from '../../../../context/ExperimentContext';
 import { assertTrue } from '../../../../util/general';
 import { isNullOrWhitespace } from '../../../../util/string';
 import Button, { ButtonType } from '../../../ui/button/Button';
@@ -12,14 +12,14 @@ import ScrollableField from '../../../ui/scrollable-field/ScrollableField';
 import './SaveQueryModal.scss';
 
 interface Props {
-  panelId: string;
+  experimentId: string;
   query: Query;
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const SaveQueryModal: React.FC<Props> = ({ query, open, setOpen, panelId }) => {
-  const { editQuery, saveDataChannelFromQuery } = usePanelContext();
+const SaveQueryModal: React.FC<Props> = ({ query, open, setOpen, experimentId }) => {
+  const { editQuery, saveDataChannelFromQuery } = useExperimentContext();
 
   const [isCollapsed, setCollapsed] = useState(true);
 
@@ -43,9 +43,9 @@ const SaveQueryModal: React.FC<Props> = ({ query, open, setOpen, panelId }) => {
       const value = e.currentTarget.value;
 
       const newQuery = { ...query, name: value };
-      editQuery(panelId, newQuery);
+      editQuery(experimentId, newQuery);
     },
-    [editQuery, query, panelId]
+    [editQuery, query, experimentId]
   );
 
   const inputValidations = useMemo(() => {

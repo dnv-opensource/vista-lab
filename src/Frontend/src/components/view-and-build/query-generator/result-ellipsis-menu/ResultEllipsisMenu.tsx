@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Panel, usePanelContext } from '../../../../context/PanelContext';
+import { Experiment, useExperimentContext } from '../../../../context/ExperimentContext';
 import useToast, { ToastType } from '../../../../hooks/use-toast';
 import Button, { ButtonType } from '../../../ui/button/Button';
 import CollapseMenu, { CollapseMenuItem } from '../../../ui/collapse-menu/CollapseMenu';
@@ -10,19 +10,19 @@ import Input from '../../../ui/input/Input';
 import './ResultEllipsisMenu.scss';
 
 interface Props {
-  panel: Panel;
+  experiment: Experiment;
 }
 
-const ResultEllipsisMenu: React.FC<Props> = ({ panel }) => {
+const ResultEllipsisMenu: React.FC<Props> = ({ experiment }) => {
   const menuRef = useRef<HTMLDivElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const { addToast } = useToast();
-  const { editPanel } = usePanelContext();
+  const { editExperiment } = useExperimentContext();
   return (
     <>
       <div className={'menu-anchor'} ref={menuRef}>
         <Icon
-          className={'panel-result-menu-icon'}
+          className={'experiment-result-menu-icon'}
           icon={IconName.EllipsisVersical}
           onClick={() => setMenuOpen(prev => !prev)}
         />
@@ -48,16 +48,19 @@ const ResultEllipsisMenu: React.FC<Props> = ({ panel }) => {
                       return;
                     }
 
-                    editPanel({ ...panel, threshold: { name: 'Sea trial', value: +value, deviation: +deviation } });
+                    editExperiment({
+                      ...experiment,
+                      threshold: { name: 'Sea trial', value: +value, deviation: +deviation },
+                    });
                   }}
                 >
                   <span>
                     <label>Value</label>
-                    <Input type={'number'} value={panel.threshold?.value} hideClearIcon />
+                    <Input type={'number'} value={experiment.threshold?.value} hideClearIcon />
                   </span>
                   <span>
                     <label>Deviation %</label>
-                    <Input type={'number'} value={panel.threshold?.deviation} hideClearIcon />
+                    <Input type={'number'} value={experiment.threshold?.deviation} hideClearIcon />
                   </span>
                   <button style={{ display: 'none' }} />
                 </form>
@@ -66,7 +69,7 @@ const ResultEllipsisMenu: React.FC<Props> = ({ panel }) => {
                     type={ButtonType.Danger}
                     onClick={e => {
                       e.preventDefault();
-                      editPanel({ ...panel, threshold: undefined });
+                      editExperiment({ ...experiment, threshold: undefined });
                     }}
                   >
                     Remove

@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Panel } from '../../../context/PanelContext';
+import { Experiment } from '../../../context/ExperimentContext';
 import { RoutePath } from '../../../pages/Routes';
 import VesselLink from '../../shared/link/VesselLink';
 import Button, { ButtonType } from '../../ui/button/Button';
@@ -9,53 +9,61 @@ import { IconName } from '../../ui/icons/icons';
 import CustomLink from '../../ui/router/CustomLink';
 import TextWithIcon from '../../ui/text/TextWithIcon';
 import VerifyDeleteModal from './delete-modal/DeleteModal';
-import './PanelCard.scss';
+import './ExperimentCard.scss';
 import RenameModal from './rename-modal/RenameModal';
 
 interface Props {
-  panel: Panel;
+  experiment: Experiment;
 }
 
 export const QueryResults = React.lazy(() => import('../query-results/QueryResults'));
 
-const PanelCard: React.FC<Props> = ({ panel }) => {
+const ExperimentCard: React.FC<Props> = ({ experiment }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [verifyingDelete, setVerifying] = useState(false);
   const [renaming, setRenaming] = useState(false);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   return (
-    <div className={'panel-card'} id={panel.id}>
-      <div ref={dropdownRef} className={'panel-header'} onClick={() => setMenuOpen(prev => !prev)}>
-        <p>{panel.id}</p>
-        <Icon icon={IconName.CaretDown} className={'panel-dropdown-icon'} />
+    <div className={'experiment-card'} id={experiment.id}>
+      <div ref={dropdownRef} className={'experiment-header'} onClick={() => setMenuOpen(prev => !prev)}>
+        <p>{experiment.id}</p>
+        <Icon icon={IconName.CaretDown} className={'experiment-dropdown-icon'} />
       </div>
       {dropdownRef.current && (
         <Dropdown
-          className={'panel-card-dropdown'}
+          className={'experiment-card-dropdown'}
           anchorRef={dropdownRef}
           open={menuOpen}
           setOpen={setMenuOpen}
           closeOnOutsideClick={!verifyingDelete && !renaming}
         >
-          <CustomLink to={`${panel.id}`} persistSearch>
-            <TextWithIcon className={'panel-dropdown-item'} icon={IconName.Eye}>
+          <CustomLink to={`${experiment.id}`} persistSearch>
+            <TextWithIcon className={'experiment-dropdown-item'} icon={IconName.Eye}>
               View
             </TextWithIcon>
           </CustomLink>
-          <TextWithIcon className={'panel-dropdown-item'} icon={IconName.Pencil} onClick={() => setRenaming(true)}>
+          <TextWithIcon
+            className={'experiment-dropdown-item'}
+            icon={IconName.Pencil}
+            onClick={() => setRenaming(true)}
+          >
             Rename
           </TextWithIcon>
-          <TextWithIcon className={'panel-dropdown-item'} icon={IconName.Trash} onClick={() => setVerifying(true)}>
+          <TextWithIcon
+            className={'experiment-dropdown-item'}
+            icon={IconName.Trash}
+            onClick={() => setVerifying(true)}
+          >
             Delete
           </TextWithIcon>
-          <VerifyDeleteModal panel={panel} open={verifyingDelete} setOpen={setVerifying} />
-          <RenameModal panel={panel} open={renaming} setOpen={setRenaming} />
+          <VerifyDeleteModal experiment={experiment} open={verifyingDelete} setOpen={setVerifying} />
+          <RenameModal experiment={experiment} open={renaming} setOpen={setRenaming} />
         </Dropdown>
       )}
-      <div className={'panel-content-wrapper'}>
-        <div className={'panel-content'}>
-          {panel.dataChannels.length === 0 ? (
+      <div className={'experiment-content-wrapper'}>
+        <div className={'experiment-content'}>
+          {experiment.dataChannels.length === 0 ? (
             <>
               <p className={'empty-subtitle'}>No data channels</p>
               <VesselLink to={RoutePath.Search} persistSearch>
@@ -63,7 +71,7 @@ const PanelCard: React.FC<Props> = ({ panel }) => {
               </VesselLink>
             </>
           ) : (
-            <QueryResults panel={panel} />
+            <QueryResults experiment={experiment} />
           )}
         </div>
       </div>
@@ -71,4 +79,4 @@ const PanelCard: React.FC<Props> = ({ panel }) => {
   );
 };
 
-export default PanelCard;
+export default ExperimentCard;

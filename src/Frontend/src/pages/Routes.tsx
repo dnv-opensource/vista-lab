@@ -3,11 +3,11 @@ import { BrowserRouter, Navigate, Outlet, Route, Routes as BrowserRoutes } from 
 import Layout from '../components/layout/Layout';
 import { IconName } from '../components/ui/icons/icons';
 import { LabContextProvider } from '../context/LabContext';
-import { PanelContextProvider } from '../context/PanelContext';
+import { ExperimentContextProvider } from '../context/ExperimentContext';
 import { SearchContextProvider } from '../context/SearchContext';
 import { VISContextProvider } from '../context/VISContext';
-import Panel from './view-and-build/panel/Panel';
-import Panels from './view-and-build/panels/Panels';
+import Experiment from './view-and-build/experiment/Experiment';
+import Experiments from './view-and-build/experiments/Experiments';
 
 const Home = React.lazy(() => import('./home/Home'));
 const Search = React.lazy(() => import('./search/Search'));
@@ -56,8 +56,8 @@ export const routesList: RouteProp[] = [
     icon: IconName.ChartColumn,
     routes: (
       <>
-        <Route path={':panelId'} element={<Panel />} />
-        <Route path="" element={<Panels />} />
+        <Route path={':experimentId'} element={<Experiment />} />
+        <Route path="" element={<Experiments />} />
       </>
     ),
   },
@@ -84,11 +84,11 @@ const Routes: React.FC = () => {
               element={
                 <>
                   <LabContextProvider>
-                    <PanelContextProvider>
+                    <ExperimentContextProvider>
                       <Layout>
                         <Outlet />
                       </Layout>
-                    </PanelContextProvider>
+                    </ExperimentContextProvider>
                   </LabContextProvider>
                 </>
               }

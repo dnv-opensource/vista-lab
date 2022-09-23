@@ -1,7 +1,12 @@
 import { DataChannelList } from 'dnv-vista-sdk';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useLabContext } from '../../../../context/LabContext';
-import { isDataChannelQueryItem, Panel, Query, usePanelContext } from '../../../../context/PanelContext';
+import {
+  isDataChannelQueryItem,
+  Experiment,
+  Query,
+  useExperimentContext,
+} from '../../../../context/ExperimentContext';
 import useToast, { ToastType } from '../../../../hooks/use-toast';
 import { isNullOrWhitespace } from '../../../../util/string';
 import DataChannelCard, { CardMode } from '../../../search/data-channel-card/DataChannelCard';
@@ -15,19 +20,19 @@ import './QueryCard.scss';
 
 interface Props {
   query: Query;
-  panel: Panel;
+  experiment: Experiment;
 }
 
-const QueryCard: React.FC<Props> = ({ query, panel }) => {
+const QueryCard: React.FC<Props> = ({ query, experiment }) => {
   const { addToast } = useToast();
-  const { removeQueryFromPanel, editQuery, selectQueryItem, selectQueryOperator, toggleQueryItemInPanel } =
-    usePanelContext();
+  const { removeQueryFromExperiment, editQuery, selectQueryItem, selectQueryOperator, toggleQueryItemInExperiment } =
+    useExperimentContext();
   const { hasDataChannel } = useLabContext();
 
   const [saveModalOpen, setSaveModalOpen] = useState(false);
 
   const [isCollapsed, setCollapsed] = useState(
-    !(panel.queries.length === 1 || panel.queries.findIndex(q => q.id === query.id) === 0)
+    !(experiment.queries.length === 1 || experiment.queries.findIndex(q => q.id === query.id) === 0)
   );
 
   const toggleCollapsed = useCallback(() => {
@@ -44,15 +49,15 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
         return;
       }
 
-      if (panel.queries.some(q => q.name === value)) {
+      if (experiment.queries.some(q => q.name === value)) {
         addToast(ToastType.Warning, 'Save error', <p>Duplicate query name {value}</p>);
         return;
       }
 
       const newQuery = { ...query, name: value };
-      editQuery(panel.id, newQuery);
+      editQuery(experiment.id, newQuery);
     },
-    [editQuery, query, panel, addToast]
+    [editQuery, query, experiment, addToast]
   );
 
   const formatOption = useCallback(
@@ -67,16 +72,16 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
 
   const onSelectedOption = useCallback(
     (option: Query | DataChannelList.DataChannel) => {
-      selectQueryItem(panel.id, query.id, option);
+      selectQueryItem(experiment.id, query.id, option);
     },
-    [selectQueryItem, panel.id, query.id]
+    [selectQueryItem, experiment.id, query.id]
   );
 
   const onOperatorSelect = useCallback(
     (operator: Operator) => {
-      selectQueryOperator(panel.id, query.id, operator);
+      selectQueryOperator(experiment.id, query.id, operator);
     },
-    [selectQueryOperator, panel.id, query.id]
+    [selectQueryOperator, experiment.id, query.id]
   );
 
   const deleteSelectedItem = useCallback(
@@ -86,14 +91,14 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
       const itemIndex = items.findIndex(i => item.toString() === i.toString());
       if (itemIndex === -1) return;
       newQuery.items.splice(itemIndex, 1);
-      editQuery(panel.id, newQuery);
+      editQuery(experiment.id, newQuery);
     },
-    [editQuery, panel, query]
+    [editQuery, experiment, query]
   );
 
   const availableOptions: (Query | DataChannelList.DataChannel)[] = useMemo(() => {
     return [
-      ...panel.queries
+      ...experiment.queries
         .filter(q => q.id !== query.id)
         .filter(
           q =>
@@ -102,7 +107,7 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
               return false;
             })
         ),
-      ...panel.dataChannels.filter(hasDataChannel).filter(
+      ...experiment.dataChannels.filter(hasDataChannel).filter(
         dc =>
           !query.items.find(item => {
             if (isDataChannelQueryItem(item)) return item.dataChannelId.localId.equals(dc.dataChannelId.localId);
@@ -110,9 +115,9 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
           })
       ),
     ];
-  }, [panel.dataChannels, panel.queries, query, hasDataChannel]);
+  }, [experiment.dataChannels, experiment.queries, query, hasDataChannel]);
 
-  const isQueryExcludedFromGraph = panel.queryItemsExcludedFromGraph.has(query.id);
+  const isQueryExcludedFromGraph = experiment.queryItemsExcludedFromGraph.has(query.id);
 
   return (
     <div className={'query-card'}>
@@ -127,17 +132,17 @@ const QueryCard: React.FC<Props> = ({ query, panel }) => {
         <Icon
           role={'button'}
           icon={IconName.Eye}
-          onClick={() => toggleQueryItemInPanel(panel.id, query)}
+          onClick={() => toggleQueryItemInExperiment(experiment.id, query)}
           className={`query-card-action-button query-card-toggle-query ${isQueryExcludedFromGraph ? 'excluded' : ''}`}
         />
         <Icon role={'button'} icon={IconName.FloppyDisk} onClick={() => setSaveModalOpen(true)} />
         {saveModalOpen && (
-          <SaveQueryModal query={query} panelId={panel.id} open={saveModalOpen} setOpen={setSaveModalOpen} />
+          <SaveQueryModal query={query} experimentId={experiment.id} open={saveModalOpen} setOpen={setSaveModalOpen} />
         )}
         <Icon
           role={'button'}
           icon={IconName.Trash}
-          onClick={() => removeQueryFromPanel(panel.id, query)}
+          onClick={() => removeQueryFromExperiment(experiment.id, query)}
           className={'query-card-action-button query-card-delete-query'}
         />
       </div>

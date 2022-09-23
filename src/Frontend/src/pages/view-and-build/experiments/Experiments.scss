@@ -1,7 +1,7 @@
 @import 'src/styles/colors';
 @import 'src/styles/global';
 
-.panels-header-wrapper {
+.experiments-header-wrapper {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -16,7 +16,7 @@
   }
 }
 
-.panels-container {
+.experiments-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(25em, 1fr));
   gap: 1em;

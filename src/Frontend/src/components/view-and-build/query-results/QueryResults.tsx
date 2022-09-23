@@ -2,7 +2,7 @@ import { AnimatedLineSeries } from '@visx/xychart';
 import React, { useEffect, useMemo, useState } from 'react';
 import { AggregatedQueryResult, AggregatedTimeseries } from '../../../client';
 import { useLabContext } from '../../../context/LabContext';
-import { Panel, usePanelContext } from '../../../context/PanelContext';
+import { Experiment, useExperimentContext } from '../../../context/ExperimentContext';
 import { removeDuplicateDates, toLocaleTimeRangeString } from '../../../util/date';
 import { isNullOrWhitespace } from '../../../util/string';
 import LineChart, { Accessors, AxisFormatter } from '../../graph/LineChart';
@@ -10,7 +10,7 @@ import './QueryResults.scss';
 import Tooltip from './tooltip/Tooltip';
 
 interface Props {
-  panel: Panel;
+  experiment: Experiment;
 }
 
 const FALLBACK_DATA: AggregatedQueryResult[] = [
@@ -22,25 +22,25 @@ export type TimeSeries = AggregatedTimeseries & {
   vesselId?: string;
 };
 
-const QueryResults: React.FC<Props> = ({ panel }) => {
+const QueryResults: React.FC<Props> = ({ experiment }) => {
   const [data, setData] = useState<AggregatedQueryResult[]>([]);
-  const { getTimeseriesDataForPanel, timeRange } = usePanelContext();
+  const { getTimeseriesDataForExperiment, timeRange } = useExperimentContext();
   const { isFleet } = useLabContext();
   useEffect(() => {
-    getTimeseriesDataForPanel(panel).then(setData);
-  }, [panel, getTimeseriesDataForPanel, setData]);
+    getTimeseriesDataForExperiment(experiment).then(setData);
+  }, [experiment, getTimeseriesDataForExperiment, setData]);
 
-  const dataChannels = panel.dataChannels;
-  const queries = panel.queries;
+  const dataChannels = experiment.dataChannels;
+  const queries = experiment.queries;
 
-  const activeTimerange = useMemo(() => panel.timeRange ?? timeRange, [panel.timeRange, timeRange]);
+  const activeTimerange = useMemo(() => experiment.timeRange ?? timeRange, [experiment.timeRange, timeRange]);
 
   const thresholdTimestamps = useMemo(() => {
-    if (!panel.threshold || data.length === 0) return [];
+    if (!experiment.threshold || data.length === 0) return [];
     const timestamps = data.flatMap(d => d.timeseries.map(t => new Date(t.timestamp)));
     if (timestamps.length === 0) return [];
     return removeDuplicateDates(timestamps);
-  }, [panel.threshold, data]);
+  }, [experiment.threshold, data]);
 
   const accessors: Accessors<TimeSeries> = useMemo(
     () => ({ xAccessor: d => new Date(d.timestamp), yAccessor: d => d.value }),
@@ -89,15 +89,17 @@ const QueryResults: React.FC<Props> = ({ panel }) => {
         tooltipComponent={params => <Tooltip params={params} dataChannels={dataChannels} queries={queries} />}
       >
         {dataSet?.length > 0 &&
-          panel.threshold &&
-          (!isNullOrWhitespace(panel.threshold.deviation) ? (
+          experiment.threshold &&
+          (!isNullOrWhitespace(experiment.threshold.deviation) ? (
             <>
               <AnimatedLineSeries
-                key={'Upper limit ' + panel.threshold.name}
-                dataKey={'Upper limit ' + panel.threshold.name}
+                key={'Upper limit ' + experiment.threshold.name}
+                dataKey={'Upper limit ' + experiment.threshold.name}
                 data={thresholdTimestamps.map(t => ({
-                  ...panel.threshold!,
-                  value: panel.threshold!.value! + panel.threshold!.value * (panel.threshold!.deviation! / 100),
+                  ...experiment.threshold!,
+                  value:
+                    experiment.threshold!.value! +
+                    experiment.threshold!.value * (experiment.threshold!.deviation! / 100),
                   timestamp: t,
                 }))}
                 xAccessor={t => t.timestamp}
@@ -105,11 +107,13 @@ const QueryResults: React.FC<Props> = ({ panel }) => {
                 strokeDasharray={'10'}
               />
               <AnimatedLineSeries
-                key={'Lower limit ' + panel.threshold.name}
-                dataKey={'Lower limit ' + panel.threshold.name}
+                key={'Lower limit ' + experiment.threshold.name}
+                dataKey={'Lower limit ' + experiment.threshold.name}
                 data={thresholdTimestamps.map(t => ({
-                  ...panel.threshold!,
-                  value: panel.threshold!.value! - panel.threshold!.value * (panel.threshold!.deviation! / 100),
+                  ...experiment.threshold!,
+                  value:
+                    experiment.threshold!.value! -
+                    experiment.threshold!.value * (experiment.threshold!.deviation! / 100),
                   timestamp: t,
                 }))}
                 xAccessor={t => t.timestamp}
@@ -119,9 +123,9 @@ const QueryResults: React.FC<Props> = ({ panel }) => {
             </>
           ) : (
             <AnimatedLineSeries
-              key={panel.threshold.name}
-              dataKey={panel.threshold.name}
-              data={thresholdTimestamps.map(t => ({ ...panel.threshold!, timestamp: t }))}
+              key={experiment.threshold.name}
+              dataKey={experiment.threshold.name}
+              data={thresholdTimestamps.map(t => ({ ...experiment.threshold!, timestamp: t }))}
               xAccessor={t => t.timestamp}
               yAccessor={t => t.value}
               strokeDasharray={'10'}

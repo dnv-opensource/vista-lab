@@ -1,7 +1,7 @@
 @import 'src/styles/colors';
 @import 'src/styles/variables';
 @import 'src/styles/global';
-.panel-nav-bar {
+.experiment-nav-bar {
   color: $placeholder-grey;
 
   .back {
@@ -11,7 +11,7 @@
     align-items: center;
   }
 
-  .panel-time-pickers {
+  .experiment-time-pickers {
     display: flex;
     align-items: center;
     gap: 0.5em;
@@ -20,7 +20,7 @@
   }
 }
 
-.vista-panel-container-grid {
+.vista-experiment-container-grid {
   height: 100%;
   width: 100%;
 
@@ -46,7 +46,7 @@
     grid-area: dc;
   }
 
-  .panel-result-graph-wrapper {
+  .experiment-result-graph-wrapper {
     padding: 0em;
     grid-area: gr;
 

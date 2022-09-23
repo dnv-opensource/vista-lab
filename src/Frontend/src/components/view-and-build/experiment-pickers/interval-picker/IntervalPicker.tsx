@@ -1,24 +1,27 @@
 import React, { useCallback, useMemo } from 'react';
-import { Panel, usePanelContext } from '../../../../context/PanelContext';
+import { Experiment, useExperimentContext } from '../../../../context/ExperimentContext';
 import { IconName } from '../../../ui/icons/icons';
 import Input, { InputTypes } from '../../../ui/input/Input';
 import './IntervalPicker.scss';
 
 interface Props {
-  panel?: Panel;
+  experiment?: Experiment;
 }
 
-const IntervalPicker: React.FC<Props> = ({ panel }) => {
-  const { editPanel, interval, setInterval } = usePanelContext();
+const IntervalPicker: React.FC<Props> = ({ experiment }) => {
+  const { editExperiment, interval, setInterval } = useExperimentContext();
 
-  const currentInterval = useMemo(() => (panel?.interval ? panel.interval : interval), [panel, interval]);
+  const currentInterval = useMemo(
+    () => (experiment?.interval ? experiment.interval : interval),
+    [experiment, interval]
+  );
 
   const currentSetInterval = useCallback(
     (interval: string) => {
-      if (!panel) return setInterval(interval);
-      return editPanel({ ...panel, interval: interval });
+      if (!experiment) return setInterval(interval);
+      return editExperiment({ ...experiment, interval: interval });
     },
-    [panel, editPanel, setInterval]
+    [experiment, editExperiment, setInterval]
   );
 
   const isValid = useCallback((value: InputTypes): boolean => {

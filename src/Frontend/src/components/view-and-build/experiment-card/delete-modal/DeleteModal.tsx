@@ -1,19 +1,19 @@
 import React from 'react';
-import { Panel, usePanelContext } from '../../../../context/PanelContext';
+import { Experiment, useExperimentContext } from '../../../../context/ExperimentContext';
 import Button from '../../../ui/button/Button';
 import Modal from '../../../ui/modal/Modal';
 
 interface Props {
-  panel: Panel;
+  experiment: Experiment;
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const DeleteModal: React.FC<Props> = ({ panel, open, setOpen }) => {
-  const { deletePanel } = usePanelContext();
+const DeleteModal: React.FC<Props> = ({ experiment, open, setOpen }) => {
+  const { deleteExperiment } = useExperimentContext();
   return (
-    <Modal open={open} setOpen={setOpen} title={'Remove panel'}>
-      <div className={'modal-content-wrapper'}>Are you sure you want to remove this panel?</div>
+    <Modal open={open} setOpen={setOpen} title={'Remove experiment'}>
+      <div className={'modal-content-wrapper'}>Are you sure you want to remove this experiment?</div>
       <div className={'modal-submit-button-wrapper'}>
         <Button className={'modal-submit-button cancel'} onClick={() => setOpen(false)}>
           Cancel
@@ -21,7 +21,7 @@ const DeleteModal: React.FC<Props> = ({ panel, open, setOpen }) => {
         <Button
           className={'modal-submit-button submit'}
           onClick={() => {
-            deletePanel(panel.id);
+            deleteExperiment(experiment.id);
             setOpen(false);
           }}
         >
