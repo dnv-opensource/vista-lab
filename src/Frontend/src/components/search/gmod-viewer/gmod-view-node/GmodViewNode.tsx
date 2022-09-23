@@ -24,7 +24,7 @@ interface Props {
 }
 
 const GmodViewNode: React.FC<Props> = ({ node, mergedChild, skippedParent, parents, path: initPath, extra }) => {
-  const { isFleet } = useLabContext();
+  const { isFleet, vessel } = useLabContext();
   const path = useMemo(
     () => (mergedChild ? new GmodPath(parents.concat(node), mergedChild) : initPath),
     [initPath, mergedChild, parents, node]
@@ -33,8 +33,8 @@ const GmodViewNode: React.FC<Props> = ({ node, mergedChild, skippedParent, paren
   const { getDataChannelsFromGmodPath } = useSearchContext();
 
   const dataChannels = useMemo(() => {
-    return getDataChannelsFromGmodPath(path);
-  }, [path, getDataChannelsFromGmodPath]);
+    return getDataChannelsFromGmodPath(path, vessel.id);
+  }, [path, getDataChannelsFromGmodPath, vessel]);
 
   const items = useMemo(() => {
     const items: { node: GmodNode; parents: GmodNode[] }[] = [];
