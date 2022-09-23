@@ -28,6 +28,7 @@ export type LabContextType = {
   >;
   hasDataChannel: (dc: DataChannelList.DataChannel) => boolean;
   fetchDataChannelListPackages: () => void;
+  currentDataChannelListPackage: DataChannelList.DataChannelListPackage | undefined;
 };
 
 type LabContextProviderProps = React.PropsWithChildren<{}>;
@@ -41,6 +42,15 @@ const LabContextProvider = ({ children }: LabContextProviderProps) => {
   const [dataChannelListPackages, setDataChannelListPackages] = useState<DataChannelList.DataChannelListPackage[]>();
 
   const vessel = useMemo(() => fleet.vessels.find(v => v.id === vesselParam) ?? fleet, [vesselParam, fleet]);
+
+  const isFleet = useMemo(() => {
+    return vessel.id === 'fleet';
+  }, [vessel.id]);
+
+  const currentDataChannelListPackage = useMemo(() => {
+    if (isFleet) return;
+    return dataChannelListPackages?.find(dclp => dclp.package.header.shipId.toString() === vessel.id);
+  }, [vessel, dataChannelListPackages, isFleet]);
 
   useEffect(() => {
     VistaLabApi.dataChannelGetVessels().then(vessels =>
@@ -76,10 +86,6 @@ const LabContextProvider = ({ children }: LabContextProviderProps) => {
     fetchDataChannelListPackages();
   }, [fetchDataChannelListPackages]);
 
-  const isFleet = useMemo(() => {
-    return vessel.id === 'fleet';
-  }, [vessel.id]);
-
   const hasDataChannel = useCallback(
     (dc: DataChannelList.DataChannel) => {
       if (isFleet) return true;
@@ -105,6 +111,7 @@ const LabContextProvider = ({ children }: LabContextProviderProps) => {
         vessel,
         fleet,
         isFleet,
+        currentDataChannelListPackage,
       }}
     >
       {children}

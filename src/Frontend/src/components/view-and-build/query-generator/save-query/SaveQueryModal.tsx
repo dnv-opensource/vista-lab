@@ -1,6 +1,7 @@
 import { LocalId, LocalIdBuilder, LocalIdParsingErrorBuilder } from 'dnv-vista-sdk';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Query, useExperimentContext } from '../../../../context/ExperimentContext';
+import useToast, { ToastType } from '../../../../hooks/use-toast';
 import { assertTrue } from '../../../../util/general';
 import { isNullOrWhitespace } from '../../../../util/string';
 import Button, { ButtonType } from '../../../ui/button/Button';
@@ -30,6 +31,8 @@ const SaveQueryModal: React.FC<Props> = ({ query, open, setOpen, experimentId })
   const [rangeHigh, setRangeHigh] = useState<number>();
 
   const [localIdErrorBuilder, setLocalIdErrorBuilder] = useState<LocalIdParsingErrorBuilder>();
+
+  const { addToast } = useToast();
 
   useEffect(() => {
     const errorBuilder = new LocalIdParsingErrorBuilder();
@@ -102,6 +105,7 @@ const SaveQueryModal: React.FC<Props> = ({ query, open, setOpen, experimentId })
       query
     );
     setOpen(false);
+    addToast(ToastType.Success, 'Saved data channel', <p>{localId.toString()}</p>);
   };
 
   return (

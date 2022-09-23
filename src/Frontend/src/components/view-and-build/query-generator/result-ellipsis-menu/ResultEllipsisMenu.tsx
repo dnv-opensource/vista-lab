@@ -18,6 +18,10 @@ const ResultEllipsisMenu: React.FC<Props> = ({ experiment }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const { addToast } = useToast();
   const { editExperiment } = useExperimentContext();
+
+  const [value, setValue] = useState(experiment.threshold?.value);
+  const [deviation, setDeviation] = useState(experiment.threshold?.deviation);
+
   return (
     <>
       <div className={'menu-anchor'} ref={menuRef}>
@@ -40,8 +44,6 @@ const ResultEllipsisMenu: React.FC<Props> = ({ experiment }) => {
                 <form
                   onSubmit={e => {
                     e.preventDefault();
-                    //@ts-ignore
-                    const [{ value }, { value: deviation }] = e.target;
 
                     if (!value) {
                       addToast(ToastType.Warning, 'Invalid threshold', <p>Missing values</p>);
@@ -50,17 +52,27 @@ const ResultEllipsisMenu: React.FC<Props> = ({ experiment }) => {
 
                     editExperiment({
                       ...experiment,
-                      threshold: { name: 'Sea trial', value: +value, deviation: +deviation },
+                      threshold: { name: 'Sea trial', value: value, deviation: deviation && deviation },
                     });
                   }}
                 >
                   <span>
                     <label>Value</label>
-                    <Input type={'number'} value={experiment.threshold?.value} hideClearIcon />
+                    <Input
+                      type={'number'}
+                      value={value}
+                      onChange={e => e && setValue(+e.currentTarget.value)}
+                      hideClearIcon
+                    />
                   </span>
                   <span>
                     <label>Deviation %</label>
-                    <Input type={'number'} value={experiment.threshold?.deviation} hideClearIcon />
+                    <Input
+                      type={'number'}
+                      value={deviation}
+                      onChange={e => e && setDeviation(+e.currentTarget.value)}
+                      hideClearIcon
+                    />
                   </span>
                   <button style={{ display: 'none' }} />
                 </form>

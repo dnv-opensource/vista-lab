@@ -27,11 +27,12 @@ const Tooltip: React.FC<Props> = ({ params, dataChannels, queries }) => {
   };
 
   let unit: string | undefined = undefined;
-  const dataChannel = dataChannels.find(dc => dc.dataChannelId.localId.toString() === item?.key);
+  const dataChannel = dataChannels.find(dc => dc.dataChannelId.localId.toString() === item?.datum.name);
+
   if (dataChannel) {
     unit = resolveUnitSymbols(dataChannel)[0];
   } else {
-    const query = queries.find(q => q.name === item?.key);
+    const query = queries.find(q => q.name === item?.datum.name);
     if (query) {
       const units = resolveUnitSymbols(query);
       unit = units.length > 0 ? Array.from(new Set<string>(units)).join(' | ') : undefined;

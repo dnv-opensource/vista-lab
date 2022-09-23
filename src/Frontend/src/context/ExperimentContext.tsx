@@ -84,7 +84,7 @@ export function isDataChannelQueryItem(
   return 'dataChannelId' in item;
 }
 
-const toQueryDto = (q: Query, vesselId: string): QueryDto => {
+export const toQueryDto = (q: Query): QueryDto => {
   const operatorDto: QueryOperator = +Object.keys(QueryOperator)[
     Object.values(Operator).indexOf(q.operator!)
   ] as QueryOperator;
@@ -95,7 +95,7 @@ const toQueryDto = (q: Query, vesselId: string): QueryDto => {
     dataChannelIds: (q.items.filter(q => isDataChannelQueryItem(q)) as DataChannelList.DataChannel[]).map(u =>
       u.dataChannelId.localId.toString()
     ),
-    subQueries: (q.items.filter(q => !isDataChannelQueryItem(q)) as Query[]).map(q => toQueryDto(q, vesselId)),
+    subQueries: (q.items.filter(q => !isDataChannelQueryItem(q)) as Query[]).map(q => toQueryDto(q)),
     operator: operatorDto,
   };
 };
@@ -229,7 +229,7 @@ const ExperimentContextProvider = ({ children }: ExperimentContextProviderProps)
         timeRange: tr,
         queries: Experiment.queries
           .filter(q => !Experiment.queryItemsExcludedFromGraph.has(q.id))
-          .map(q => toQueryDto(q, vessel.id))
+          .map(q => toQueryDto(q))
           .concat(
             ...Experiment.dataChannels
               .filter(d => !Experiment.queryItemsExcludedFromGraph.has(d.dataChannelId.localId.toString()))
@@ -494,7 +494,7 @@ const ExperimentContextProvider = ({ children }: ExperimentContextProviderProps)
         for (let vessel of fleet.vessels) {
           await VistaLabApi.dataChannelSavesDataChannelFromQuery({
             dataChannel: JSONExtensions.DataChannel.toJsonDto(dataChannel) as unknown as DataChannel,
-            query: toQueryDto(query, vessel.id),
+            query: toQueryDto(query),
             vessel: vessel.id,
             vesselName: vessel.name,
           });
@@ -503,7 +503,7 @@ const ExperimentContextProvider = ({ children }: ExperimentContextProviderProps)
       }
       return VistaLabApi.dataChannelSavesDataChannelFromQuery({
         dataChannel: JSONExtensions.DataChannel.toJsonDto(dataChannel) as unknown as DataChannel,
-        query: toQueryDto(query, vessel.id),
+        query: toQueryDto(query),
         vessel: vessel.id,
         vesselName: vessel.name,
       });
