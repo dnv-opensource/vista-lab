@@ -876,6 +876,10 @@
           "vessel": {
             "type": "string"
           },
+          "vesselName": {
+            "type": "string",
+            "nullable": true
+          },
           "dataChannel": {
             "$ref": "#/components/schemas/DataChannel"
           },

@@ -78,7 +78,7 @@ app.MapPost(
             if (body is null)
                 throw new Exception("Invalid data handed to import endpoint");
 
-            await simulator.SimulateDataChannel(body, null, cancellationToken);
+            _ = Task.Run(() => simulator.SimulateDataChannel(body, null, cancellationToken));
             return Results.Ok();
         }
     )

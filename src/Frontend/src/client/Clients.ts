@@ -562,6 +562,7 @@ export enum RestrictionWhiteSpace {
 
 export interface SaveNewDataChannelDto {
     vessel: string;
+    vesselName: string | undefined;
     dataChannel: DataChannel;
     query: Query;
 }

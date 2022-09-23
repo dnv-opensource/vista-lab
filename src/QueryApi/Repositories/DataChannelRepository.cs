@@ -699,6 +699,7 @@ public sealed partial class DataChannelRepository
 
     public async Task DispatchDataChannelFromQuery(
         string vessel,
+        string? vesselName,
         DataChannel dataChannel,
         Query query,
         CancellationToken cancellationToken
@@ -731,6 +732,9 @@ public sealed partial class DataChannelRepository
                 )
             )
         );
+
+        if (vesselName is not null)
+            package.Package.Header.AdditionalProperties.Add("ShipName", vesselName);
 
         await _mqttClient.PublishStringAsync(
             "DataChannelLists",

@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import React, { useCallback, useRef, useState } from 'react';
 import { VistaLabApi } from '../../apiConfig';
-import { ButtonType } from '../../components/ui/button/Button';
+import Button, { ButtonType } from '../../components/ui/button/Button';
 import ButtonWithLink from '../../components/ui/button/ButtonWithLink';
 import useToast, { ToastType } from '../../hooks/use-toast';
 import { RoutePath } from '../Routes';
@@ -13,12 +13,13 @@ const Import: React.FC = () => {
 
   const [dragging, setDragging] = useState(false);
   const [file, setFile] = useState<File>();
+  const [fileUploaded, setFileUploaded] = useState(false);
 
   const postImportAndSimulateDataChannelFile = useCallback(
     (file: File) => {
-      setFile(file);
       VistaLabApi.dataChannelPostImportFileAndSimulate({ fileName: file.name, data: file }).then(() => {
         addToast(ToastType.Success, 'Successfully imported', <p>Imported vessel {file.name}</p>);
+        setFileUploaded(true);
       });
     },
     [addToast]
@@ -28,14 +29,11 @@ const Import: React.FC = () => {
     dataChannelFileRef.current?.click();
   }, []);
 
-  const handleChangeFile = useCallback(
-    (file?: File) => {
-      if (file) {
-        postImportAndSimulateDataChannelFile(file);
-      }
-    },
-    [postImportAndSimulateDataChannelFile]
-  );
+  const handleChangeFile = useCallback((file?: File) => {
+    if (file) {
+      setFile(file);
+    }
+  }, []);
 
   return (
     <div className={'vista-import'}>
@@ -82,13 +80,21 @@ const Import: React.FC = () => {
           handleChangeFile(e.target.files?.[0]);
         }}
       />
-      {file && (
+      {fileUploaded ? (
         <ButtonWithLink
           linkProps={{ to: RoutePath.Search, persistRestOfUrl: true, persistSearch: true }}
           type={ButtonType.Subtle}
         >
           View vessels
         </ButtonWithLink>
+      ) : (
+        <Button
+          disabled={!file}
+          type={ButtonType.Subtle}
+          onClick={() => file && postImportAndSimulateDataChannelFile(file)}
+        >
+          Import
+        </Button>
       )}
     </div>
   );

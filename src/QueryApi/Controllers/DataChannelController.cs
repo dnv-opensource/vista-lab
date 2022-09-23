@@ -32,7 +32,12 @@ public sealed class DataChannelController : ControllerBase
         IEnumerable<Query> Queries
     );
 
-    public sealed record SaveNewDataChannelDto(string Vessel, DataChannel DataChannel, Query Query);
+    public sealed record SaveNewDataChannelDto(
+        string Vessel,
+        string? VesselName,
+        DataChannel DataChannel,
+        Query Query
+    );
 
     public DataChannelController(
         DataChannelRepository dataChannelRepository,
@@ -177,6 +182,7 @@ public sealed class DataChannelController : ControllerBase
     {
         await _dataChannelRepository.DispatchDataChannelFromQuery(
             query.Vessel,
+            query.VesselName,
             query.DataChannel,
             query.Query,
             cancellationToken

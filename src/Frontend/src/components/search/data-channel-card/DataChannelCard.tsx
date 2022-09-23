@@ -33,7 +33,7 @@ const DataChannelCard: React.FC<Props> = (props: Props) => {
       setLoading(true);
 
       VistaLabApi.dataChannelGetLatestTimeSeriesValue({
-        vesselId: shipId!.toString(),
+        vesselId: shipId ? shipId.toString() : dataChannel.property.customProperties?.shipId.toString() ?? 'fleet',
         localId: localId.toString(),
       })
         .then(res => {
@@ -47,7 +47,7 @@ const DataChannelCard: React.FC<Props> = (props: Props) => {
           setLoading(false);
         });
     }
-  }, [localId, setLatestEventData, setLoading, shipId, withoutData]);
+  }, [localId, setLatestEventData, setLoading, shipId, withoutData, dataChannel]);
 
   const parts: { key: string; noSep?: boolean; el: React.ReactNode }[] = [];
   if (shipId) {

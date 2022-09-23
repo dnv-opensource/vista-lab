@@ -496,6 +496,7 @@ const ExperimentContextProvider = ({ children }: ExperimentContextProviderProps)
             dataChannel: JSONExtensions.DataChannel.toJsonDto(dataChannel) as unknown as DataChannel,
             query: toQueryDto(query, vessel.id),
             vessel: vessel.id,
+            vesselName: vessel.name,
           });
         }
         return Promise.resolve();
@@ -504,6 +505,7 @@ const ExperimentContextProvider = ({ children }: ExperimentContextProviderProps)
         dataChannel: JSONExtensions.DataChannel.toJsonDto(dataChannel) as unknown as DataChannel,
         query: toQueryDto(query, vessel.id),
         vessel: vessel.id,
+        vesselName: vessel.name,
       });
     },
     [vessel, fleet]

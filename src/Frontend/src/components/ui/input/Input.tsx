@@ -39,7 +39,7 @@ const Input = React.forwardRef<HTMLDivElement, InputProps>(
           tabIndex={-1}
         >
           {!iconLast && iconComp}
-          <input {...restProps} ref={inputRef} value={value ?? ''} onChange={onChange} />
+          <input {...restProps} ref={inputRef} value={value} onChange={onChange} />
           {!loadingResult ? (
             !hideClearIcon && (
               <Icon
