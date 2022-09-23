@@ -23,7 +23,7 @@ const AddToExperimentButton: React.FC<Props> = ({ dataChannel }) => {
       <Icon className={'add-to-experiment-icon'} icon={IconName.Plus} onClick={() => setOpen(prev => !prev)} />
       {wrapperRef.current && (
         <Dropdown className={'add-experiment-dropdown'} setOpen={setOpen} open={open} anchorRef={wrapperRef}>
-          <p className={'add-experiment-title'}>Select or add a experiment</p>
+          <p className={'add-experiment-title'}>Select experiment</p>
           <form
             onSubmit={e => {
               e.preventDefault();
@@ -35,7 +35,7 @@ const AddToExperimentButton: React.FC<Props> = ({ dataChannel }) => {
             <Input
               value={newExperimentValue}
               onChange={e => e && setNewExperimentValue(e.currentTarget.value)}
-              placeholder="Add new experiment"
+              placeholder="Add new"
               icon={IconName.Plus}
             />
           </form>
