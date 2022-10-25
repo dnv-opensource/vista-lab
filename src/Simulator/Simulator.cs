@@ -459,6 +459,7 @@ public class Simulator : IHostedService
             names = names
                 .Where(n => n.Contains(internalDelimiter, StringComparison.OrdinalIgnoreCase))
                 .ToArray();
+        var delimiter = useOnlyInternal ? ".resources" + internalDelimiter : ".resources.";
 
         foreach (
             var name in names.Where(n => n.EndsWith("json", StringComparison.OrdinalIgnoreCase))
@@ -472,7 +473,7 @@ public class Simulator : IHostedService
             if (dataChannelListDto is null)
                 throw new Exception("Couldnt load datachannels");
 
-            var nameStart = name.IndexOf(internalDelimiter) + internalDelimiter.Length;
+            var nameStart = name.IndexOf(delimiter) + delimiter.Length;
             var nameEnd = name.IndexOf('-');
             var actualName = name.Substring(nameStart, nameEnd - nameStart);
 

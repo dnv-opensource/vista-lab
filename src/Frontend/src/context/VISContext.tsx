@@ -1,4 +1,4 @@
-import { Codebooks, Defaults, Gmod, VIS, VisVersion } from 'dnv-vista-sdk';
+import { Codebooks, Gmod, VIS, VisVersion } from 'dnv-vista-sdk';
 import React, { createContext, useEffect, useState } from 'react';
 
 export type VISContextType = {
@@ -13,7 +13,7 @@ type VISContextProviderProps = React.PropsWithChildren<{}>;
 const VISContext = createContext<VISContextType | undefined>(undefined);
 
 const VISContextProvider = ({ children }: VISContextProviderProps) => {
-  const [visVersion, setVisVersion] = useState<VisVersion>(Defaults.visVersion);
+  const [visVersion, setVisVersion] = useState<VisVersion>(VisVersion.v3_4a);
   const [gmod, setGmod] = useState<Gmod>();
   const [codebooks, setCodebooks] = useState<Codebooks>();
 

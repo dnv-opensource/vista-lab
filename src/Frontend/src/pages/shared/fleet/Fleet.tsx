@@ -1,4 +1,5 @@
 import React from 'react';
+import MapContainer from '../../../components/search/map/MapContainer';
 import ResultBar from '../../../components/shared/result-bar/ResultBar';
 import VesselCard from '../../../components/shared/vessel-card/VesselCard';
 import ScrollableField from '../../../components/ui/scrollable-field/ScrollableField';
@@ -11,6 +12,7 @@ const FleetGrid: React.FC = () => {
   return (
     <>
       <ResultBar className={'fleet-grid-result'}>Result: {fleet.vessels.length}</ResultBar>
+      <MapContainer />
       <ScrollableField className={'fleet-grid'}>
         {fleet.vessels.map((vessel, i) => (
           <VesselCard key={i} vessel={vessel} />

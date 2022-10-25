@@ -12,7 +12,7 @@ using Vista.SDK.Transport.Json;
 public sealed class ElasticSearchService : IHostedService
 {
     const string clientId = "elastic-search-service";
-    private string defaultIndex = Vista.SDK.Defaults.VisVersion.ToString();
+    private string defaultIndex = Vista.SDK.VisVersion.v3_4a.ToString();
 
     private readonly ILogger<ElasticSearchService> _logger;
     private readonly MqttClientOptions _mqttOptions;

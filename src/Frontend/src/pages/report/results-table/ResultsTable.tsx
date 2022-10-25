@@ -25,7 +25,7 @@ const ResultsTable: React.FC = () => {
         <>
           <Typeahead
             className={'report-data-channel-typeahead'}
-            placeholder="Create report from Data Channel"
+            placeholder="Add field from data channels"
             options={Array.from(
               currentDataChannelListPackage?.package.dataChannelList.dataChannel
                 .reduce((prev, next) => {
@@ -58,7 +58,13 @@ const ResultsTable: React.FC = () => {
                 <tr key={q.id}>
                   <td>{q.name}</td>
                   <td>{toFormattedNumberString(data.find(d => d.name === q.name)?.value) ?? 'No data found'}</td>
-                  <td>TBD</td>
+                  <td>
+                    {
+                      currentDataChannelListPackage.package.dataChannelList.dataChannel.find(
+                        dc => dc.dataChannelId.localId.toString() === q.id
+                      )?.property.unit?.unitSymbol
+                    }
+                  </td>
                   <td>Annual</td>
                 </tr>
               ))}
